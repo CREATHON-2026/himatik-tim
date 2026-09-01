@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface DashboardHeaderProps {
   shopName: string;
@@ -22,6 +23,7 @@ export function DashboardHeader({
   photoUrl,
   onLogout,
 }: DashboardHeaderProps) {
+  const router = useRouter();
   const avatarFallback = shopName.slice(0, 2).toUpperCase();
 
   return (
@@ -68,7 +70,7 @@ export function DashboardHeader({
               <DropdownMenuItem
                 className="hover:bg-muted/50 cursor-pointer gap-2 transition-colors duration-150"
                 onClick={() => {
-                  window.location.href = "/dashboard/profile";
+                  router.push("/dashboard/profile");
                 }}
               >
                 <User className="size-4" aria-hidden="true" />
