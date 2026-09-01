@@ -49,7 +49,7 @@ export default function OrderDetailPage({ params }: OrderPageProps) {
   const [showGuide, setShowGuide] = React.useState(true);
 
   // Hydrate local client data if available from recent checkout session (unconditional hook at top)
-  const [localMeta, setLocalMeta] = React.useState<{
+  const [localMeta] = React.useState<{
     buyerName?: string;
     buyerPhone?: string;
     shippingAddress?: string;
@@ -60,20 +60,17 @@ export default function OrderDetailPage({ params }: OrderPageProps) {
     customNotes?: string;
     shippingCost?: number;
     packagingCost?: number;
-  } | null>(null);
-
-  React.useEffect(() => {
+  } | null>(() => {
     if (typeof window !== "undefined") {
       try {
         const raw = localStorage.getItem(`creathon_order_${orderId}`);
-        if (raw) {
-          setLocalMeta(JSON.parse(raw));
-        }
+        if (raw) return JSON.parse(raw);
       } catch {
         // graceful ignore
       }
     }
-  }, [orderId]);
+    return null;
+  });
 
   const { data: order, isLoading, error } = useQuery({
     queryKey: ["order-detail", orderId],

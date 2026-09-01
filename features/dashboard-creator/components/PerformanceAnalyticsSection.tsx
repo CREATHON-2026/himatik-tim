@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, BarChart3 } from "lucide-react";
 
 export interface ProductPerformanceItem {
   name: string;
@@ -75,28 +75,33 @@ export function PerformanceAnalyticsSection({
 
   // Donut chart stroke circumference math (radius = 60)
   const radius = 60;
-  const circumference = 2 * Math.PI * radius; // ~376.99
+  const circumference = 2 * Math.PI * radius;
 
-  let accumulatedPercentage = 0;
+  const productSlices = React.useMemo(() => {
+    return displayProducts.map((item, idx, arr) => {
+      const precedingPercentage = arr.slice(0, idx).reduce((sum, p) => sum + p.percentage, 0);
+      const strokeDasharray = `${(item.percentage / 100) * circumference} ${circumference}`;
+      const strokeDashoffset = -((precedingPercentage / 100) * circumference);
+      return { ...item, strokeDasharray, strokeDashoffset };
+    });
+  }, [displayProducts, circumference]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-      {/* ─── LEFT: PERFORMA TOKO (60% / 7 cols) ─── */}
-      <div className="lg:col-span-7 bg-white border border-[#E7E5E4] rounded-2xl p-6 shadow-2xs flex flex-col justify-between">
-        {/* Header with Period Filter */}
-        <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#F5F5F4]">
-          <div>
-            <h3 className="font-semibold text-base text-[#111827]">
-              Performa Toko
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+      {/* ─── Left: Horizontal Bar Chart (7 cols) ─── */}
+      <div className="lg:col-span-7 bg-white rounded-3xl border border-[#E7E5E4] p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-[#F5F5F4] pb-3.5">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="size-4 text-[#6355D9]" />
+            <h3 className="font-serif text-base font-bold text-[#111827]">
+              Kinerja Produk
             </h3>
-            <p className="text-xs text-[#78716C] mt-0.5">
-              Ringkasan aktivitas toko dalam 28 hari terakhir.
-            </p>
           </div>
 
-          {/* Filter Dropdown Pill */}
           <button
             type="button"
+            onClick={() => setSelectedPeriod((prev) => (prev === "28 Hari" ? "7 Hari" : "28 Hari"))}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E7E5E4] bg-white text-xs font-medium text-[#292524] hover:bg-[#FAFAF9] transition shadow-2xs cursor-pointer"
           >
             <span>{selectedPeriod}</span>
@@ -107,7 +112,7 @@ export function PerformanceAnalyticsSection({
         {/* Chart Subheading */}
         <div className="pt-4 pb-2">
           <span className="text-xs font-medium text-[#44403C]">
-            Pendapatan per Produk (28 Hari)
+            Pendapatan per Produk ({selectedPeriod})
           </span>
         </div>
 
@@ -144,29 +149,30 @@ export function PerformanceAnalyticsSection({
           })}
         </div>
 
-        {/* X-Axis Scale Labels */}
-        <div className="pt-3 border-t border-[#F5F5F4] flex items-center justify-between text-[11px] text-[#A8A29E] tabular-nums">
-          <span>Rp0</span>
-          <span>Rp500k</span>
-          <span>Rp1.000k</span>
-          <span>Rp1.500k</span>
-          <span>Rp2.000k</span>
+        {/* Footer Note */}
+        <div className="pt-3 border-t border-[#F5F5F4] flex items-center justify-between text-[11px] text-[#78716C]">
+          <span>Data diperbarui secara real-time dari transaksi sukses</span>
+          <span className="font-semibold text-[#111827]">
+            {displayProducts.length} Produk
+          </span>
         </div>
       </div>
 
-      {/* ─── RIGHT: DISTRIBUSI TRANSAKSI (40% / 5 cols) ─── */}
-      <div className="lg:col-span-5 bg-white border border-[#E7E5E4] rounded-2xl p-6 shadow-2xs flex flex-col justify-between">
+      {/* ─── Right: Donut Share Chart (5 cols) ─── */}
+      <div className="lg:col-span-5 bg-white rounded-3xl border border-[#E7E5E4] p-5 sm:p-6 shadow-xs flex flex-col justify-between">
         {/* Header */}
-        <div className="pb-4 border-b border-[#F5F5F4]">
-          <h3 className="font-semibold text-base text-[#111827]">
-            Distribusi Transaksi
+        <div className="border-b border-[#F5F5F4] pb-3.5">
+          <h3 className="font-serif text-base font-bold text-[#111827]">
+            Kontribusi Pendapatan
           </h3>
+          <p className="text-xs text-[#78716C] mt-0.5">
+            Persentase omzet kriya per produk
+          </p>
         </div>
 
-        {/* Donut Chart with Center Metric + Legend */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 py-4 flex-1">
-          {/* SVG Donut Graphic */}
-          <div className="relative size-36 shrink-0 flex items-center justify-center">
+        {/* Donut Chart Container */}
+        <div className="py-4 flex flex-col items-center justify-center">
+          <div className="relative size-44 sm:size-48 flex items-center justify-center">
             <svg
               className="size-full -rotate-90"
               viewBox="0 0 160 160"
@@ -182,27 +188,21 @@ export function PerformanceAnalyticsSection({
               />
 
               {/* Dynamic Slices */}
-              {displayProducts.map((item, idx) => {
-                const strokeDasharray = `${(item.percentage / 100) * circumference} ${circumference}`;
-                const strokeDashoffset = -((accumulatedPercentage / 100) * circumference);
-                accumulatedPercentage += item.percentage;
-
-                return (
-                  <circle
-                    key={`${item.name}-${idx}`}
-                    cx="80"
-                    cy="80"
-                    r={radius}
-                    stroke={item.color}
-                    strokeWidth="20"
-                    strokeDasharray={strokeDasharray}
-                    strokeDashoffset={strokeDashoffset}
-                    strokeLinecap="butt"
-                    fill="transparent"
-                    className="transition-all duration-500 ease-out"
-                  />
-                );
-              })}
+              {productSlices.map((item, idx) => (
+                <circle
+                  key={`${item.name}-${idx}`}
+                  cx="80"
+                  cy="80"
+                  r={radius}
+                  stroke={item.color}
+                  strokeWidth="20"
+                  strokeDasharray={item.strokeDasharray}
+                  strokeDashoffset={item.strokeDashoffset}
+                  strokeLinecap="butt"
+                  fill="transparent"
+                  className="transition-all duration-500 ease-out"
+                />
+              ))}
             </svg>
 
             {/* Donut Center Metric Text */}

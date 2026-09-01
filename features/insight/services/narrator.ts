@@ -217,9 +217,10 @@ export async function narrate(
   let draft: string;
   try {
     draft = (await llm(messages)).trim();
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
     console.error("LLM Error in narrator:", error);
-    return { text: `Gagal memuat AI Business Insight. Detail Error: ${error.message}`, mode: "error_llm", blocked_reason: null };
+    return { text: `Gagal memuat AI Business Insight. Detail Error: ${msg}`, mode: "error_llm", blocked_reason: null };
   }
 
   if (!draft) {

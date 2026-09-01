@@ -4,13 +4,12 @@ import React from "react";
 
 interface ProductMobileActionBarProps {
   price: number;
-  onAddToCart: () => void;
+  onAddToCart?: () => void;
   onBuyNow: () => void;
 }
 
 export function ProductMobileActionBar({
   price,
-  onAddToCart,
   onBuyNow,
 }: ProductMobileActionBarProps) {
   return (

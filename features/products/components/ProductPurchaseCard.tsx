@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 interface ProductPurchaseCardProps {
   price: number;
   stock: number;
-  onAddToCart: (qty: number) => void;
+  onAddToCart?: (qty: number) => void;
   onBuyNow: (qty: number) => void;
   className?: string;
 }
@@ -15,7 +15,6 @@ interface ProductPurchaseCardProps {
 export function ProductPurchaseCard({
   price,
   stock,
-  onAddToCart,
   onBuyNow,
   className = "",
 }: ProductPurchaseCardProps) {

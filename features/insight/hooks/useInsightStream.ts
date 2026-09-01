@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export type InsightState = {
-  metrics: any | null;
+  metrics: Record<string, unknown> | null;
   text: string;
   source: "baseline" | "llm" | "cache";
   status: "idle" | "streaming" | "done" | "error";
@@ -19,17 +19,18 @@ export function useInsightStream(storeId: string, storeName: string) {
   });
   
   const rawLlmDraft = useRef("");
-  const metricsPayload = useRef<any>(null);
-
-
+  const metricsPayload = useRef<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     if (!storeId) return;
 
     rawLlmDraft.current = "";
-    setState((s) => ({ ...s, text: "", status: "streaming", errorMsg: undefined }));
 
     const es = new EventSource(`/api/insight?storeId=${storeId}&storeName=${encodeURIComponent(storeName)}`);
+
+    es.onopen = () => {
+      setState((s) => ({ ...s, text: "", status: "streaming", errorMsg: undefined }));
+    };
 
     es.addEventListener("metrics", (e) => {
       const payload = JSON.parse((e as MessageEvent).data);

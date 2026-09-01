@@ -18,7 +18,6 @@ import {
   Phone,
   Mail,
   MapPin,
-  Truck,
   Copy,
   Sparkles,
 } from "lucide-react";
