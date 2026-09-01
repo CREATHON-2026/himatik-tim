@@ -1,6 +1,6 @@
 import * as React from "react";
 import Image from "next/image";
-import { Heart, ImageIcon } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProductMediaGalleryProps {
@@ -49,13 +49,6 @@ export function ProductMediaGallery({
           >
             {isActive ? (stock > 0 ? "Aktif" : "Stok Habis") : "Draft"}
           </span>
-        </div>
-
-        {/* Wishlist Icon Overlay */}
-        <div className="absolute top-3 right-3 z-10">
-          <button className="text-foreground/50 border-border/10 flex h-8 w-8 items-center justify-center rounded-full border bg-white/70 shadow-xs backdrop-blur-xs transition-colors hover:text-rose-500">
-            <Heart className="size-4" />
-          </button>
         </div>
 
         {activeImage ? (

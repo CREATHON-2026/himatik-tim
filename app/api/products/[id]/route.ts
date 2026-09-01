@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import {
-  getProductById,
+  getProductDetailById,
   updateProduct,
   deleteProduct,
 } from "@/features/products/services/productService";
@@ -15,7 +15,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const product = await getProductById(id);
+    const product = await getProductDetailById(id);
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
