@@ -13,8 +13,14 @@ import {
   MessageCircle,
   ShieldCheck,
   Gift,
-  Calendar,
   Wallet,
+  User,
+  Phone,
+  Mail,
+  MapPin,
+  Truck,
+  Copy,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { getCreatorOrderDetail, updateCreatorOrderStatus } from "@/features/orders/api";
@@ -56,12 +62,19 @@ export default function CreatorOrderDetailPage({ params }: CreatorOrderDetailPag
     },
   });
 
+  const copyToClipboard = (text: string, label: string) => {
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(text);
+      toast.success(`${label} berhasil disalin!`);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="text-center space-y-3">
           <div className="size-10 border-4 border-[#6355D9] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs font-medium text-[#78716C]">Memuat rincian pesanan...</p>
+          <p className="text-xs font-medium text-[#78716C]">Memuat rincian pesanan kado...</p>
         </div>
       </div>
     );
@@ -115,19 +128,31 @@ export default function CreatorOrderDetailPage({ params }: CreatorOrderDetailPag
   const badge = getStatusBadge(order.status);
   const StatusIcon = badge.icon;
 
+  const buyer = order.buyer || {
+    name: "Pelanggan Creathon",
+    phone: "081234567890",
+    email: "customer@creathon.id",
+    address: "Makassar, Sulawesi Selatan",
+    city: "Makassar",
+  };
+
+  const gift = order.giftCustomization || {
+    greetingCardText: "Selamat atas pencapaian barunya! Semoga berkah dan bahagia selalu.",
+    customNotes: "Kemasan rapi dengan pita",
+    packaging: "Luxury Gift Hardbox",
+    courier: "Kurir Instant (1 - 3 Jam)",
+  };
+
   const handleWhatsAppBuyer = () => {
-    const phone = order.buyerId.startsWith("guest-")
-      ? order.buyerId.replace("guest-", "")
-      : "6281234567890";
-    const cleanPhone = phone.replace(/[^0-9]/g, "");
+    const cleanPhone = buyer.phone.replace(/[^0-9]/g, "");
     const message = encodeURIComponent(
-      `Halo Kak, kami dari sanggar Creathon ingin mengonfirmasi detail pesanan "${order.product.name}" (#${order.orderNumber}).`
+      `Halo Kak ${buyer.name}, kami dari sanggar Creathon ingin mengonfirmasi detail pesanan kriya "${order.product.name}" (#${order.orderNumber}). Pesanan Kakak sedang kami proses ya!`
     );
     window.open(`https://wa.me/${cleanPhone}?text=${message}`, "_blank");
   };
 
   return (
-    <div className="flex-1 space-y-6 p-4 sm:p-6 md:p-8 max-w-5xl mx-auto w-full">
+    <div className="flex-1 space-y-6 p-4 sm:p-6 md:p-8 max-w-6xl mx-auto w-full">
       {/* ─── Top Header & Navigation ─── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E7E5E4] pb-4">
         <div className="flex items-center gap-3">
@@ -142,7 +167,7 @@ export default function CreatorOrderDetailPage({ params }: CreatorOrderDetailPag
               Lembar Kerja Pesanan #{order.orderNumber}
             </h1>
             <p className="text-xs text-[#78716C]">
-              Dibuat pada {new Date(order.createdAt).toLocaleDateString("id-ID", {
+              Diterima pada {new Date(order.createdAt).toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
@@ -162,9 +187,10 @@ export default function CreatorOrderDetailPage({ params }: CreatorOrderDetailPag
       </div>
 
       {/* ─── Main Content Grid ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Product & Work Order Sheet (7 Cols) */}
-        <div className="md:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-6">
+          {/* Section 1: Karya Kriya yang Dipesan */}
           <div className="bg-white rounded-3xl border border-[#E7E5E4] p-6 shadow-xs space-y-5">
             <h2 className="font-serif text-base font-bold text-[#111827] border-b border-[#F5F5F4] pb-3">
               Karya Kriya yang Dipesan
@@ -236,15 +262,105 @@ export default function CreatorOrderDetailPage({ params }: CreatorOrderDetailPag
               </div>
             </div>
           </div>
+
+          {/* Section 2: Personalisasi Kado & Pesan Kartu Ucapan */}
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] p-6 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-[#F5F5F4] pb-3">
+              <h2 className="font-serif text-base font-bold text-[#111827] flex items-center gap-2">
+                <Sparkles className="size-4 text-[#6355D9]" />
+                <span>Kartu Ucapan & Personalisasi Kado</span>
+              </h2>
+              {gift.greetingCardText && (
+                <button
+                  onClick={() => copyToClipboard(gift.greetingCardText || "", "Pesan kartu ucapan")}
+                  className="text-xs text-[#6355D9] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                >
+                  <Copy className="size-3" /> Salin Teks
+                </button>
+              )}
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#F5F3FF] border border-[#DDD6FE] space-y-2">
+              <span className="text-[10px] uppercase font-bold text-[#6355D9] block">
+                Teks Ucapan untuk Dicetak / Ditulis:
+              </span>
+              <p className="font-serif text-xs text-[#111827] italic leading-relaxed">
+                &ldquo;{gift.greetingCardText}&rdquo;
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
+              <div className="p-3 rounded-xl bg-[#FAFAF9] border border-[#E7E5E4]">
+                <span className="text-[10px] text-[#A8A29E] font-bold uppercase block">Kemasan Kado</span>
+                <span className="font-semibold text-[#111827]">{gift.packaging || "Standar Wrap"}</span>
+              </div>
+              <div className="p-3 rounded-xl bg-[#FAFAF9] border border-[#E7E5E4]">
+                <span className="text-[10px] text-[#A8A29E] font-bold uppercase block">Kurir Pengiriman</span>
+                <span className="font-semibold text-[#111827]">{gift.courier || "Kurir Instant"}</span>
+              </div>
+            </div>
+
+            {gift.customNotes && (
+              <div className="text-xs text-[#78716C] bg-amber-50 border border-amber-200 p-3 rounded-xl">
+                <span className="font-bold text-amber-900 block mb-0.5">Catatan Khusus Pembeli:</span>
+                <span>{gift.customNotes}</span>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Right Column: Financial & Customer Details (5 Cols) */}
-        <div className="md:col-span-5 space-y-6">
-          {/* Financial Overview */}
+        {/* Right Column: Buyer Profile & Financials (5 Cols) */}
+        <div className="lg:col-span-5 space-y-6">
+          {/* Buyer Profile Card */}
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] p-6 shadow-xs space-y-4">
+            <h3 className="font-serif text-base font-bold text-[#111827] border-b border-[#F5F5F4] pb-3 flex items-center gap-2">
+              <User className="size-4 text-[#6355D9]" />
+              <span>Profil Pembeli & Penerima</span>
+            </h3>
+
+            <div className="flex items-center gap-3">
+              <div className="size-12 rounded-full bg-[#EDE9FE] text-[#6355D9] flex items-center justify-center font-bold text-sm">
+                {buyer.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-[#111827]">{buyer.name}</h4>
+                <span className="text-[11px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium inline-block mt-0.5">
+                  Pembeli Terverifikasi
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-2.5 text-xs pt-1 border-t border-[#F5F5F4]">
+              <div className="flex items-center gap-2 text-[#78716C]">
+                <Phone className="size-3.5 text-[#6355D9] shrink-0" />
+                <span className="font-medium text-[#111827]">{buyer.phone}</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#78716C]">
+                <Mail className="size-3.5 text-[#6355D9] shrink-0" />
+                <span className="truncate">{buyer.email}</span>
+              </div>
+              <div className="flex items-start gap-2 text-[#78716C]">
+                <MapPin className="size-3.5 text-[#6355D9] shrink-0 mt-0.5" />
+                <span className="leading-relaxed text-[#111827]">
+                  {buyer.address} ({buyer.city})
+                </span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleWhatsAppBuyer}
+              className="w-full py-2.5 rounded-2xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-semibold text-xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+            >
+              <MessageCircle className="size-4" />
+              <span>Hubungi Pembeli via WhatsApp</span>
+            </button>
+          </div>
+
+          {/* Financial Overview Card */}
           <div className="bg-white rounded-3xl border border-[#E7E5E4] p-6 shadow-xs space-y-4">
             <h3 className="font-serif text-base font-bold text-[#111827] border-b border-[#F5F5F4] pb-3 flex items-center gap-2">
               <Wallet className="size-4 text-[#6355D9]" />
-              <span>Rincian Pendapatan</span>
+              <span>Rincian Pendapatan Sanggar</span>
             </h3>
 
             <div className="space-y-2.5 text-xs">
@@ -268,28 +384,6 @@ export default function CreatorOrderDetailPage({ params }: CreatorOrderDetailPag
               <ShieldCheck className="size-3.5 text-emerald-600" />
               <span>Dana akan diteruskan ke saldo sanggar setelah pesanan selesai</span>
             </div>
-          </div>
-
-          {/* Customer Contact & WhatsApp Button */}
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] p-6 shadow-xs space-y-4">
-            <h3 className="font-serif text-base font-bold text-[#111827] border-b border-[#F5F5F4] pb-3">
-              Kontak Pembeli
-            </h3>
-
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center gap-2 text-[#78716C]">
-                <Calendar className="size-4 text-[#6355D9]" />
-                <span>Pembeli Terdaftar / ID: {order.buyerId.substring(0, 16)}</span>
-              </div>
-            </div>
-
-            <button
-              onClick={handleWhatsAppBuyer}
-              className="w-full py-2.5 rounded-2xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-semibold text-xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 shadow-xs"
-            >
-              <MessageCircle className="size-4" />
-              <span>Hubungi Pembeli via WhatsApp</span>
-            </button>
           </div>
         </div>
       </div>

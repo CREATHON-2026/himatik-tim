@@ -41,6 +41,40 @@ export async function GET(
       where: { id: transaction.primaryProductId },
     });
 
+    // Fetch buyer user details if available
+    let buyerData = {
+      name: "Pelanggan Creathon",
+      phone: "081234567890",
+      email: "buyer@creathon.id",
+      avatarUrl: null as string | null,
+      address: "Makassar, Sulawesi Selatan",
+      city: "Makassar",
+    };
+
+    if (transaction.buyerId) {
+      if (transaction.buyerId.startsWith("guest-")) {
+        const cleanPhone = transaction.buyerId.replace("guest-", "");
+        buyerData.phone = cleanPhone;
+        buyerData.name = `Tamu (${cleanPhone.slice(-4)})`;
+      } else {
+        const buyerUser = await prisma.user.findUnique({
+          where: { id: transaction.buyerId },
+          include: { creatorProfile: true },
+        });
+
+        if (buyerUser) {
+          buyerData = {
+            name: buyerUser.name || "Pelanggan Terdaftar",
+            phone: buyerUser.phone || "081234567890",
+            email: buyerUser.email || "buyer@creathon.id",
+            avatarUrl: buyerUser.avatarUrl || null,
+            address: buyerUser.creatorProfile?.address || "Makassar, Sulawesi Selatan",
+            city: buyerUser.creatorProfile?.city || "Makassar",
+          };
+        }
+      }
+    }
+
     return NextResponse.json({
       id: transaction.id,
       orderNumber: `CRT-${transaction.id.substring(0, 8).toUpperCase()}`,
@@ -49,6 +83,13 @@ export async function GET(
       grossAmount: transaction.grossAmount,
       netAmount: transaction.netAmount,
       buyerId: transaction.buyerId,
+      buyer: buyerData,
+      giftCustomization: {
+        greetingCardText: "Selamat atas pencapaian barunya! Semoga karya kado kriya ini membawa kebahagiaan dan berkah selalu.",
+        customNotes: "Mohon tambahkan pita warna lilac/soft violet dan kemasan aman untuk pengiriman.",
+        packaging: "Luxury Gift Hardbox & Satin Ribbon",
+        courier: "Kurir Instant (1 - 3 Jam)",
+      },
       createdAt: transaction.createdAt,
       paidAt: transaction.paidAt,
       completedAt: transaction.completedAt,

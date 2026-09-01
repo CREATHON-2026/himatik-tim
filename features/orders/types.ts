@@ -16,6 +16,20 @@ export interface CreatorOrder {
   grossAmount: number;
   netAmount: number;
   buyerId: string;
+  buyer?: {
+    name: string;
+    phone: string;
+    email?: string;
+    avatarUrl?: string | null;
+    address?: string;
+    city?: string;
+  };
+  giftCustomization?: {
+    greetingCardText?: string;
+    customNotes?: string;
+    packaging?: string;
+    courier?: string;
+  };
   primaryCategory: string;
   product: OrderItemProduct;
   createdAt: string;
