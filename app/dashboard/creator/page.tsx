@@ -1,8 +1,6 @@
 
-import Link from "next/link";
 import {
   Plus,
-  TrendingUp,
   Package,
   Calendar,
   Wallet,
@@ -12,20 +10,19 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { buildInsightInputs, fmtRupiah, fmtPct } from "@/features/insight/services/insightInputs";
-import { narrate } from "@/features/insight/services/narrator";
 import { ProductCharts } from "@/components/DashboardCharts";
+import { AiInsightStreamCard } from "@/components/AiInsightStreamCard";
 
 export default async function CreatorDashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  let insightNarration = null;
-  let insightInputs: any = null;
   let storeName = "";
   let isVerified = false;
   let creatorProfileId = "";
   let actualProductCount = 0;
   let publishedProductCount = 0;
+  let insightInputs: any = null;
 
   if (user) {
     const userProfile = await prisma.user.findUnique({
@@ -38,19 +35,16 @@ export default async function CreatorDashboardPage() {
     creatorProfileId = userProfile?.creatorProfile?.id ?? "";
 
     if (creatorProfileId) {
-      // Query actual product counts from products table directly
-      [actualProductCount, publishedProductCount] = await Promise.all([
-        prisma.product.count({ where: { creatorId: creatorProfileId } }),
-        prisma.product.count({ where: { creatorId: creatorProfileId, isPublished: true } }),
-      ]);
+      // Query secara berurutan untuk menghindari lonjakan koneksi pool (membantu mengurangi error 6543)
+      actualProductCount = await prisma.product.count({ where: { creatorId: creatorProfileId } });
+      publishedProductCount = await prisma.product.count({ where: { creatorId: creatorProfileId, isPublished: true } });
     }
 
     if (storeName) {
       try {
         insightInputs = await buildInsightInputs(user.id, storeName);
-        insightNarration = await narrate(insightInputs, null);
       } catch (e) {
-        console.error("Failed to generate insights:", e);
+        console.error("Failed to build insight inputs:", e);
       }
     }
   }
@@ -151,103 +145,8 @@ export default async function CreatorDashboardPage() {
           <ProductCharts productData={insightInputs.breakdown.by_product} />
         )}
 
-        {/* AI Insight Section — Storytelling */}
-        {insightNarration && insightInputs?.facts && (
-          <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-emerald-500/5 to-neutral-900/50 overflow-hidden">
-            {/* Header */}
-            <div className="px-6 pt-6 pb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                  <TrendingUp className="w-5 h-5 text-emerald-400" />
-                </div>
-                <div>
-                  <h2 className="text-base font-semibold text-white">AI Business Insight</h2>
-                  <p className="text-[11px] text-neutral-400">Analisis otomatis dari data transaksimu</p>
-                </div>
-              </div>
-              <span className="px-2.5 py-1 rounded-lg text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 font-mono">
-                {insightInputs?.period?.label}
-              </span>
-            </div>
-
-            <div className="px-6 pb-6 space-y-5">
-              {/* Section 1: Ringkasan Performa (Observations) */}
-              {(() => {
-                const observations = insightInputs.facts.filter((f: any) => f.layer === "observation");
-                if (observations.length === 0) return null;
-                return (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                      <span className="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider">Ringkasan Performa</span>
-                    </div>
-                    <div className="pl-4 border-l-2 border-emerald-500/20">
-                      {observations.map((f: any) => {
-                        const text = f.template.replace(/\{([a-z_]+)\}/g, (_: string, key: string) => f.slots[key] ?? `{${key}}`);
-                        return <p key={f.id} className="text-sm text-neutral-200 leading-relaxed">{text}</p>;
-                      })}
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Section 2: Analisis (Interpretations) */}
-              {(() => {
-                const interpretations = insightInputs.facts.filter((f: any) => f.layer === "interpretation");
-                if (interpretations.length === 0) return null;
-                return (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                      <span className="text-[11px] font-semibold text-blue-400 uppercase tracking-wider">Analisis Data</span>
-                    </div>
-                    <div className="pl-4 border-l-2 border-blue-500/20">
-                      {interpretations.map((f: any) => {
-                        const text = f.template.replace(/\{([a-z_]+)\}/g, (_: string, key: string) => f.slots[key] ?? `{${key}}`);
-                        return <p key={f.id} className="text-sm text-neutral-300 leading-relaxed">{text}</p>;
-                      })}
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Section 3: Rekomendasi (Suggestions) */}
-              {(() => {
-                const suggestions = insightInputs.facts.filter((f: any) => f.layer === "suggestion");
-                if (suggestions.length === 0) return null;
-                return (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                      <span className="text-[11px] font-semibold text-amber-400 uppercase tracking-wider">Rekomendasi</span>
-                    </div>
-                    <div className="pl-4 border-l-2 border-amber-500/20 space-y-2">
-                      {suggestions.map((f: any) => {
-                        const text = f.template.replace(/\{([a-z_]+)\}/g, (_: string, key: string) => f.slots[key] ?? `{${key}}`);
-                        return (
-                          <div key={f.id} className="flex items-start gap-2">
-                            <span className="text-amber-400 mt-0.5">💡</span>
-                            <p className="text-sm text-neutral-300 leading-relaxed">{text}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-
-            {/* Footer */}
-            <div className="px-6 py-3 bg-neutral-900/50 border-t border-neutral-800/50 flex justify-between items-center">
-              <p className="text-[10px] text-neutral-500 font-mono">
-                Mode: {insightNarration.mode} • {insightInputs.facts.length} fakta dianalisis
-              </p>
-              <p className="text-[10px] text-neutral-600">
-                Semua angka dihitung dari data transaksi, bukan AI
-              </p>
-            </div>
-          </div>
-        )}
+        {/* AI Insight Section — Streaming via SSE Client Component */}
+        <AiInsightStreamCard storeId={user?.id ?? ""} storeName={storeName} />
 
         {/* DATA TRANSAKSI: 5 Transaksi Terakhir */}
         <div className="p-6 rounded-2xl border border-neutral-800/80 bg-neutral-900/30 space-y-4">
@@ -268,7 +167,6 @@ export default async function CreatorDashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-800/60 text-neutral-200">
-                {/* We query the actual recent transactions here via a separate async function or just map if we fetched it */}
                 <RecentTransactions storeId={user?.id ?? ""} />
               </tbody>
             </table>

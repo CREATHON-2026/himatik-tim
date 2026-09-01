@@ -11,7 +11,7 @@ import { createHash } from "crypto";
 
 // --- Konfigurasi -----------------------------------------------------------
 export const ENABLE_SUGGESTION = true;
-const MAX_FACTS = 10;
+const MAX_FACTS = 7;
 const MAX_SENTENCES = 12;
 
 export const PROMPT_VERSION = "narrator-v2";
@@ -58,21 +58,22 @@ const ADVICE_MARKERS = [
 
 // --- Prompt -----------------------------------------------------------------
 const SYSTEM_PROMPT =
-  'Kamu adalah data analyst yang merangkai fakta toko creator menjadi narasi storytelling bahasa Indonesia santai. Sapa dengan "kamu".\n\n' +
-  'ATURAN KETAT:\n' +
-  '- Placeholder dalam kurung kurawal {seperti_ini} wajib disalin utuh, tepat satu kali.\n' +
-  '- JANGAN menulis angka dalam bentuk apapun (digit maupun kata).\n' +
-  '- JANGAN menambah nama, periode, atau prediksi di luar placeholder.\n\n' +
-  'STRUKTUR NARASI (storytelling):\n' +
-  '1. Paragraf pertama: Ringkasan performa — apa yang terjadi dan seberapa besar.\n' +
-  '2. Paragraf kedua: Analisis — apa artinya, tren apa yang terlihat, dan apa yang menonjol.\n' +
-  '3. Paragraf ketiga: Rekomendasi — langkah konkret berdasarkan data, bukan opini.\n\n' +
-  'Gunakan nada seperti konsultan bisnis yang ramah: informatif, ringkas, dan actionable.';
+  'Kamu adalah analis data toko kreator. Kamu diberi fakta-fakta bisnis yang sudah mengandung angka nyata. Tugas kamu: tulis ulang sebagai narasi yang mengalir, bukan daftar poin.\n\n' +
+  'GAYA:\n' +
+  '- Langsung ke poin, tanpa sapaan pembuka.\n' +
+  '- Profesional tapi mudah dipahami — seperti teman yang jago analisis, bukan konsultan korporat.\n' +
+  '- Tidak ada emoji.\n' +
+  '- Tidak ada pengulangan fakta yang sama.\n' +
+  '- Jangan mengarang angka atau nama produk di luar yang diberikan.\n\n' +
+  'STRUKTUR (3 paragraf, masing-masing 1–2 kalimat):\n' +
+  '1. Performa keseluruhan: ringkas apa yang terjadi.\n' +
+  '2. Temuan kunci: apa yang paling menonjol dan kenapa penting bagi kreator.\n' +
+  '3. Satu rekomendasi konkret yang bisa langsung dilakukan minggu ini.';
 
 // --- Utility ----------------------------------------------------------------
 
 /** Pilih & urutkan fakta berdasarkan prioritas */
-function usableFacts(payload: any): Fact[] {
+export function usableFacts(payload: any): Fact[] {
   const layers = new Set(["observation", "interpretation"]);
   if (ENABLE_SUGGESTION) layers.add("suggestion");
 
@@ -105,10 +106,15 @@ export function renderTemplate(payload: any): string {
     .join(" ");
 }
 
-/** Build pesan untuk LLM — hanya template tanpa data spesifik creator */
+/** Build pesan untuk LLM — kirim kalimat yang sudah disubstitusi (bukan template mentah) */
 export function buildLlmMessages(facts: Fact[]) {
+  // Pre-substitute semua placeholder dengan nilai aslinya sebelum dikirim ke LLM.
+  // Ini menghilangkan kebutuhan placeholder guard dan menghasilkan narasi yang lebih natural.
   const lines = facts
-    .map((f, i) => `${i + 1}. ${f.template}`)
+    .map((f, i) => {
+      const sentence = f.template.replace(PLACEHOLDER_RE, (_, key) => f.slots[key] ?? `{${key}}`);
+      return `${i + 1}. ${sentence}`;
+    })
     .join("\n");
   return [
     { role: "system" as const, content: SYSTEM_PROMPT },
@@ -123,56 +129,33 @@ export function shapeKey(facts: Fact[], lang = "id"): string {
   return createHash("sha256").update(raw).digest("hex").substring(0, 16);
 }
 
-// --- Guard v2 ---------------------------------------------------------------
+// --- Guard v3 ---------------------------------------------------------------
 
 export interface GuardResult {
   ok: boolean;
   reason: string | null;
 }
 
-/** Pagar utama v2: AI tidak boleh menulis angka sama sekali */
+/** Guard v3: LLM kini menerima kalimat yang sudah berisi angka asli.
+ *  Cukup cek: tidak kosong, tidak terlalu panjang, tidak ada klaim arah yang terbalik. */
 export function guardDraft(
   draft: string,
   facts: Fact[],
   comparison: any,
   maxSentences = MAX_SENTENCES,
 ): GuardResult {
-  // 1. Digit — angka HANYA dari kode
-  if (DIGIT_RE.test(draft)) {
-    return { ok: false, reason: "digit_in_output" };
+  // 1. Output tidak boleh kosong
+  if (!draft.trim()) {
+    return { ok: false, reason: "empty_output" };
   }
 
-  // 2. Angka dalam bentuk kata
-  if (WORD_NUMBER_RE.test(draft)) {
-    return { ok: false, reason: "word_number" };
+  // 2. Tidak boleh terlalu panjang (model kebanyakan nulis)
+  const sentenceCount = (draft.match(/[.!?]/g) || []).length;
+  if (sentenceCount > maxSentences) {
+    return { ok: false, reason: "too_long" };
   }
 
-  // 3. Klaim tak terverifikasi
-  if (UNVERIFIABLE_RE.test(draft)) {
-    return { ok: false, reason: "unverifiable_claim" };
-  }
-
-  // 4. Placeholder mismatch — tiap slot tepat sekali
-  const expectedSlots = new Map<string, number>();
-  for (const f of facts) {
-    for (const m of f.template.matchAll(PLACEHOLDER_RE)) {
-      expectedSlots.set(m[1], (expectedSlots.get(m[1]) ?? 0) + 1);
-    }
-  }
-  const actualSlots = new Map<string, number>();
-  for (const m of draft.matchAll(PLACEHOLDER_RE)) {
-    actualSlots.set(m[1], (actualSlots.get(m[1]) ?? 0) + 1);
-  }
-  if (expectedSlots.size !== actualSlots.size) {
-    return { ok: false, reason: "placeholder_mismatch" };
-  }
-  for (const [key, count] of expectedSlots) {
-    if (actualSlots.get(key) !== count) {
-      return { ok: false, reason: "placeholder_mismatch" };
-    }
-  }
-
-  // 5. Arah terbalik
+  // 3. Arah tren tidak boleh terbalik
   if (comparison?.available) {
     const pattern = DIRECTION_BANNED[comparison.direction];
     if (pattern && pattern.test(draft)) {
@@ -180,18 +163,9 @@ export function guardDraft(
     }
   }
 
-  // 6. Terlalu panjang
-  const sentenceCount = (draft.match(/\./g) || []).length;
-  if (sentenceCount > maxSentences) {
-    return { ok: false, reason: "too_long" };
-  }
-
-  // 7. Saran terselubung (jika suggestion dimatikan)
-  if (!ENABLE_SUGGESTION) {
-    const lowered = draft.toLowerCase();
-    if (ADVICE_MARKERS.some((m) => lowered.includes(m))) {
-      return { ok: false, reason: "advice_detected" };
-    }
+  // 4. Klaim tak terverifikasi
+  if (UNVERIFIABLE_RE.test(draft)) {
+    return { ok: false, reason: "unverifiable_claim" };
   }
 
   return { ok: true, reason: null };
@@ -239,20 +213,22 @@ export async function narrate(
   let draft: string;
   try {
     draft = (await llm(messages)).trim();
-  } catch {
-    return { text: baseline, mode: "template_fallback_llm_error", blocked_reason: null };
+  } catch (error: any) {
+    console.error("LLM Error in narrator:", error);
+    return { text: `Gagal memuat AI Business Insight. Detail Error: ${error.message}`, mode: "error_llm", blocked_reason: null };
   }
 
   if (!draft) {
-    return { text: baseline, mode: "template_fallback_empty", blocked_reason: null };
+    return { text: "AI mengembalikan respons kosong. Silakan coba lagi.", mode: "error_empty", blocked_reason: null };
   }
 
   // Guard v2
   const guard = guardDraft(draft, facts, payload.comparison);
   if (!guard.ok) {
+    console.warn(`[Narrator Guard] Draft ditolak karena: ${guard.reason}. Menggunakan fallback template.`);
     return {
       text: baseline,
-      mode: `template_fallback_guard`,
+      mode: `fallback_guard_${guard.reason}`,
       blocked_reason: guard.reason,
     };
   }
