@@ -12,6 +12,7 @@ import { prisma } from "@/lib/prisma";
 import { buildInsightInputs, fmtRupiah, fmtPct } from "@/features/insight/services/insightInputs";
 import { narrate } from "@/features/insight/services/narrator";
 import { ProductCharts } from "@/components/DashboardCharts";
+import { RecentTransactionsSection } from "@/components/RecentTransactionsSection";
 
 // --- Local Types for Insight Data ---
 interface InsightFact {
@@ -289,95 +290,9 @@ export default async function CreatorDashboardPage() {
           </div>
         )}
 
-        {/* DATA TRANSAKSI: 5 Transaksi Terakhir */}
-        <div className="p-6 rounded-2xl border border-neutral-800/80 bg-neutral-900/30 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-white">5 Transaksi Terakhir</h2>
-            <button className="text-xs text-emerald-400 hover:underline">Lihat Semua Data</button>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="text-neutral-400 border-b border-neutral-800 text-[11px] uppercase">
-                <tr>
-                  <th className="py-3 px-4">ID / Tanggal</th>
-                  <th className="py-3 px-4">Produk Utama</th>
-                  <th className="py-3 px-4">Metode Bayar</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Nilai Transaksi</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-800/60 text-neutral-200">
-                {/* We query the actual recent transactions here via a separate async function or just map if we fetched it */}
-                <RecentTransactions storeId={user?.id ?? ""} />
-              </tbody>
-            </table>
-          </div>
-        </div>
+        {/* DATA TRANSAKSI: 5 Transaksi Terakhir + Modal Lengkap */}
+        <RecentTransactionsSection />
       </main>
     </div>
-  );
-}
-
-async function RecentTransactions({ storeId }: { storeId: string }) {
-  if (!storeId) return null;
-  
-  // Safe query for recent transactions
-  const prismaAny = prisma as unknown as {
-    transaction?: {
-      findMany: (args: unknown) => Promise<Array<{
-        id: string;
-        createdAt: Date;
-        primaryProductName: string;
-        paymentChannel?: string | null;
-        grossAmount?: number;
-        status: string;
-      }>>;
-    };
-  };
-
-  const recent = prismaAny.transaction
-    ? await prismaAny.transaction.findMany({
-        where: { storeId },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      })
-    : [];
-
-  if (recent.length === 0) {
-    return (
-      <tr>
-        <td colSpan={5} className="py-8 text-center text-neutral-500">
-          Belum ada transaksi di tokomu.
-        </td>
-      </tr>
-    );
-  }
-
-  return (
-    <>
-      {recent.map((trx) => (
-        <tr key={trx.id} className="hover:bg-neutral-900/50 transition">
-          <td className="py-3.5 px-4 text-neutral-400">
-            <div className="text-[10px] text-neutral-500 font-mono mb-1">{trx.id.slice(0, 8).toUpperCase()}</div>
-            {new Date(trx.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
-          </td>
-          <td className="py-3.5 px-4 font-medium text-white">{trx.primaryProductName}</td>
-          <td className="py-3.5 px-4 text-neutral-400">{trx.paymentChannel || '-'}</td>
-          <td className="py-3.5 px-4">
-            <span className={`px-2 py-0.5 rounded text-[10px] border ${
-              trx.status === 'COMPLETED' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
-              trx.status === 'PENDING' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 
-              'bg-neutral-500/10 text-neutral-400 border-neutral-500/20'
-            }`}>
-              {trx.status}
-            </span>
-          </td>
-          <td className="py-3.5 px-4 font-semibold text-emerald-400 text-right">
-            {fmtRupiah(trx.grossAmount || 0)}
-          </td>
-        </tr>
-      ))}
-    </>
   );
 }
