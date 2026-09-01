@@ -13,7 +13,6 @@ import {
   Store,
   MessageSquare,
   Sparkles,
-  ChevronRight,
   PanelLeftClose,
   PanelLeftOpen,
   ArrowUpRight,
@@ -69,10 +68,11 @@ export function SidebarCreator({
   const { orders } = useCreatorOrders();
   const { state, toggleSidebar, isMobile } = useSidebar();
   const systemReduceMotion = useReducedMotion();
-  const [isMounted, setIsMounted] = React.useState(false);
-  React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
   const shouldReduceMotion = isMounted ? !!systemReduceMotion : false;
 
   const isCollapsed = state === "collapsed" && !isMobile;
