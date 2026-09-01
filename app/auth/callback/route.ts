@@ -6,17 +6,7 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const errorCode = requestUrl.searchParams.get("error_code");
-  const errorDescription = requestUrl.searchParams.get("error_description");
   const origin = requestUrl.origin;
-
-  // Handle error redirect dari Supabase (otp_expired, access_denied, dll.)
-  if (errorCode) {
-    const message = errorDescription || errorCode;
-    return NextResponse.redirect(
-      `${origin}/verify-email?error=${encodeURIComponent(message)}`
-    );
-  }
 
   if (code) {
     const supabase = await createClient();
@@ -32,34 +22,25 @@ export async function GET(request: Request) {
       const isCreator = queryRole === "CREATOR" || metaRole === "CREATOR";
       const role: Role = isCreator ? Role.CREATOR : Role.CUSTOMER;
 
-      // Sinkronisasi ke PostgreSQL via Prisma (wrapped in try/catch)
-      try {
-        const profile = await syncUserProfile({
-          id: user.id,
-          email: user.email || "",
-          name:
-            metadata.name ||
-            metadata.full_name ||
-            user.email?.split("@")[0],
-          avatarUrl: metadata.avatar_url || metadata.picture || null,
-          phone: metadata.phone || null,
-          role: role,
-          storeName: metadata.storeName || null,
-          city: metadata.city || null,
-        });
+      // Sinkronisasi ke PostgreSQL via Prisma
+      const profile = await syncUserProfile({
+        id: user.id,
+        email: user.email || "",
+        name: metadata.name || metadata.full_name || user.email?.split("@")[0],
+        avatarUrl: metadata.avatar_url || metadata.picture || null,
+        phone: metadata.phone || null,
+        role: role,
+        storeName: metadata.storeName || null,
+        city: metadata.city || null,
+      });
 
-        // Role-based routing
-        if (profile.role === Role.ADMIN) {
-          return NextResponse.redirect(`${origin}/dashboard/admin`);
-        } else if (profile.role === Role.CREATOR) {
-          return NextResponse.redirect(`${origin}/dashboard/creator`);
-        } else {
-          // Customer / Buyer dialihkan langsung ke Katalog Baju & Gift
-          return NextResponse.redirect(`${origin}/katalog`);
-        }
-      } catch (syncError) {
-        console.error("Profile sync in OAuth callback failed:", syncError);
-        // User sudah ter-autentikasi via Supabase, redirect ke katalog meski sync gagal
+      // Role-based routing
+      if (profile.role === Role.ADMIN) {
+        return NextResponse.redirect(`${origin}/dashboard/admin`);
+      } else if (profile.role === Role.CREATOR) {
+        return NextResponse.redirect(`${origin}/dashboard/creator`);
+      } else {
+        // Customer / Buyer dialihkan langsung ke Katalog Baju & Gift
         return NextResponse.redirect(`${origin}/katalog`);
       }
     }

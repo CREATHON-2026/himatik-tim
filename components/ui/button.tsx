@@ -1,58 +1,49 @@
-import * as React from "react";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
+
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center font-medium transition-all duration-150 ease-out select-none cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#6355D9]/40 focus-visible:border-[#6355D9] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "relative z-1 w-full h-full flex items-center justify-center font-semibold rounded-[inherit] transition-[background-color,color] duration-200 ease-out select-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default:
-          "bg-[#6355D9] text-white hover:bg-[#5145C6] active:bg-[#4338A8] shadow-xs active:scale-[0.98]",
+        default: "bg-gradient-to-b from-[#5E7454] to-[#3E5237] text-white/95 border-t-[1.5px] border-t-white/45 border-l-[1px] border-l-white/25 border-b-[2.5px] border-b-black/35 border-r-[1.5px] border-r-black/20 shadow-[0_18px_45px_rgba(0,0,0,0.25),0_2px_4px_rgba(0,0,0,0.15),inset_0_1.5px_1px_rgba(255,255,255,0.65),inset_0_-3px_5px_rgba(0,0,0,0.4)] [text-shadow:0_1px_2px_rgba(0,0,0,0.45)] hover:from-[#677F5C] hover:to-[#43573C] hover:shadow-[0_22px_55px_rgba(0,0,0,0.3),0_4px_8px_rgba(0,0,0,0.18),inset_0_1.5px_1px_rgba(255,255,255,0.7),inset_0_-3px_5px_rgba(0,0,0,0.4)] active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.5)] active:translate-y-[1px]",
         outline:
-          "bg-white text-[#292524] border border-[#E7E5E4] hover:bg-[#F5F5F4] hover:border-[#D6D3D1] hover:text-[#111827] shadow-2xs active:scale-[0.98]",
+          "bg-gradient-to-b from-[#FFFFFF] to-[#FAF4EC] text-foreground border-t-[1.5px] border-t-white/90 border-l-[1px] border-l-white/70 border-b-[2.5px] border-b-[#B89A57]/50 border-r-[1.5px] border-r-[#B89A57]/30 shadow-[0_12px_30px_rgba(62,82,55,0.12),0_2px_4px_rgba(0,0,0,0.06),inset_0_1.5px_1px_rgba(255,255,255,0.9),inset_0_-2.5px_4px_rgba(184,154,87,0.18)] [text-shadow:0_1px_1px_rgba(255,255,255,0.8)] hover:from-[#FFFFFF] hover:to-[#F5EAD9] hover:shadow-[0_16px_38px_rgba(62,82,55,0.16),0_4px_8px_rgba(0,0,0,0.08),inset_0_1.5px_1px_rgba(255,255,255,0.95)] active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.15)] active:translate-y-[1px] dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
-          "bg-[#F5F3FF] text-[#6355D9] border border-[#DDD6FE] hover:bg-[#EDE9FE] active:bg-[#DDD6FE] active:scale-[0.98]",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/95",
         ghost:
-          "text-[#44403C] hover:bg-[#F5F5F4] hover:text-[#111827] active:bg-[#E7E5E4]",
+          "hover:bg-muted hover:text-foreground dark:hover:bg-muted/50",
         destructive:
-          "bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 hover:border-red-300 active:bg-red-200 active:scale-[0.98]",
-        link:
-          "text-[#6355D9] underline-offset-4 hover:underline p-0 h-auto font-semibold",
+          "bg-destructive/10 text-destructive hover:bg-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30",
+        link: "text-primary underline-offset-4 hover:underline",
         accent:
-          "bg-[#E76F61] text-white hover:bg-[#D65D4F] active:bg-[#C54C3E] shadow-xs active:scale-[0.98]",
-        // Backward-compatible skeuo aliases (clean modern fallback)
-        skeuo:
-          "bg-[#6355D9] text-white hover:bg-[#5145C6] active:bg-[#4338A8] shadow-xs",
-        "skeuo-forest":
-          "bg-[#6355D9] text-white hover:bg-[#5145C6] active:bg-[#4338A8] shadow-xs",
-        "skeuo-paper":
-          "bg-white text-[#292524] border border-[#E7E5E4] hover:bg-[#F5F5F4] shadow-2xs",
-        "skeuo-gold":
-          "bg-[#F5F3FF] text-[#6355D9] border border-[#DDD6FE] hover:bg-[#EDE9FE] shadow-2xs",
-        "skeuo-secondary":
-          "bg-[#F5F3FF] text-[#6355D9] border border-[#DDD6FE] hover:bg-[#EDE9FE]",
-        "skeuo-forest-secondary":
-          "bg-[#F5F3FF] text-[#6355D9] border border-[#DDD6FE] hover:bg-[#EDE9FE]",
-        "skeuo-paper-secondary":
-          "bg-white text-[#292524] border border-[#E7E5E4] hover:bg-[#F5F5F4]",
-        "skeuo-gold-secondary":
-          "bg-[#F5F3FF] text-[#6355D9] border border-[#DDD6FE] hover:bg-[#EDE9FE]",
-        "skeuo-peach":
-          "bg-[#FFF1F0] text-[#E76F61] border border-[#FFD0CC] hover:bg-[#FFE4E1]",
-        "skeuo-peach-secondary":
-          "bg-[#FFF1F0] text-[#E76F61] border border-[#FFD0CC] hover:bg-[#FFE4E1]",
+          "bg-accent text-accent-foreground hover:bg-accent/95",
+        // skeuo variants — gaya taktil 3D, rendering dikontrol terpisah di bawah
+        skeuo: "",
+        "skeuo-forest": "",  // forest: hijau hutan dalam
+        "skeuo-paper": "",   // paper: krem/linen hangat
+        "skeuo-gold": "",    // gold: luxe gold / bronze
+        "skeuo-secondary": "",
+        "skeuo-forest-secondary": "",
+        "skeuo-paper-secondary": "",
+        "skeuo-gold-secondary": "",
+        "skeuo-peach": "",
+        "skeuo-peach-secondary": "",
       },
       size: {
-        default: "h-10 gap-2 px-4 py-2 text-sm rounded-xl",
-        xs: "h-7 gap-1 rounded-lg px-2.5 text-xs",
-        sm: "h-8.5 gap-1.5 rounded-lg px-3 text-xs",
-        lg: "h-12 gap-2.5 px-6 text-base rounded-xl font-semibold",
-        icon: "size-10 rounded-xl",
-        "icon-xs": "size-7 rounded-lg [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm": "size-8.5 rounded-lg",
-        "icon-lg": "size-12 rounded-xl",
+        default:
+          "h-10 gap-2 px-5 text-sm rounded-lg has-data-[icon=inline-end]:pr-4.5 has-data-[icon=inline-start]:pl-4.5",
+        xs: "h-7 gap-1 rounded-lg px-2.5 text-xs has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-8.5 gap-1.5 rounded-lg px-3.5 text-[0.825rem] has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5 [&_svg:not([class*='size-'])]:size-3.5",
+        lg: "h-12 gap-2 px-6 text-base rounded-lg has-data-[icon=inline-end]:pr-5 has-data-[icon=inline-start]:pl-5",
+        icon: "size-10 rounded-lg",
+        "icon-xs":
+          "size-7 rounded-lg [&_svg:not([class*='size-'])]:size-3",
+        "icon-sm":
+          "size-8.5 rounded-lg",
+        "icon-lg": "size-12 rounded-lg",
       },
     },
     defaultVariants: {
@@ -74,18 +65,96 @@ function Button({
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
   const isNative = nativeButton ?? (render ? false : undefined);
 
+  // ── Varian Skeuo: struktur berlapis DOM untuk efek fisik penekanan 3D ──
+  const skeuoThemeMap: Record<string, string> = {
+    skeuo: "",
+    "skeuo-forest": "forest-btn-theme",
+    "skeuo-paper": "paper-btn-theme",
+    "skeuo-gold": "gold-btn-theme",
+    "skeuo-peach": "peach-btn-theme",
+    "skeuo-secondary": "skeuo-btn-secondary",
+    "skeuo-forest-secondary": "forest-btn-theme-secondary skeuo-btn-secondary",
+    "skeuo-paper-secondary": "paper-btn-theme-secondary skeuo-btn-secondary",
+    "skeuo-gold-secondary": "gold-btn-theme-secondary skeuo-btn-secondary",
+    "skeuo-peach-secondary": "peach-btn-theme-secondary skeuo-btn-secondary",
+  };
+
+  if (variant && variant in skeuoThemeMap) {
+    const themeClass = skeuoThemeMap[variant as keyof typeof skeuoThemeMap];
+    return (
+      <ButtonPrimitive
+        data-slot="button"
+        disabled={disabled}
+        render={render}
+        nativeButton={isNative}
+        className={cn(
+          "skeuo-btn focus-visible:ring-3 focus-visible:ring-ring/50",
+          `skeuo-btn-${size}`,
+          themeClass,
+          disabled && "skeuo-btn-disabled",
+          className
+        )}
+        {...props}
+      >
+        {/* Outer: bayangan tepi/angkat tombol */}
+        <div className="skeuo-btn-outer w-full h-full">
+          {/* Inner: permukaan gradasi + bevel dalam */}
+          <div className="skeuo-btn-inner w-full h-full">
+            {/* Span: teks label dengan gradasi & anti-aliasing */}
+            <span className="skeuo-btn-span w-full h-full">
+              {children}
+            </span>
+          </div>
+        </div>
+      </ButtonPrimitive>
+    );
+  }
+
+  // ── Varian standar lainnya ─────────────────────────────────────────────
+  const showStarBorder = variant !== "ghost" && variant !== "link";
+
   return (
     <ButtonPrimitive
       data-slot="button"
       disabled={disabled}
       render={render}
       nativeButton={isNative}
-      className={cn(buttonVariants({ variant, size }), className)}
+      className={cn(
+        "group/button relative inline-flex shrink-0 items-center justify-center overflow-hidden transition-all duration-200 ease-out outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 hover:scale-102 hover:-translate-y-0.5 active:scale-98 active:translate-y-0 disabled:pointer-events-none disabled:opacity-50 cursor-pointer rounded-lg",
+        showStarBorder ? "p-[2px]" : "p-0",
+        className
+      )}
       {...props}
     >
-      {children}
+      {showStarBorder && (
+        <>
+          {/* Star movement background animations */}
+          <div
+            className="absolute w-[300%] h-[50%] opacity-70 -bottom-2.75 right-[-250%] rounded-full animate-star-movement-bottom z-0"
+            style={{
+              background: "radial-gradient(circle, var(--accent-gold), transparent 10%)"
+            }}
+          />
+          <div
+            className="absolute w-[300%] h-[50%] opacity-70 -top-2.5 left-[-250%] rounded-full animate-star-movement-top z-0"
+            style={{
+              background: "radial-gradient(circle, var(--accent-gold), transparent 10%)"
+            }}
+          />
+        </>
+      )}
+
+      {/* Inner container applying the CVA variants */}
+      <div
+        className={cn(
+          buttonVariants({ variant, size })
+        )}
+      >
+        {children}
+      </div>
     </ButtonPrimitive>
   );
 }
 
 export { Button, buttonVariants };
+
