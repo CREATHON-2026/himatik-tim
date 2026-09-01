@@ -123,6 +123,26 @@ function CheckoutFormContent() {
         throw new Error(data.error || "Gagal membuat pesanan");
       }
 
+      // Persist full buyer input for the invoice page
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          `creathon_order_${data.order.id}`,
+          JSON.stringify({
+            buyerName,
+            buyerPhone,
+            shippingCity,
+            shippingAddress,
+            courier: COURIER_OPTIONS.find((c) => c.id === selectedCourier)?.name || selectedCourier,
+            packaging: PACKAGING_OPTIONS.find((p) => p.id === selectedPackaging)?.name || selectedPackaging,
+            greetingCardText: greetingCardText || "Semoga karya kado kriya ini membawa kebahagiaan dan berkah selalu.",
+            customNotes,
+            shippingCost: courierPrice,
+            packagingCost: packagingPrice,
+            quantity,
+          })
+        );
+      }
+
       toast.success("Pesanan berhasil dibuat!");
       router.push(`/orders/${data.order.id}`);
     } catch (err) {

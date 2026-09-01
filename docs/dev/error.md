@@ -1,31 +1,42 @@
+## Error Type
+Console Error
 
-▲ Next.js 16.3.3 (Turbopack)
-- Local:         http://localhost:3000
-- Network:       http://192.168.1.142:3000
-- Environments: .env.local, .env
-✓ Ready in 9.5s
-✓ Running next.config.ts took 400ms
+## Error Message
+React has detected a change in the order of Hooks called by OrderDetailPage. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
 
-⨯ Error: No QueryClient set, use QueryClientProvider to set one
-    at KatalogPage (app\katalog\page.tsx:51:61)
-  49 |
-  50 |   // Fetch public products from real database
-> 51 |   const { data: products = [], isLoading, error } = useQuery({
-     |                                                             ^
-  52 |     queryKey: ["public-products", selectedCategory, selectedSort],
-  53 |     queryFn: () =>
-  54 |       getPublicProducts({ {
-  digest: '3403207532'
-}
- GET /katalog 500 in 6.7s (next.js: 794ms, proxy.ts: 3.7s, application-code: 2.2s)
- GET / 200 in 1101ms (next.js: 233ms, proxy.ts: 274ms, application-code: 594ms)
-[browser] Uncaught Error: No QueryClient set, use QueryClientProvider to set one
-    at KatalogPage (app/katalog/page.tsx:51:61)
-  49 |
-  50 |   // Fetch public products from real database
-> 51 |   const { data: products = [], isLoading, error } = useQuery({
-     |                                                             ^
-  52 |     queryKey: ["public-products", selectedCategory, selectedSort],
-  53 |     queryFn: () =>
-  54 |       getPublicProducts({
+   Previous render            Next render
+   ------------------------------------------------------
+1. useContext                 useContext
+2. useState                   useState
+3. useState                   useState
+4. useContext                 useContext
+5. useContext                 useContext
+6. useContext                 useContext
+7. useEffect                  useEffect
+8. useState                   useState
+9. useCallback                useCallback
+10. useSyncExternalStore      useSyncExternalStore
+11. useEffect                 useEffect
+12. useContext                useContext
+13. useState                  useState
+14. useEffect                 useEffect
+15. useCallback               useCallback
+16. useSyncExternalStore      useSyncExternalStore
+17. useCallback               useCallback
+18. undefined                 useState
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+
+
+    at OrderDetailPage (app/orders/[id]/page.tsx:133:51)
+
+## Code Frame
+  131 |
+  132 |   // Hydrate local client data if available from recent checkout session
+> 133 |   const [localMeta, setLocalMeta] = React.useState<{
+      |                                                   ^
+  134 |     buyerName?: string;
+  135 |     buyerPhone?: string;
+  136 |     shippingAddress?: string;
+
+Next.js version: 16.3.3 (Turbopack)

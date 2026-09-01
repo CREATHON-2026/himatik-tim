@@ -4,13 +4,12 @@ import React from "react";
 
 interface ProductMobileActionBarProps {
   price: number;
-  onAddToCart: () => void;
+  onAddToCart?: () => void;
   onBuyNow: () => void;
 }
 
 export function ProductMobileActionBar({
   price,
-  onAddToCart,
   onBuyNow,
 }: ProductMobileActionBarProps) {
   return (
@@ -29,16 +28,10 @@ export function ProductMobileActionBar({
       </div>
       <div className="flex max-w-60 flex-1 gap-2 select-none">
         <button
-          onClick={onAddToCart}
-          className="flex-1 cursor-pointer rounded-xl border border-[#78865C]/40 py-2.5 text-xs font-bold text-[#3E5237] bg-[#FAF6F0] shadow-xs active:scale-95 transition-transform"
-        >
-          Keranjang
-        </button>
-        <button
           onClick={onBuyNow}
-          className="flex-1 cursor-pointer rounded-xl py-2.5 text-xs font-bold text-[#3E5237] peach-skeuo btn-interactive shadow-sm active:scale-95 transition-transform border border-[#EBC3A8]/60"
+          className="w-full cursor-pointer rounded-xl py-2.5 px-4 text-xs font-bold text-white bg-[#6355D9] hover:bg-[#5145C6] shadow-sm active:scale-95 transition-transform flex items-center justify-center gap-1.5"
         >
-          Beli
+          <span>Beli Sekarang</span>
         </button>
       </div>
     </div>

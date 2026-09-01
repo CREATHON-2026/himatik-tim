@@ -112,9 +112,10 @@ export async function GET(req: Request) {
           send("guard_reject", { reason: guard.reason });
         }
 
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
         console.error("Streaming error:", err);
-        send("error", { message: err.message });
+        send("error", { message: msg });
       }
 
       send("done", { source: "llm" });
