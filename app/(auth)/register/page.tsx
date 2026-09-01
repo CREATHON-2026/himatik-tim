@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { AuthLayout } from "@/features/auth/components/AuthLayout";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
 import { Metadata } from "next";
@@ -13,7 +14,9 @@ export default function RegisterPage() {
       title="Buat Akun Baru"
       subtitle="Bergabunglah dengan ekosistem rental busana adat & karya kreatif Nusantara."
     >
-      <RegisterForm />
+      <Suspense fallback={<div className="py-8 text-center text-xs text-neutral-500">Memuat formulir...</div>}>
+        <RegisterForm />
+      </Suspense>
     </AuthLayout>
   );
 }

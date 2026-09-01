@@ -1,15 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { LoginFormData, RegisterFormData } from "../schema";
 import { useRouter } from "next/navigation";
+import type { UserProfile } from "../types";
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const {
+          data: { user: authUser },
+        } = await supabase.auth.getUser();
+
+        if (authUser) {
+          setUser({
+            id: authUser.id,
+            email: authUser.email || "",
+            name: authUser.user_metadata?.name || "Pengguna Creathon",
+            phone: authUser.user_metadata?.phone || null,
+            role: authUser.user_metadata?.role || "CUSTOMER",
+            creatorStatus: null,
+            createdAt: authUser.created_at,
+            updatedAt: authUser.created_at,
+          });
+        } else {
+          setUser(null);
+        }
+      } catch {
+        setUser(null);
+      }
+    }
+    loadUser();
+  }, [supabase]);
 
   const signInWithEmail = async (data: LoginFormData) => {
     setIsLoading(true);
@@ -31,7 +61,6 @@ export function useAuth() {
       }
 
       if (authData.user) {
-        // Ambil role dari metadata user atau fallback query
         const role = authData.user.user_metadata?.role?.toUpperCase();
 
         if (role === "ADMIN") {
@@ -81,7 +110,6 @@ export function useAuth() {
       }
 
       if (authData.user) {
-        // Jika email confirmation aktif, arahkan ke halaman verifikasi email
         router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
       }
     } catch (err: unknown) {
@@ -100,7 +128,7 @@ export function useAuth() {
     setError(null);
 
     try {
-      const redirectUrl = `${window.location.origin}/auth/callback`;
+      const redirectUrl = `${window.location.origin}/auth/callback?role=${encodeURIComponent(role)}`;
 
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -109,7 +137,6 @@ export function useAuth() {
           queryParams: {
             access_type: "offline",
             prompt: "consent",
-            role: role,
           },
         },
       });
@@ -131,6 +158,7 @@ export function useAuth() {
     setIsLoading(true);
     try {
       await supabase.auth.signOut();
+      setUser(null);
       router.push("/login");
       router.refresh();
     } catch (err) {
@@ -141,6 +169,8 @@ export function useAuth() {
   };
 
   return {
+    user,
+    isAuthenticated: !!user,
     isLoading,
     error,
     setError,

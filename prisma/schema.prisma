@@ -98,8 +98,30 @@ model CreatorProfile {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id])
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products Product[]
 
   @@map("creator_profiles")
 }
 
+model Product {
+  id             String   @id @default(uuid())
+  creatorId      String   @map("creator_id")
+  title          String   // Nama Produk Gift / Kriya
+  slug           String   @unique
+  description    String   @db.Text
+  price          Int      // Harga Produk Gift (IDR)
+  stock          Int      @default(1)
+  category       String   // Floral, Hampers, Custom Art, Souvenir, Kriya, Accessories
+  sku            String?  @unique
+  images         String[] // Array URL foto produk
+  isCustomizable Boolean  @default(false) @map("is_customizable")
+  weightGrams    Int?     @default(500) @map("weight_grams")
+  isPublished    Boolean  @default(true) @map("is_published")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  creatorProfile CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@map("products")
+}

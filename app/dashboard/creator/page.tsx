@@ -1,14 +1,13 @@
+
 import Link from "next/link";
 import {
   Plus,
+  TrendingUp,
   Package,
   Calendar,
   Wallet,
   Star,
   CheckCircle2,
-  Sparkles,
-  ArrowUpRight,
-  TrendingUp,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
@@ -63,37 +62,9 @@ export default async function CreatorDashboardPage() {
       : "0",
   };
 
+
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 antialiased selection:bg-emerald-500 selection:text-black">
-      {/* Navbar Creator */}
-      <header className="sticky top-0 z-40 w-full border-b border-neutral-800/80 bg-neutral-950/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2 font-bold text-lg text-white">
-              <span className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-                <Sparkles className="w-4 h-4" />
-              </span>
-              <span>Creathon Creator Studio</span>
-            </Link>
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] font-semibold">
-              Mitra Rental
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/katalog"
-              className="text-xs text-neutral-400 hover:text-white transition flex items-center gap-1"
-            >
-              Lihat Katalog Publik <ArrowUpRight className="w-3.5 h-3.5" />
-            </Link>
-            <div className="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center font-bold text-xs text-emerald-400">
-              CR
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-neutral-950 text-white">
       {/* Main Studio Dashboard */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         {/* Welcome & Action Banner */}
