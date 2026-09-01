@@ -11,17 +11,17 @@ interface GoogleAuthButtonProps {
 export function GoogleAuthButton({
   onClick,
   isLoading = false,
-  label = "Lanjutkan dengan Google",
+  label = "Masuk dengan Google",
 }: GoogleAuthButtonProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={isLoading}
-      className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl border border-neutral-800 bg-neutral-900/60 hover:bg-neutral-800/80 hover:border-neutral-700 text-neutral-200 text-sm font-medium transition duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+      className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-700 text-sm font-medium transition duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
     >
       {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin text-neutral-400" />
+        <Loader2 className="w-4 h-4 animate-spin text-neutral-500" />
       ) : (
         <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path

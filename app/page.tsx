@@ -65,7 +65,7 @@ export default function Home() {
             </Link>
 
             <Link
-              href="/register"
+              href="/register?role=CREATOR"
               className="px-6 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-white font-medium text-sm transition flex items-center gap-2"
             >
               <Store className="w-4 h-4 text-emerald-400" />

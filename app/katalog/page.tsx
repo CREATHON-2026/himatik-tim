@@ -103,7 +103,7 @@ export default function KatalogPage() {
               Masuk
             </Link>
             <Link
-              href="/register"
+              href="/register?role=CREATOR"
               className="px-4 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-xs transition shadow-md shadow-emerald-500/20"
             >
               Buka Rental (Creator)

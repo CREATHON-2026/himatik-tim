@@ -47,16 +47,16 @@ export function LoginForm() {
 
       {/* Divider */}
       <div className="relative flex items-center justify-center">
-        <div className="border-t border-neutral-800 w-full" />
-        <span className="bg-neutral-900 px-3 text-[11px] uppercase tracking-wider text-neutral-500 font-medium">
+        <div className="border-t border-neutral-200 w-full" />
+        <span className="bg-white px-3 text-[11px] uppercase tracking-wider text-neutral-400 font-medium">
           atau dengan email
         </span>
       </div>
 
       {/* Global Error Banner */}
       {error && (
-        <div className="p-3.5 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-300 text-xs flex items-start gap-2.5">
-          <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+        <div className="p-3.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs flex items-start gap-2.5">
+          <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
@@ -65,7 +65,7 @@ export function LoginForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Email */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-neutral-300">
+          <label className="text-xs font-medium text-neutral-700">
             Alamat Email
           </label>
           <input
@@ -74,17 +74,17 @@ export function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="nama@email.com"
             disabled={isLoading}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950/60 border border-neutral-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-white placeholder:text-neutral-600 text-sm outline-none transition"
+            className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-neutral-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 text-neutral-900 placeholder:text-neutral-400 text-sm outline-none transition"
           />
           {fieldErrors.email && (
-            <p className="text-xs text-rose-400">{fieldErrors.email}</p>
+            <p className="text-xs text-rose-500">{fieldErrors.email}</p>
           )}
         </div>
 
         {/* Password */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-medium text-neutral-300">
+            <label className="text-xs font-medium text-neutral-700">
               Kata Sandi
             </label>
           </div>
@@ -95,12 +95,12 @@ export function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               disabled={isLoading}
-              className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-neutral-950/60 border border-neutral-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-white placeholder:text-neutral-600 text-sm outline-none transition"
+              className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-white border border-neutral-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 text-neutral-900 placeholder:text-neutral-400 text-sm outline-none transition"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300 transition cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition cursor-pointer"
             >
               {showPassword ? (
                 <EyeOff className="w-4 h-4" />
@@ -110,7 +110,7 @@ export function LoginForm() {
             </button>
           </div>
           {fieldErrors.password && (
-            <p className="text-xs text-rose-400">{fieldErrors.password}</p>
+            <p className="text-xs text-rose-500">{fieldErrors.password}</p>
           )}
         </div>
 
@@ -118,11 +118,11 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm transition duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 mt-2"
+          className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm transition duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md shadow-indigo-600/25 mt-2"
         >
           {isLoading ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin text-black" />
+              <Loader2 className="w-4 h-4 animate-spin text-white" />
               <span>Memproses...</span>
             </>
           ) : (
@@ -132,11 +132,11 @@ export function LoginForm() {
       </form>
 
       {/* Switch to Register */}
-      <div className="text-center text-xs text-neutral-400 pt-1">
+      <div className="text-center text-xs text-neutral-500 pt-1">
         Belum punya akun?{" "}
         <Link
           href="/register"
-          className="text-emerald-400 hover:text-emerald-300 font-medium underline underline-offset-4"
+          className="text-indigo-600 hover:text-indigo-700 font-semibold underline underline-offset-4"
         >
           Daftar Sekarang
         </Link>

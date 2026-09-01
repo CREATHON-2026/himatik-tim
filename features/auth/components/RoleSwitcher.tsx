@@ -11,18 +11,18 @@ interface RoleSwitcherProps {
 export function RoleSwitcher({ selectedRole, onSelectRole }: RoleSwitcherProps) {
   return (
     <div className="flex flex-col gap-2 w-full">
-      <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-        Daftar Sebagai
+      <label className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+        Pilihan Peran Akun
       </label>
-      <div className="grid grid-cols-2 gap-2 p-1 bg-neutral-900/90 border border-neutral-800 rounded-xl">
+      <div className="grid grid-cols-2 gap-1.5 p-1 bg-neutral-100/90 border border-neutral-200/80 rounded-xl">
         <button
           type="button"
           onClick={() => onSelectRole("CUSTOMER")}
           className={cn(
-            "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer",
+            "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer",
             selectedRole === "CUSTOMER"
-              ? "bg-emerald-500 text-black font-semibold shadow-md shadow-emerald-500/20"
-              : "text-neutral-400 hover:text-white hover:bg-neutral-800/50"
+              ? "bg-indigo-600 text-white font-semibold shadow-sm shadow-indigo-600/30"
+              : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60"
           )}
         >
           <ShoppingBag className="w-4 h-4" />
@@ -33,10 +33,10 @@ export function RoleSwitcher({ selectedRole, onSelectRole }: RoleSwitcherProps) 
           type="button"
           onClick={() => onSelectRole("CREATOR")}
           className={cn(
-            "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer",
+            "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer",
             selectedRole === "CREATOR"
-              ? "bg-emerald-500 text-black font-semibold shadow-md shadow-emerald-500/20"
-              : "text-neutral-400 hover:text-white hover:bg-neutral-800/50"
+              ? "bg-indigo-600 text-white font-semibold shadow-sm shadow-indigo-600/30"
+              : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60"
           )}
         >
           <Store className="w-4 h-4" />
