@@ -23,6 +23,9 @@ export default async function CreatorDashboardPage() {
   let insightInputs: any = null;
   let storeName = "";
   let isVerified = false;
+  let creatorProfileId = "";
+  let actualProductCount = 0;
+  let publishedProductCount = 0;
 
   if (user) {
     const userProfile = await prisma.user.findUnique({
@@ -32,6 +35,15 @@ export default async function CreatorDashboardPage() {
 
     storeName = userProfile?.creatorProfile?.storeName ?? "";
     isVerified = userProfile?.creatorProfile?.isVerified ?? false;
+    creatorProfileId = userProfile?.creatorProfile?.id ?? "";
+
+    if (creatorProfileId) {
+      // Query actual product counts from products table directly
+      [actualProductCount, publishedProductCount] = await Promise.all([
+        prisma.product.count({ where: { creatorId: creatorProfileId } }),
+        prisma.product.count({ where: { creatorId: creatorProfileId, isPublished: true } }),
+      ]);
+    }
 
     if (storeName) {
       try {
@@ -49,7 +61,9 @@ export default async function CreatorDashboardPage() {
   const breakdown = insightInputs?.breakdown;
 
   const metrics = {
-    distinctProducts: totals?.distinct_products ?? 0,
+    // Use actual product count from products table, not from transactions
+    distinctProducts: actualProductCount,
+    publishedProducts: publishedProductCount,
     distinctCategories: breakdown?.by_category?.length ?? 0,
     transactions: totals?.transactions ?? 0,
     trendDirection: comparison?.available ? comparison.direction : "flat",
