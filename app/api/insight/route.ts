@@ -28,7 +28,7 @@ export async function GET(req: Request) {
       send("metrics", payload);
 
       // 2) Teks deterministik (baseline fallback)
-      const baseline = renderTemplate(payload);
+      const baseline = renderTemplate(payload as Parameters<typeof renderTemplate>[0]);
       send("baseline", { text: baseline });
 
       // Jika data tidak cukup, berhenti di sini (jangan panggil LLM)

@@ -156,8 +156,8 @@ export function guardDraft(
   }
 
   // 3. Arah tren tidak boleh terbalik
-  if (comparison?.available) {
-    const pattern = DIRECTION_BANNED[comparison.direction];
+  if (comparison?.available && comparison.direction && comparison.direction in DIRECTION_BANNED) {
+    const pattern = DIRECTION_BANNED[comparison.direction as keyof typeof DIRECTION_BANNED];
     if (pattern && pattern.test(draft)) {
       return { ok: false, reason: "direction_inverted" };
     }
