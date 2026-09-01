@@ -97,7 +97,3 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
-
-.font-serif {
-  font-family: var(--font-serif);
-}

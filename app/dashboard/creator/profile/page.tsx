@@ -85,6 +85,7 @@ export default function CreatorProfilePage() {
         </div>
       ) : isEditing ? (
         <CreatorProfileForm
+          key={profile?.id || "profile-form"}
           initialData={profile}
           onSaveSuccess={handleSaveSuccess}
           onCancel={handleCancel}

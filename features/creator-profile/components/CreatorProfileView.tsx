@@ -33,6 +33,7 @@ export interface CreatorProfileViewData {
   address?: string | null;
   photoUrl?: string | null;
   avatarUrl?: string | null;
+  bannerUrl?: string | null;
   isVerified?: boolean;
   createdAt?: string | Date;
 }
@@ -53,6 +54,7 @@ export function CreatorProfileView({ data, onEdit }: CreatorProfileViewProps) {
     data?.description ||
     "Pengrajin kriya, buket bunga segar, kado personal, dan hampers premium berkualitas tinggi.";
   const photoUrl = data?.photoUrl || data?.avatarUrl || null;
+  const bannerUrl = data?.bannerUrl || null;
   const isVerified = data?.isVerified ?? true;
 
   const whatsappLink = phone && phone !== "-"
@@ -63,11 +65,22 @@ export function CreatorProfileView({ data, onEdit }: CreatorProfileViewProps) {
     <div className="space-y-8">
       {/* 1. Main Studio Showcase Header Card */}
       <Card className="overflow-hidden rounded-3xl border border-[#E7E5E4] bg-white shadow-xs">
-        {/* Banner with Gradient & Decorative Pattern */}
-        <div className="relative h-44 sm:h-56 bg-gradient-to-r from-[#6355D9] via-[#7B6FE0] to-[#DDD6FE] p-6">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent pointer-events-none" />
+        {/* Banner with Gradient & Decorative Pattern / Image */}
+        <div className="relative h-44 sm:h-60 bg-gradient-to-r from-[#6355D9] via-[#7B6FE0] to-[#DDD6FE] overflow-hidden">
+          {bannerUrl && (
+            <Image
+              src={bannerUrl}
+              alt={storeName}
+              fill
+              unoptimized
+              priority
+              className="object-cover"
+            />
+          )}
+          <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none" />
           
-          <div className="absolute top-4 right-4 flex items-center gap-2">
+          <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
             <Button
               onClick={onEdit}
               variant="outline"

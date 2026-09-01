@@ -1,0 +1,23 @@
+[
+  {
+    "product_id": "pr_001_01",
+    "creator_id": "cr_001",
+    "name": "Hampers Spesial",
+    "category": "Hampers",
+    "price": 521000
+  },
+  {
+    "product_id": "pr_001_02",
+    "creator_id": "cr_001",
+    "name": "Gift Box Anniversary Deluxe",
+    "category": "Gift Box",
+    "price": 258000
+  },
+  {
+    "product_id": "pr_001_03",
+    "creator_id": "cr_001",
+    "name": "Bouquet Bunga Artificial",
+    "category": "Bouquet",
+    "price": 124000
+  }
+]

@@ -11,19 +11,19 @@ interface GoogleAuthButtonProps {
 export function GoogleAuthButton({
   onClick,
   isLoading = false,
-  label = "Continue with Google",
+  label = "Masuk dengan Google",
 }: GoogleAuthButtonProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={isLoading}
-      className="w-full flex items-center justify-center gap-2.5 py-1.5 sm:py-2 px-3 rounded-lg sm:rounded-xl border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-800 text-xs sm:text-[13px] font-medium transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-xs active:scale-[0.995]"
+      className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl border border-neutral-200/90 bg-white hover:bg-neutral-50 hover:border-neutral-300 text-neutral-700 text-sm font-medium transition duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
     >
       {isLoading ? (
-        <Loader2 className="w-3.5 h-3.5 animate-spin text-neutral-500" />
+        <Loader2 className="w-4 h-4 animate-spin text-neutral-500" />
       ) : (
-        <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
+        <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path
             fill="#4285F4"
             d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"

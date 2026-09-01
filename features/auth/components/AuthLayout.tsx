@@ -1,291 +1,130 @@
-"use client";
-
-import React, { useRef } from "react";
-import Image from "next/image";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import React from "react";
+import Link from "next/link";
+import { Sparkles, ShieldCheck, Heart } from "lucide-react";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
-  title?: string;
-  subtitle?: string;
-  heroHeadline?: React.ReactNode;
-  heroSubtitle?: string;
-  imagePosition?: "left" | "right";
+  title: string;
+  subtitle: string;
 }
 
-export function AuthLayout({
-  children,
-  title,
-  subtitle,
-  heroHeadline,
-  heroSubtitle = "Discover creators, share ideas, and turn your vision into something real.",
-  imagePosition = "right",
-}: AuthLayoutProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () => {
-      gsap.fromTo(
-        ".auth-card",
-        { opacity: 0, scale: 0.99, y: 12 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "power2.out" }
-      );
-      gsap.fromTo(
-        ".hero-text-block > *",
-        { opacity: 0, y: 10 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-          stagger: 0.06,
-          delay: 0.1,
-          ease: "power2.out",
-        }
-      );
-    },
-    { scope: containerRef }
-  );
-
-  const isImageLeft = imagePosition === "left";
-
+export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
   return (
-    <main
-      ref={containerRef}
-      className="min-h-screen w-full bg-[#EFEFED] text-neutral-900 flex items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8 relative overflow-hidden antialiased selection:bg-indigo-600 selection:text-white"
-    >
-      {/* Ambient Background Glow */}
-      <div className="absolute top-12 left-1/4 w-[400px] h-[400px] bg-violet-200/20 blur-[130px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-12 right-1/4 w-[380px] h-[380px] bg-amber-100/25 blur-[120px] rounded-full pointer-events-none" />
+    <div className="min-h-screen w-full bg-[#FAFAF9] text-neutral-900 flex flex-col justify-center items-center p-4 sm:p-8 relative overflow-hidden antialiased selection:bg-indigo-500 selection:text-white">
+      {/* Subtle Background Glows */}
+      <div className="absolute top-10 left-1/4 w-[400px] h-[400px] bg-indigo-200/30 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 w-[350px] h-[350px] bg-purple-200/20 blur-[100px] rounded-full pointer-events-none" />
 
-      {/* ─── MAIN CARD CONTAINER ──────────────────────────────────
-          - Fluid max width & height: fits inside screen without cutting off
-          - grid-cols-1 lg:grid-cols-2
-          ─────────────────────────────────────────────────────────── */}
-      <div
-        className="auth-card w-full bg-white border border-neutral-200/80 shadow-2xl shadow-neutral-900/8 overflow-hidden grid grid-cols-1 lg:grid-cols-2 relative z-10 rounded-[clamp(16px,2vw,28px)] max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)]"
-        style={{
-          maxWidth: "clamp(320px, 90vw, 1140px)",
-        }}
-      >
-        {/* Center Inter-Panel Diamond Ornament (Desktop) */}
-        <div
-          aria-hidden="true"
-          className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none items-center justify-center w-6 h-6 rounded-full bg-white border border-neutral-200/90 shadow-xs text-[#6355D9] text-xs font-serif select-none"
-        >
-          ✦
-        </div>
-
-        {/* ─── VISUAL / PHOTOGRAPHY HERO PANEL ─── */}
-        <section
-          aria-label="Editorial Showcase"
-          className={`hidden lg:flex relative bg-[#EBE7DF] overflow-hidden flex-col justify-between select-none p-[clamp(20px,2.8vw,44px)] ${
-            isImageLeft ? "order-1" : "order-2"
-          }`}
-        >
-          {/* Background Photography Asset */}
-          <Image
-            src="/aset/bglogin.png"
-            alt="Gifteria Studio Desk with Creative Artwork"
-            fill
-            priority
-            quality={90}
-            className="object-cover object-center pointer-events-none"
-          />
-
-          {/* Top Botanical Line Art + Dot Grid */}
-          <div
-            className={`absolute top-3 ${
-              isImageLeft ? "left-3" : "right-3"
-            } pointer-events-none select-none opacity-45 z-10`}
-          >
-            <svg
-              style={{ width: "clamp(64px, 7vw, 110px)", height: "clamp(64px, 7vw, 110px)" }}
-              viewBox="0 0 180 180"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="text-[#6355D9]"
-            >
+      {/* Main Two-Panel Horizontal Container */}
+      <div className="w-full max-w-5xl bg-white border border-neutral-200/80 rounded-3xl shadow-xl shadow-neutral-900/5 overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10">
+        
+        {/* LEFT PANEL: Editorial Brand Visual (Desktop) */}
+        <div className="hidden lg:flex lg:col-span-5 bg-[#F5F5F7] border-r border-neutral-200/70 p-8 sm:p-10 flex-col justify-between relative overflow-hidden">
+          {/* Subtle Botanical / Line-art SVG background */}
+          <div className="absolute -right-12 -bottom-12 w-64 h-64 opacity-20 pointer-events-none">
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
-                d="M170 10C140 40 120 85 80 100M80 100C105 115 120 140 115 160M80 100C60 120 35 125 20 120M80 100C65 85 60 55 70 35M115 60C125 75 140 80 150 75"
-                stroke="currentColor"
-                strokeWidth="1.2"
+                d="M40 180C70 120 120 70 180 40M180 40C150 70 130 110 120 160M180 40C130 50 90 70 50 110"
+                stroke="#6366F1"
+                strokeWidth="2"
                 strokeLinecap="round"
-                strokeLinejoin="round"
               />
             </svg>
-            <div
-              className={`grid grid-cols-4 gap-1.5 pt-1 ${
-                isImageLeft ? "pl-2" : "pr-2"
-              } opacity-30`}
-            >
-              {Array.from({ length: 16 }).map((_, i) => (
-                <div key={i} className="w-1 h-1 rounded-full bg-[#6355D9]" />
-              ))}
+          </div>
+
+          {/* Top Brand Header */}
+          <div className="space-y-6 relative z-10">
+            <Link href="/" className="inline-flex items-center gap-2 font-bold text-xl text-neutral-900">
+              <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30">
+                <Sparkles className="w-4 h-4" />
+              </span>
+              <span className="tracking-tight font-serif text-2xl">Creatons<span className="text-indigo-600">.</span></span>
+            </Link>
+
+            {/* Editorial Serif Heading */}
+            <div className="space-y-3 pt-4">
+              <h2 className="text-3xl sm:text-4xl font-serif text-neutral-900 leading-[1.2] tracking-tight">
+                Where ideas <br />
+                become <span className="italic text-indigo-600">real.</span>
+              </h2>
+              <p className="text-sm text-neutral-500 leading-relaxed font-sans">
+                Connect with creators and artisans who understand your creative vision and craft traditions.
+              </p>
             </div>
           </div>
 
-          {/* Bottom Floral Accent (Register: image left) */}
-          {isImageLeft && (
-            <div className="absolute -bottom-1 -left-1 pointer-events-none select-none opacity-35 z-10">
-              <svg
-                width="90"
-                height="90"
-                viewBox="0 0 160 160"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="text-[#8B7CF6]"
-              >
-                <path
-                  d="M10 150C35 125 50 85 90 70M90 70C65 55 50 30 55 10M90 70C110 50 135 45 150 50M90 70C105 85 110 115 100 135M55 110C45 95 30 90 20 95M75 90C70 105 55 120 40 120"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          )}
-
-          {/* Hero Text Block */}
-          <div className="hero-text-block relative z-20 space-y-2.5 max-w-[320px]">
-            {/* Star Motif */}
-            <div className="inline-flex items-center">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="text-[#6355D9]"
-              >
-                <path
-                  d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-
-            {/* Headline — fluid font size */}
-            {heroHeadline ?? (
-              <h2
-                className="font-serif font-normal leading-[1.18] text-[#111827] tracking-tight"
-                style={{ fontSize: "clamp(20px, 2.4vw, 32px)" }}
-              >
-                Where creativity <br />
-                becomes a trusted <br />
-                <span className="italic text-[#4F46E5]">conversation.</span>
-              </h2>
-            )}
-
-            {/* Divider */}
-            <div className="w-8 h-[1.5px] bg-[#DDD6FE]" />
-
-            {/* Subtitle — fluid font size */}
-            <p
-              className="text-neutral-600 leading-relaxed font-sans max-w-[260px]"
-              style={{ fontSize: "clamp(10.5px, 0.95vw, 13px)" }}
-            >
-              {heroSubtitle}
-            </p>
-
-            {/* Coral Sparkle (Register) */}
-            {isImageLeft && (
-              <div className="pt-1.5">
-                <span className="text-[#E76F61] text-xs select-none opacity-80 inline-block">
-                  ✦
+          {/* Middle Visual Card: Studio Showcase */}
+          <div className="relative z-10 my-6 p-4 rounded-2xl bg-white border border-neutral-200/90 shadow-sm space-y-3">
+            {/* Visual Photography Mock with Warm Tone */}
+            <div className="h-40 w-full rounded-xl bg-gradient-to-tr from-amber-100 via-rose-50 to-indigo-100 border border-neutral-100 relative overflow-hidden flex flex-col justify-between p-3">
+              <div className="flex items-center justify-between">
+                <span className="px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md text-[10px] font-semibold text-indigo-700 shadow-xs">
+                  ★ Top Rated Creator
+                </span>
+                <span className="w-6 h-6 rounded-full bg-white/80 flex items-center justify-center text-rose-500">
+                  <Heart className="w-3.5 h-3.5 fill-rose-500" />
                 </span>
               </div>
-            )}
-          </div>
-
-          <div className="relative z-20" />
-        </section>
-
-        {/* ─── AUTHENTICATION FORM PANEL ─── */}
-        <section
-          aria-label="Form Autentikasi"
-          className={`flex flex-col justify-center relative bg-white overflow-y-auto px-[clamp(18px,2.8vw,42px)] py-[clamp(14px,2vh,32px)] ${
-            isImageLeft ? "order-2" : "order-1"
-          }`}
-        >
-          {/* Corner Bracket + Dot Grid */}
-          <div
-            className={`absolute top-2.5 ${
-              isImageLeft
-                ? "right-2.5 sm:top-3 sm:right-3"
-                : "left-2.5 sm:top-3 sm:left-3"
-            } pointer-events-none select-none`}
-          >
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 40 40"
-              fill="none"
-              className={`text-[#6355D9] opacity-60 ${
-                isImageLeft ? "scale-x-[-1]" : ""
-              }`}
-            >
-              <path
-                d="M1 28V6C1 3.23858 3.23858 1 6 1H28"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <circle cx="28" cy="1" r="1.5" fill="currentColor" />
-            </svg>
-            <div
-              className={`grid grid-cols-4 gap-1 pt-1 ${
-                isImageLeft ? "pr-1" : "pl-1"
-              } opacity-20`}
-            >
-              {Array.from({ length: 16 }).map((_, i) => (
-                <div key={i} className="w-0.5 h-0.5 rounded-full bg-[#6355D9]" />
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom Floral (Login: form left) */}
-          {!isImageLeft && (
-            <div className="absolute -bottom-1 -left-1 pointer-events-none select-none opacity-25">
-              <svg
-                width="80"
-                height="80"
-                viewBox="0 0 160 160"
-                fill="none"
-                className="text-[#8B7CF6]"
-              >
-                <path
-                  d="M10 150C35 125 50 85 90 70M90 70C65 55 50 30 55 10M90 70C110 50 135 45 150 50M90 70C105 85 110 115 100 135M55 110C45 95 30 90 20 95M75 90C70 105 55 120 40 120"
-                  stroke="currentColor"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          )}
-
-          {/* Form Content — fluid max-width */}
-          <div
-            className="w-full mx-auto relative z-10"
-            style={{ maxWidth: "clamp(260px, 32vw, 360px)" }}
-          >
-            {title && (
-              <div className="text-center space-y-0.5 pb-2.5">
-                <h1 className="font-serif text-xl sm:text-2xl font-normal text-neutral-900">
-                  {title}
-                </h1>
-                {subtitle && (
-                  <p className="text-[11px] sm:text-xs text-neutral-500">
-                    {subtitle}
-                  </p>
-                )}
+              <div className="text-[11px] font-medium text-neutral-700 bg-white/80 backdrop-blur-xs px-2.5 py-1 rounded-md w-fit">
+                Studio Flora • Bandung, Indonesia
               </div>
-            )}
+            </div>
+
+            <div className="flex items-center justify-between text-xs text-neutral-600 pt-1">
+              <div className="flex items-center gap-1 text-amber-600 font-semibold">
+                <span>★ 4.9</span>
+                <span className="text-neutral-400 font-normal">(120+ Proyek)</span>
+              </div>
+              <span className="inline-flex items-center gap-1 text-emerald-600 font-medium text-[11px]">
+                <ShieldCheck className="w-3.5 h-3.5" /> Escrow Verified
+              </span>
+            </div>
+          </div>
+
+          {/* Bottom Footer Quote */}
+          <div className="relative z-10 text-xs text-neutral-400 border-t border-neutral-200/70 pt-4 flex items-center justify-between">
+            <span>Modern Editorial Creative</span>
+            <span>v1.0 • 2026</span>
+          </div>
+        </div>
+
+        {/* RIGHT PANEL: Authentication Form */}
+        <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between bg-white">
+          <div className="w-full max-w-md mx-auto space-y-6">
+            {/* Mobile Brand Bar */}
+            <div className="lg:hidden flex items-center justify-between pb-2 border-b border-neutral-100">
+              <Link href="/" className="inline-flex items-center gap-2 font-bold text-lg text-neutral-900 font-serif">
+                <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-600 text-white">
+                  <Sparkles className="w-3.5 h-3.5" />
+                </span>
+                <span>Creatons.</span>
+              </Link>
+              <span className="text-[11px] font-medium text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
+                Sewa Busana
+              </span>
+            </div>
+
+            {/* Form Title & Subtitle */}
+            <div className="space-y-1.5 text-left">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900">
+                {title}
+              </h1>
+              <p className="text-xs sm:text-sm text-neutral-500">
+                {subtitle}
+              </p>
+            </div>
+
+            {/* Form Content */}
             {children}
           </div>
-        </section>
+
+          {/* Bottom Security Note */}
+          <div className="w-full max-w-md mx-auto pt-6 text-center text-[11px] text-neutral-400 border-t border-neutral-100 mt-6">
+            &copy; {new Date().getFullYear()} Creatons Platform • Dilindungi Sistem Escrow Transaksi
+          </div>
+        </div>
+
       </div>
-    </main>
+    </div>
   );
 }

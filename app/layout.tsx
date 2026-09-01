@@ -19,7 +19,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Gifteria — Marketplace Gift, Hampers & Creative Kriya",
+  title: "Creathon — Marketplace Gift, Hampers & Creative Kriya",
   description: "Tempat bertemunya kreator, karya gift personal, buket bunga, dan kerajinan tangan terbaik Nusantara.",
 };
 
