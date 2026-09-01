@@ -1,0 +1,226 @@
+"use client";
+
+import React, { useState } from "react";
+import { ChevronDown } from "lucide-react";
+
+interface ProductPerformanceItem {
+  name: string;
+  revenue: number;
+  revenueFormatted: string;
+  count: number;
+  percentage: number;
+  color: string;
+}
+
+interface PerformanceAnalyticsSectionProps {
+  products?: ProductPerformanceItem[];
+  totalTransactions?: number;
+}
+
+export function PerformanceAnalyticsSection({
+  products = [
+    {
+      name: "Gift Box Anniversary Deluxe",
+      revenue: 1700000,
+      revenueFormatted: "Rp1.700.000",
+      count: 7,
+      percentage: 63.6,
+      color: "#4338CA", // Deep Indigo/Violet
+    },
+    {
+      name: "Bouquet Bunga Artificial",
+      revenue: 500000,
+      revenueFormatted: "Rp500.000",
+      count: 2,
+      percentage: 18.2,
+      color: "#8B7CF6", // Medium Lilac/Lavender
+    },
+    {
+      name: "Hampers Spesial",
+      revenue: 500000,
+      revenueFormatted: "Rp500.000",
+      count: 2,
+      percentage: 18.2,
+      color: "#E76F61", // Coral Accent
+    },
+  ],
+  totalTransactions = 11,
+}: PerformanceAnalyticsSectionProps) {
+  const [selectedPeriod, setSelectedPeriod] = useState("28 Hari");
+
+  // Max value for horizontal scale: 2.000.000
+  const maxScale = 2000000;
+
+  // Donut chart stroke circumference math (radius = 60)
+  const radius = 60;
+  const circumference = 2 * Math.PI * radius; // ~376.99
+
+  let accumulatedPercentage = 0;
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      {/* ─── LEFT: PERFORMA TOKO (60% / 7 cols) ─── */}
+      <div className="lg:col-span-7 bg-white border border-[#E7E5E4] rounded-2xl p-6 shadow-2xs flex flex-col justify-between">
+        {/* Header with Period Filter */}
+        <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#F5F5F4]">
+          <div>
+            <h3 className="font-semibold text-base text-[#111827]">
+              Performa Toko
+            </h3>
+            <p className="text-xs text-[#78716C] mt-0.5">
+              Ringkasan aktivitas toko dalam 28 hari terakhir.
+            </p>
+          </div>
+
+          {/* Filter Dropdown Pill */}
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E7E5E4] bg-white text-xs font-medium text-[#292524] hover:bg-[#FAFAF9] transition shadow-2xs cursor-pointer"
+          >
+            <span>{selectedPeriod}</span>
+            <ChevronDown className="size-3.5 text-[#78716C]" />
+          </button>
+        </div>
+
+        {/* Chart Subheading */}
+        <div className="pt-4 pb-2">
+          <span className="text-xs font-medium text-[#44403C]">
+            Pendapatan per Produk (28 Hari)
+          </span>
+        </div>
+
+        {/* Horizontal Bar Chart */}
+        <div className="space-y-4 py-2">
+          {products.map((item) => {
+            const barWidthPercent = Math.min(
+              100,
+              Math.max(10, (item.revenue / maxScale) * 100)
+            );
+
+            return (
+              <div key={item.name} className="space-y-1">
+                <div className="flex items-center justify-between text-xs text-[#292524]">
+                  <span className="text-xs text-[#44403C] font-normal truncate max-w-[220px] sm:max-w-xs">
+                    {item.name}
+                  </span>
+                  <span className="font-semibold text-xs text-[#111827] tabular-nums">
+                    {item.revenueFormatted}
+                  </span>
+                </div>
+
+                <div className="w-full h-3.5 bg-[#F5F5F4] rounded-full overflow-hidden relative">
+                  <div
+                    className="h-full rounded-full transition-all duration-500 ease-out"
+                    style={{
+                      width: `${barWidthPercent}%`,
+                      backgroundColor: item.color === "#E76F61" ? "#4338CA" : item.color,
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* X-Axis Scale Labels */}
+        <div className="pt-3 border-t border-[#F5F5F4] flex items-center justify-between text-[11px] text-[#A8A29E] tabular-nums">
+          <span>Rp0</span>
+          <span>Rp500k</span>
+          <span>Rp1.000k</span>
+          <span>Rp1.500k</span>
+          <span>Rp2.000k</span>
+        </div>
+      </div>
+
+      {/* ─── RIGHT: DISTRIBUSI TRANSAKSI (40% / 5 cols) ─── */}
+      <div className="lg:col-span-5 bg-white border border-[#E7E5E4] rounded-2xl p-6 shadow-2xs flex flex-col justify-between">
+        {/* Header */}
+        <div className="pb-4 border-b border-[#F5F5F4]">
+          <h3 className="font-semibold text-base text-[#111827]">
+            Distribusi Transaksi
+          </h3>
+        </div>
+
+        {/* Donut Chart with Center Metric + Legend */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 py-4 flex-1">
+          {/* SVG Donut Graphic */}
+          <div className="relative size-36 shrink-0 flex items-center justify-center">
+            <svg
+              className="size-full -rotate-90"
+              viewBox="0 0 160 160"
+            >
+              {/* Background circle track */}
+              <circle
+                cx="80"
+                cy="80"
+                r={radius}
+                className="stroke-[#F5F5F4]"
+                strokeWidth="20"
+                fill="transparent"
+              />
+
+              {/* Dynamic Slices */}
+              {products.map((item) => {
+                const strokeDasharray = `${(item.percentage / 100) * circumference} ${circumference}`;
+                const strokeDashoffset = -((accumulatedPercentage / 100) * circumference);
+                accumulatedPercentage += item.percentage;
+
+                return (
+                  <circle
+                    key={item.name}
+                    cx="80"
+                    cy="80"
+                    r={radius}
+                    stroke={item.color}
+                    strokeWidth="20"
+                    strokeDasharray={strokeDasharray}
+                    strokeDashoffset={strokeDashoffset}
+                    strokeLinecap="butt"
+                    fill="transparent"
+                    className="transition-all duration-500 ease-out"
+                  />
+                );
+              })}
+            </svg>
+
+            {/* Donut Center Metric Text */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center select-none pointer-events-none">
+              <span className="font-serif text-2xl font-normal text-[#111827] leading-none">
+                {totalTransactions}
+              </span>
+              <span className="text-[10px] text-[#78716C] font-medium leading-tight mt-0.5">
+                Total<br />Transaksi
+              </span>
+            </div>
+          </div>
+
+          {/* Interactive Right Legend */}
+          <div className="space-y-2.5 w-full sm:w-auto flex-1 min-w-0">
+            {products.map((item) => (
+              <div
+                key={item.name}
+                className="flex items-center justify-between gap-3 text-xs"
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <span
+                    className="size-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="text-xs text-[#44403C] truncate max-w-[140px]">
+                    {item.name}
+                  </span>
+                </div>
+                <span className="font-semibold text-xs text-[#111827] tabular-nums whitespace-nowrap">
+                  {item.count} ({item.percentage.toString().replace(".", ",")}%)
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer subtle spacer */}
+        <div className="pt-2" />
+      </div>
+    </div>
+  );
+}
