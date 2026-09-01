@@ -252,9 +252,14 @@ export function RecentTransactionsSection() {
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  // reset page on filter change
-  React.useEffect(() => setPage(1), [query, statusFilter, productFilter, sort]);
+  
+  // reset page on filter change during render
+  const filterKey = `${query}-${statusFilter}-${productFilter}-${sort}`;
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey);
+    setPage(1);
+  }
 
   // ── Handlers ─────────────────────────────────────────────────────────────
 

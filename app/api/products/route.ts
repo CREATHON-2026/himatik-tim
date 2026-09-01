@@ -3,20 +3,49 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import {
   getProductsByCreator,
+  getPublicProducts,
   createProduct,
 } from "@/features/products/services/productService";
 import { ProductFormSchema } from "@/features/products/schema";
 import { ZodError } from "zod";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = request.nextUrl;
+    const isPublic = searchParams.get("public") === "true";
+    const category = searchParams.get("category") || undefined;
+    const search = searchParams.get("search") || undefined;
+    const sort = searchParams.get("sort") || undefined;
+    const page = searchParams.get("page") ? parseInt(searchParams.get("page")!) : undefined;
+    const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : undefined;
+
+    // Public catalog browsing (Unauthenticated or explicit public flag)
+    if (isPublic) {
+      const publicProducts = await getPublicProducts({
+        category,
+        search,
+        sort,
+        page,
+        limit,
+      });
+      return NextResponse.json(publicProducts);
+    }
+
     const supabase = await createClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
+    // If no user and not explicitly public, still fallback to public products gracefully
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      const publicProducts = await getPublicProducts({
+        category,
+        search,
+        sort,
+        page,
+        limit,
+      });
+      return NextResponse.json(publicProducts);
     }
 
     // Find creator profile, or return empty list gracefully

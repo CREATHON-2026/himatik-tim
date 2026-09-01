@@ -180,7 +180,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
       try {
         await deleteProduct();
         toast.success("Produk berhasil dihapus!");
-        router.push("/dashboard/products");
+        router.push("/dashboard/creator/products");
       } catch (err) {
         const message =
           err instanceof Error ? err.message : "Gagal menghapus produk";
@@ -215,8 +215,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
       {/* Back to list navigation */}
       <div className="flex items-center justify-between">
         <button
-          onClick={() => router.push("/dashboard/products")}
-          className="text-muted-foreground hover:text-foreground inline-flex cursor-pointer items-center gap-1 text-xs font-semibold"
+          onClick={() => router.push("/dashboard/creator/products")}
+          className="text-muted-foreground hover:text-foreground inline-flex cursor-pointer items-center gap-1.5 text-xs font-semibold transition-colors"
         >
           <ArrowLeft className="size-3.5" /> Kembali ke Daftar Produk
         </button>
