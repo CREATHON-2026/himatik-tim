@@ -90,15 +90,16 @@ export function ProductPurchaseCard({
           <span>Beli Sekarang</span>
         </Button>
 
-        {/* Tambah ke Keranjang: skeuo-paper */}
+        {/* Tambah ke Keranjang: Disabled / Segera Hadir */}
         <Button
-          variant="skeuo-paper"
+          variant="outline"
           size="sm"
-          onClick={() => onAddToCart(qty)}
-          className="w-full h-9.5 text-xs font-bold cursor-pointer"
+          disabled
+          aria-disabled="true"
+          className="w-full h-9.5 text-xs font-medium text-[#A8A29E] bg-[#F5F5F4]/60 border-dashed border-[#E7E5E4] cursor-not-allowed opacity-75"
         >
-          <ShoppingCart className="w-3.5 h-3.5 mr-1 text-[#78865C]" />
-          <span>Tambah ke Keranjang</span>
+          <ShoppingCart className="w-3.5 h-3.5 mr-1 text-[#A8A29E]" />
+          <span>Tambah ke Keranjang (Segera Hadir)</span>
         </Button>
       </div>
 
