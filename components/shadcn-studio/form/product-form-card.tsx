@@ -188,11 +188,29 @@ export function ProductFormCard({
   const [isUploadingGallery, setIsUploadingGallery] = React.useState(false);
   const galleryInputRef = React.useRef<HTMLInputElement>(null);
 
+  // Built-in File Upload API with Supabase / Base64 fallback
+  const uploadFileApi = async (file: File): Promise<string> => {
+    if (onUploadImage) {
+      return await onUploadImage(file);
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || "Gagal mengunggah foto");
+    }
+    const data = await res.json();
+    return data.url;
+  };
+
   // Main Image Upload Handler
   const handleMainImageUpload = async (file: File) => {
-    if (!onUploadImage) return "";
     try {
-      const url = await onUploadImage(file);
+      const url = await uploadFileApi(file);
       setValue("imageUrl", url, { shouldValidate: true });
       toast.success("Foto utama berhasil diperbarui!");
       return url;
@@ -207,7 +225,7 @@ export function ProductFormCard({
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const files = e.target.files;
-    if (!files || files.length === 0 || !onUploadImage) return;
+    if (!files || files.length === 0) return;
 
     if (watchedGallery.length + files.length > 8) {
       toast.error("Galeri foto tambahan maksimal berisi 8 foto");
@@ -220,7 +238,7 @@ export function ProductFormCard({
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const url = await onUploadImage(file);
+        const url = await uploadFileApi(file);
         uploadedUrls.push(url);
       }
       setValue("gallery", [...watchedGallery, ...uploadedUrls], {
@@ -575,6 +593,8 @@ export function ProductFormCard({
                     aspectRatio="square"
                     placeholder="Klik untuk upload foto utama"
                     onUpload={handleMainImageUpload}
+                    onChange={(url) => setValue("imageUrl", url, { shouldValidate: true })}
+                    onRemove={() => setValue("imageUrl", "", { shouldValidate: true })}
                     isLoading={isUploadingImage}
                   />
                   {errors.imageUrl && (

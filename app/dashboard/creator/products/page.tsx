@@ -12,7 +12,6 @@ import {
   Edit2,
   Trash2,
   CheckCircle2,
-  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -138,8 +137,17 @@ export default function CreatorProductsPage() {
 
       {/* Products Grid or Empty State */}
       {isLoading ? (
-        <div className="flex h-64 items-center justify-center">
-          <Loader2 className="h-8 w-8 text-[#6355D9] animate-spin" />
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {[1, 2, 3, 4].map((n) => (
+            <div
+              key={n}
+              className="rounded-2xl border border-[#E7E5E4] bg-white p-4 space-y-3 animate-pulse"
+            >
+              <div className="aspect-square w-full rounded-xl bg-[#F5F5F4]" />
+              <div className="h-4 w-3/4 rounded bg-[#F5F5F4]" />
+              <div className="h-4 w-1/2 rounded bg-[#EDE9FE]" />
+            </div>
+          ))}
         </div>
       ) : filteredProducts.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#E7E5E4] bg-white p-12 text-center">

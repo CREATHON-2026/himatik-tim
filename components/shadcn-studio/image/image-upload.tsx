@@ -64,6 +64,7 @@ export function ImageUpload({
             src={value}
             alt="Preview produk"
             fill
+            unoptimized={value.startsWith("data:") || value.startsWith("blob:") || value.startsWith("http")}
             className="object-cover transition duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
