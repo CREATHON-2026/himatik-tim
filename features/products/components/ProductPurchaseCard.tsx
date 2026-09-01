@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Minus, ShieldCheck, Zap, ShoppingCart } from "lucide-react";
+import { Plus, Minus, ShieldCheck, Truck, Package, ShoppingCart, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ProductPurchaseCardProps {
   price: number;
-  stock: number;
+  stock?: number;
   onAddToCart: (qty: number) => void;
   onBuyNow: (qty: number) => void;
   className?: string;
@@ -14,7 +14,7 @@ interface ProductPurchaseCardProps {
 
 export function ProductPurchaseCard({
   price,
-  stock,
+  stock = 99,
   onAddToCart,
   onBuyNow,
   className = "",
@@ -25,7 +25,7 @@ export function ProductPurchaseCard({
     return new Intl.NumberFormat("id-ID", {
       style: "decimal",
       maximumFractionDigits: 0,
-    }).format(val);
+    }).format(val || 110000);
   };
 
   const handleIncrement = () => {
@@ -38,74 +38,79 @@ export function ProductPurchaseCard({
 
   return (
     <div
-      className={`bg-[#FAF4EC] border border-[#78865C]/25 rounded-[22px] p-4.5 sm:p-5 shadow-md flex flex-col gap-4 paper-skeuo paper-texture relative ${className}`}
+      className={`bg-white border border-[#E7E5E4] rounded-3xl p-6 shadow-xs flex flex-col gap-5 ${className}`}
     >
-      {/* Decorative Art Nouveau Corner Notches / Double Frame Lines */}
-      <div className="pointer-events-none absolute inset-1.5 rounded-[18px] border border-[#78865C]/12" />
-
-      {/* Price Header Display */}
-      <div className="flex flex-col items-center text-center gap-0.5 pt-1">
-        <div className="text-2xl sm:text-3xl font-heading text-[#3E5237] font-bold tracking-tight">
+      {/* Price & Quantity Selector Row */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Big Price Display */}
+        <div className="font-serif text-2xl sm:text-3xl font-bold text-[#111827] tracking-tight">
           Rp{formatPrice(price)}
+        </div>
+
+        {/* Quantity Selector Stepper */}
+        <div className="flex items-center justify-between w-28 py-1 px-2 rounded-xl border border-[#E7E5E4] bg-white shadow-2xs select-none">
+          <button
+            type="button"
+            onClick={handleDecrement}
+            disabled={qty <= 1}
+            aria-label="Kurangi jumlah"
+            className="size-6 rounded-lg flex items-center justify-center text-[#78716C] hover:text-[#111827] hover:bg-[#F5F5F4] disabled:opacity-40 cursor-pointer transition"
+          >
+            <Minus className="size-3.5" />
+          </button>
+          <span className="font-bold text-sm text-[#111827] font-sans">
+            {qty}
+          </span>
+          <button
+            type="button"
+            onClick={handleIncrement}
+            disabled={qty >= stock}
+            aria-label="Tambah jumlah"
+            className="size-6 rounded-lg flex items-center justify-center text-[#78716C] hover:text-[#111827] hover:bg-[#F5F5F4] disabled:opacity-40 cursor-pointer transition"
+          >
+            <Plus className="size-3.5" />
+          </button>
         </div>
       </div>
 
-      {/* Quantity Selector Section: Compact Centered Pill */}
-      <div className="flex items-center justify-between w-32 mx-auto py-0.5 px-1.5 rounded-full border border-[#78865C]/25 bg-[#FAF6F0] shadow-inner select-none">
+      {/* Action CTA Buttons */}
+      <div className="flex flex-col gap-3 w-full select-none">
+        {/* Beli Sekarang: Solid Violet */}
         <Button
-          variant="ghost"
-          size="icon-xs"
-          onClick={handleDecrement}
-          disabled={qty <= 1}
-          aria-label="Kurangi jumlah"
-          className="h-6 w-6 rounded-full hover:bg-[#FAF4EC] text-[#3E5237] cursor-pointer p-0"
-        >
-          <Minus className="w-3 h-3" />
-        </Button>
-        <span className="font-bold text-[#3E5237] font-sans text-xs">
-          {qty}
-        </span>
-        <Button
-          variant="ghost"
-          size="icon-xs"
-          onClick={handleIncrement}
-          disabled={qty >= stock}
-          aria-label="Tambah jumlah"
-          className="h-6 w-6 rounded-full hover:bg-[#FAF4EC] text-[#3E5237] cursor-pointer p-0"
-        >
-          <Plus className="w-3 h-3" />
-        </Button>
-      </div>
-
-      {/* Action CTA Buttons using official Skeuomorphic Buttons (Forest for Buy Now, Paper for Add to Cart) */}
-      <div className="flex flex-col gap-2.5 select-none pt-1 w-full">
-        {/* Beli Sekarang: skeuo-forest */}
-        <Button
-          variant="skeuo-forest"
-          size="sm"
+          size="lg"
           onClick={() => onBuyNow(qty)}
-          className="w-full h-9.5 text-xs font-bold cursor-pointer"
+          className="w-full h-12 rounded-xl bg-[#6355D9] hover:bg-[#5145C6] text-white font-semibold text-sm shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2"
         >
-          <Zap className="w-3.5 h-3.5 mr-1" />
+          <ShoppingBag className="size-4" />
           <span>Beli Sekarang</span>
         </Button>
 
-        {/* Tambah ke Keranjang: skeuo-paper */}
+        {/* Tambah ke Keranjang: Outline Violet */}
         <Button
-          variant="skeuo-paper"
-          size="sm"
+          variant="outline"
+          size="lg"
           onClick={() => onAddToCart(qty)}
-          className="w-full h-9.5 text-xs font-bold cursor-pointer"
+          className="w-full h-12 rounded-xl border-[#DDD6FE] bg-white text-[#6355D9] hover:bg-[#FAF8FF] font-semibold text-sm shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
         >
-          <ShoppingCart className="w-3.5 h-3.5 mr-1 text-[#78865C]" />
-          <span>Tambah ke Keranjang</span>
+          <ShoppingCart className="size-4 text-[#6355D9]" />
+          <span>Tambahkan ke Keranjang</span>
         </Button>
       </div>
 
-      {/* Security Indicator: Clearer, High Contrast & Refined */}
-      <div className="flex items-center gap-1.5 text-xs text-[#3E5237] font-semibold justify-center select-none pt-0.5 border-t border-[#78865C]/15">
-        <ShieldCheck className="w-4 h-4 text-[#566B4D] shrink-0" />
-        <span>Transaksi Aman & Terpercaya</span>
+      {/* Trust & Guarantee Indicators (3 Items) */}
+      <div className="pt-3 border-t border-[#F5F5F4] grid grid-cols-3 gap-2 text-center text-[11px] sm:text-xs text-[#78716C] select-none">
+        <div className="flex items-center justify-center gap-1.5">
+          <ShieldCheck className="size-4 text-[#6355D9] shrink-0" />
+          <span className="font-medium text-[#44403C]">Transaksi Aman</span>
+        </div>
+        <div className="flex items-center justify-center gap-1.5 border-x border-[#F5F5F4]">
+          <Truck className="size-4 text-[#6355D9] shrink-0" />
+          <span className="font-medium text-[#44403C]">Pengiriman Cepat</span>
+        </div>
+        <div className="flex items-center justify-center gap-1.5">
+          <Package className="size-4 text-[#6355D9] shrink-0" />
+          <span className="font-medium text-[#44403C]">Dikemas dengan Rapi</span>
+        </div>
       </div>
     </div>
   );

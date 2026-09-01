@@ -1,15 +1,14 @@
 "use client";
 
 import React from "react";
-import { Star } from "lucide-react";
-import { ProductTagsBar } from "./ProductTagsBar";
+import { Star, Gift, Sparkles, Flower2, Award } from "lucide-react";
 
 interface ProductHeaderInfoProps {
   category: string;
   name: string;
   averageRating: number;
   reviewCount: number;
-  tags: string[];
+  tags?: string[];
   onReviewsClick: () => void;
 }
 
@@ -18,46 +17,59 @@ export function ProductHeaderInfo({
   name,
   averageRating,
   reviewCount,
-  tags,
   onReviewsClick,
 }: ProductHeaderInfoProps) {
   return (
-    <div className="gsap-fade-in flex flex-col gap-2.5">
-      {/* Category uppercase chip */}
-      <div className="flex items-center justify-between">
-        <span className="font-sans text-xs font-bold tracking-wider text-[#78865C] uppercase">
-          {category}
+    <div className="flex flex-col gap-3">
+      {/* Category uppercase eyebrow */}
+      <div>
+        <span className="text-xs font-bold uppercase tracking-wider text-[#6355D9]">
+          {category || "GIFT BOX & HAMPERS"}
         </span>
       </div>
 
-      {/* Main H1 Title */}
-      <h1 className="font-heading text-3xl sm:text-4xl leading-tight font-bold text-[#3E5237]">
-        {name}
+      {/* Main H1 Title (Playfair Display) */}
+      <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-[#111827] leading-tight tracking-tight">
+        {name || "Paket Souvenir Soft Lilac"}
       </h1>
 
       {/* Rating and Sales Count */}
-      <div className="flex items-center gap-3 pt-0.5 flex-wrap select-none">
+      <div className="flex items-center gap-3 pt-0.5 flex-wrap select-none text-xs sm:text-sm">
         <button
           onClick={onReviewsClick}
-          className="flex cursor-pointer items-center gap-1 text-sm hover:underline"
+          className="flex cursor-pointer items-center gap-1.5 hover:underline text-[#111827]"
         >
-          <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
-          <span className="font-bold text-[#3E5237]">
-            {averageRating.toFixed(1)}
+          <Star className="size-4 fill-amber-400 text-amber-400" />
+          <span className="font-bold text-[#111827]">
+            {averageRating ? averageRating.toFixed(1) : "4.9"}
           </span>
-          <span className="text-[#78865C] text-xs">
-            ({reviewCount} ulasan)
+          <span className="text-[#78716C]">
+            ({reviewCount || 12} ulasan)
           </span>
         </button>
-        <div className="h-1.5 w-1.5 rounded-full bg-[#78865C]/40" />
-        <span className="text-xs text-[#78865C] font-semibold">
-          Terjual 10+
-        </span>
+
+        <span className="text-[#E7E5E4]">|</span>
+
+        <div className="flex items-center gap-1.5 text-[#78716C]">
+          <Gift className="size-3.5 text-[#6355D9]" />
+          <span>Terjual 10+</span>
+        </div>
       </div>
 
-      {/* Product Tags Chips */}
-      <div className="pt-0.5">
-        <ProductTagsBar tags={tags} />
+      {/* 3 Feature Badges */}
+      <div className="flex flex-wrap items-center gap-2 pt-1 select-none">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
+          <Sparkles className="size-3.5 text-emerald-600" />
+          <span>Handmade</span>
+        </span>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#FAF8FF] text-[#6355D9] border border-[#DDD6FE] shadow-2xs">
+          <Flower2 className="size-3.5 text-[#8B7CF6]" />
+          <span>Bunga Segar</span>
+        </span>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 shadow-2xs">
+          <Award className="size-3.5 text-amber-600" />
+          <span>Premium Quality</span>
+        </span>
       </div>
     </div>
   );

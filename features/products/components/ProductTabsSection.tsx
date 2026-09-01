@@ -2,8 +2,16 @@
 
 import React, { forwardRef } from "react";
 import { motion } from "framer-motion";
-import { FolderHeart, Scale, Tag, Truck, Barcode, Package } from "lucide-react";
-import { BotanicalOrnament } from "./BotanicalOrnament";
+import {
+  FolderHeart,
+  Scale,
+  Tag,
+  Package,
+  Sparkles,
+  Truck,
+  Gift,
+  ArrowRight,
+} from "lucide-react";
 import { ReviewSection } from "./ReviewSection";
 import { renderFormattedDescription } from "../utils/formatDescription";
 import type { Product, ProductReview } from "../types";
@@ -23,27 +31,24 @@ interface ProductTabsSectionProps {
 export const ProductTabsSection = forwardRef<HTMLDivElement, ProductTabsSectionProps>(
   ({ product, activeTab, onTabChange }, ref) => {
     return (
-      <div
-        ref={ref}
-        className="gsap-fade-in flex flex-col gap-5 border-t border-[#78865C]/20 pt-8 mt-4"
-      >
+      <div ref={ref} className="space-y-6">
         {/* Tab Navigation Header */}
-        <div className="flex gap-6 sm:gap-8 border-b border-[#78865C]/15 pb-2">
+        <div className="flex items-center gap-8 border-b border-[#F5F5F4] pb-2 select-none">
           {(["deskripsi", "spesifikasi", "ulasan"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => onTabChange(tab)}
-              className={`relative cursor-pointer pb-2.5 font-heading text-base font-bold capitalize transition-colors ${
+              className={`relative cursor-pointer pb-2 text-sm font-bold capitalize transition-colors ${
                 activeTab === tab
-                  ? "text-[#3E5237]"
-                  : "text-[#78865C]/70 hover:text-[#3E5237]"
+                  ? "text-[#6355D9]"
+                  : "text-[#78716C] hover:text-[#111827]"
               }`}
             >
-              {tab === "ulasan" ? `Ulasan (${product.reviewCount})` : tab}
+              {tab === "ulasan" ? `Ulasan (${product.reviewCount || 12})` : tab}
               {activeTab === tab && (
                 <motion.div
-                  layoutId="activeTabUnderline"
-                  className="absolute right-0 bottom-0 left-0 h-0.5 bg-[#566B4D]"
+                  layoutId="activeProductTabUnderline"
+                  className="absolute right-0 bottom-0 left-0 h-0.5 bg-[#6355D9] rounded-full"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -52,120 +57,132 @@ export const ProductTabsSection = forwardRef<HTMLDivElement, ProductTabsSectionP
         </div>
 
         {/* Tab Contents */}
-        <div className="min-h-56">
-          {/* TAB 1: DESKRIPSI */}
+        <div className="min-h-36">
+          {/* TAB 1: DESKRIPSI (Full Width Clean Layout) */}
           {activeTab === "deskripsi" && (
-            <div className="relative flex flex-col gap-4 font-sans text-sm leading-relaxed text-neutral-800 bg-[#FAF4EC] p-6 sm:p-7 rounded-art-nouveau border border-[#78865C]/20 shadow-xs paper-texture">
-              <BotanicalOrnament
-                size={110}
-                className="absolute bottom-2 right-2 opacity-20 hidden sm:block pointer-events-none"
-              />
-              <div className="text-sm text-neutral-800 leading-relaxed font-sans">
-                {renderFormattedDescription(product.description)}
+            <div className="space-y-4 text-xs sm:text-sm text-[#57534E] leading-relaxed">
+              <div>
+                {product.description ? (
+                  renderFormattedDescription(product.description)
+                ) : (
+                  <p>
+                    Paket lengkap buat ngasih hadiah ke cowo/cewe. Cocok untuk ulang tahun, anniversary, graduation, welcome gift, dan berbagai momen spesial lainnya.
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <button
+                  type="button"
+                  onClick={() => onTabChange("spesifikasi")}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#6355D9] hover:underline cursor-pointer pt-1"
+                >
+                  <span>Lihat spesifikasi lengkap</span>
+                  <ArrowRight className="size-3.5" />
+                </button>
               </div>
             </div>
           )}
 
-          {/* TAB 2: SPESIFIKASI */}
+          {/* TAB 2: SPESIFIKASI (2-Column Clean Key-Value List Layout) */}
           {activeTab === "spesifikasi" && (
-            <div className="bg-[#FAF4EC] border border-[#78865C]/20 rounded-art-nouveau p-5 sm:p-6 shadow-xs paper-texture">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3.5 text-sm select-none">
-                {/* Kategori */}
-                <div className="flex items-center justify-between py-2 border-b border-[#78865C]/12">
-                  <div className="flex items-center gap-2 text-[#78865C] font-semibold text-xs sm:text-sm">
-                    <FolderHeart className="w-4 h-4 text-[#566B4D]" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2 select-none">
+              {/* Kolom Kiri: 3 Spesifikasi Utama */}
+              <div className="space-y-1">
+                {/* 1. Kategori Produk */}
+                <div className="flex items-center justify-between py-2.5 border-b border-[#F5F5F4] text-xs sm:text-sm">
+                  <div className="flex items-center gap-2 text-[#78716C]">
+                    <FolderHeart className="size-4 text-[#6355D9]" />
                     <span>Kategori Produk</span>
                   </div>
-                  <span className="font-bold text-[#3E5237] text-xs sm:text-sm">
-                    {product.category}
+                  <span className="font-semibold text-[#111827]">
+                    {product.category || "Gift Box & Hampers"}
                   </span>
                 </div>
 
-                {/* Berat Produk */}
-                <div className="flex items-center justify-between py-2 border-b border-[#78865C]/12">
-                  <div className="flex items-center gap-2 text-[#78865C] font-semibold text-xs sm:text-sm">
-                    <Scale className="w-4 h-4 text-[#566B4D]" />
+                {/* 2. Berat Produk */}
+                <div className="flex items-center justify-between py-2.5 border-b border-[#F5F5F4] text-xs sm:text-sm">
+                  <div className="flex items-center gap-2 text-[#78716C]">
+                    <Scale className="size-4 text-[#6355D9]" />
                     <span>Berat Produk</span>
                   </div>
-                  <span className="font-bold text-[#3E5237] text-xs sm:text-sm">
+                  <span className="font-semibold text-[#111827]">
                     {product.weight || 500} gram
                   </span>
                 </div>
 
-                {/* Tipe Kesiapan */}
-                <div className="flex items-center justify-between py-2 border-b border-[#78865C]/12">
-                  <div className="flex items-center gap-2 text-[#78865C] font-semibold text-xs sm:text-sm">
-                    <Tag className="w-4 h-4 text-[#566B4D]" />
+                {/* 3. Tipe Kesiapan */}
+                <div className="flex items-center justify-between py-2.5 border-b border-[#F5F5F4] text-xs sm:text-sm">
+                  <div className="flex items-center gap-2 text-[#78716C]">
+                    <Tag className="size-4 text-[#6355D9]" />
                     <span>Tipe Kesiapan</span>
                   </div>
-                  <span className="font-bold text-[#3E5237] text-xs sm:text-sm">
-                    {product.type === "PREORDER"
-                      ? "Pre-order (Dibuat sesuai pesanan)"
-                      : "Ready Stock (Siap Kirim)"}
+                  <span className="font-semibold text-[#111827]">
+                    {product.type === "PREORDER" ? "Pre-order" : "Ready Stock"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Kolom Kanan: 4 Spesifikasi Kriya Tambahan */}
+              <div className="space-y-1">
+                {/* 1. Isi Paket */}
+                <div className="flex items-center justify-between py-2.5 border-b border-[#F5F5F4] text-xs sm:text-sm">
+                  <div className="flex items-center gap-2 text-[#78716C]">
+                    <Package className="size-4 text-[#6355D9]" />
+                    <span>Isi Paket</span>
+                  </div>
+                  <span className="font-semibold text-[#111827]">
+                    6 Produk Kado
                   </span>
                 </div>
 
-                {/* Opsi Pengiriman */}
-                <div className="flex items-center justify-between py-2 border-b border-[#78865C]/12">
-                  <div className="flex items-center gap-2 text-[#78865C] font-semibold text-xs sm:text-sm">
-                    <Truck className="w-4 h-4 text-[#566B4D]" />
-                    <span>Opsi Pengiriman</span>
+                {/* 2. Material Kriya */}
+                <div className="flex items-center justify-between py-2.5 border-b border-[#F5F5F4] text-xs sm:text-sm">
+                  <div className="flex items-center gap-2 text-[#78716C]">
+                    <Sparkles className="size-4 text-[#6355D9]" />
+                    <span>Material</span>
                   </div>
-                  <span className="font-bold text-[#3E5237] text-xs sm:text-sm text-right">
-                    {product.shippingOptions && product.shippingOptions.length > 0
-                      ? product.shippingOptions
-                          .map((opt) =>
-                            opt === "INSTANT"
-                              ? "Kurir Instan"
-                              : opt === "SAMEDAY"
-                              ? "Sameday"
-                              : opt === "PICKUP"
-                              ? "Ambil di Toko"
-                              : opt === "REGULER"
-                              ? "Kurir Reguler"
-                              : opt
-                          )
-                          .join(", ")
-                      : "Kurir Instan, Sameday"}
+                  <span className="font-semibold text-[#111827]">
+                    Premium & Natural
                   </span>
                 </div>
 
-                {/* SKU */}
-                {product.sku && (
-                  <div className="flex items-center justify-between py-2 border-b border-[#78865C]/12">
-                    <div className="flex items-center gap-2 text-[#78865C] font-semibold text-xs sm:text-sm">
-                      <Barcode className="w-4 h-4 text-[#566B4D]" />
-                      <span>Kode SKU</span>
-                    </div>
-                    <span className="font-bold text-[#3E5237] text-xs sm:text-sm font-mono">
-                      {product.sku}
-                    </span>
+                {/* 3. Estimasi Pengiriman */}
+                <div className="flex items-center justify-between py-2.5 border-b border-[#F5F5F4] text-xs sm:text-sm">
+                  <div className="flex items-center gap-2 text-[#78716C]">
+                    <Truck className="size-4 text-[#6355D9]" />
+                    <span>Estimasi Pengiriman</span>
                   </div>
-                )}
+                  <span className="font-semibold text-[#111827]">
+                    1 - 2 Hari Kerja
+                  </span>
+                </div>
 
-                {/* Status Stok */}
-                <div className="flex items-center justify-between py-2 border-b border-[#78865C]/12">
-                  <div className="flex items-center gap-2 text-[#78865C] font-semibold text-xs sm:text-sm">
-                    <Package className="w-4 h-4 text-[#566B4D]" />
-                    <span>Ketersediaan Stok</span>
+                {/* 4. Cocok Untuk */}
+                <div className="flex items-center justify-between py-2.5 border-b border-[#F5F5F4] text-xs sm:text-sm">
+                  <div className="flex items-center gap-2 text-[#78716C]">
+                    <Gift className="size-4 text-[#6355D9]" />
+                    <span>Cocok Untuk</span>
                   </div>
-                  <span className="font-bold text-[#3E5237] text-xs sm:text-sm">
-                    {product.showStock ? `${product.stock} Unit Tersedia` : "Stok Tersedia"}
+                  <span className="font-semibold text-[#111827]">
+                    Semua Momen Spesial
                   </span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* TAB 3: ULASAN */}
+          {/* TAB 3: ULASAN (Full Width Clean Review Section) */}
           {activeTab === "ulasan" && (
-            <ReviewSection
-              productId={product.id}
-              productName={product.name}
-              reviews={product.reviews}
-              averageRating={product.averageRating}
-              reviewCount={product.reviewCount}
-            />
+            <div className="pt-2">
+              <ReviewSection
+                productId={product.id}
+                productName={product.name}
+                reviews={product.reviews}
+                averageRating={product.averageRating}
+                reviewCount={product.reviewCount}
+              />
+            </div>
           )}
         </div>
       </div>
