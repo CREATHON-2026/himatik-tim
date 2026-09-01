@@ -1,5 +1,3 @@
-
-import Link from "next/link";
 import {
   Plus,
   TrendingUp,
@@ -15,12 +13,54 @@ import { buildInsightInputs, fmtRupiah, fmtPct } from "@/features/insight/servic
 import { narrate } from "@/features/insight/services/narrator";
 import { ProductCharts } from "@/components/DashboardCharts";
 
+// --- Local Types for Insight Data ---
+interface InsightFact {
+  id: string;
+  layer: "observation" | "interpretation" | "suggestion" | string;
+  template: string;
+  slots: Record<string, string>;
+}
+
+interface CategoryBreakdown {
+  category?: string;
+  total?: number;
+}
+
+interface ProductBreakdown {
+  product?: string;
+  total?: number;
+  revenue?: number;
+}
+
+interface InsightInputs {
+  period?: { label?: string };
+  data_quality?: { status: string; transaction_count?: number };
+  totals?: {
+    distinct_products?: number;
+    transactions?: number;
+    gross_revenue?: number;
+    average_order_value?: number;
+    unique_buyers?: number;
+  };
+  comparison?: {
+    available?: boolean;
+    direction?: "up" | "down" | "flat";
+    transactions_delta_pct?: number;
+  };
+  breakdown?: {
+    by_category?: CategoryBreakdown[];
+    by_product?: ProductBreakdown[];
+  };
+  facts?: InsightFact[];
+  [key: string]: unknown;
+}
+
 export default async function CreatorDashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   let insightNarration = null;
-  let insightInputs: any = null;
+  let insightInputs: InsightInputs | null = null;
   let storeName = "";
   let isVerified = false;
   let creatorProfileId = "";
@@ -48,7 +88,7 @@ export default async function CreatorDashboardPage() {
     if (storeName) {
       try {
         insightInputs = await buildInsightInputs(user.id, storeName);
-        insightNarration = await narrate(insightInputs, null);
+        insightNarration = await narrate(insightInputs as Parameters<typeof narrate>[0], null);
       } catch (e) {
         console.error("Failed to generate insights:", e);
       }
@@ -67,12 +107,12 @@ export default async function CreatorDashboardPage() {
     distinctCategories: breakdown?.by_category?.length ?? 0,
     transactions: totals?.transactions ?? 0,
     trendDirection: comparison?.available ? comparison.direction : "flat",
-    trendPct: comparison?.available ? fmtPct(comparison.transactions_delta_pct) : "0",
-    revenueFormatted: totals ? fmtRupiah(totals.gross_revenue) : "Rp0",
-    aovFormatted: totals ? fmtRupiah(totals.average_order_value) : "Rp0",
+    trendPct: comparison?.available ? fmtPct(comparison.transactions_delta_pct ?? 0) : "0",
+    revenueFormatted: totals ? fmtRupiah(totals.gross_revenue ?? 0) : "Rp0",
+    aovFormatted: totals ? fmtRupiah(totals.average_order_value ?? 0) : "Rp0",
     uniqueBuyers: totals?.unique_buyers ?? 0,
-    repeatRatio: totals && totals.unique_buyers > 0
-      ? fmtPct(Math.round((totals.transactions / totals.unique_buyers) * 10) / 10)
+    repeatRatio: totals && (totals.unique_buyers ?? 0) > 0
+      ? fmtPct(Math.round(((totals.transactions ?? 0) / (totals.unique_buyers ?? 1)) * 10) / 10)
       : "0",
   };
 
@@ -173,7 +213,7 @@ export default async function CreatorDashboardPage() {
             <div className="px-6 pb-6 space-y-5">
               {/* Section 1: Ringkasan Performa (Observations) */}
               {(() => {
-                const observations = insightInputs.facts.filter((f: any) => f.layer === "observation");
+                const observations = (insightInputs?.facts ?? []).filter((f) => f.layer === "observation");
                 if (observations.length === 0) return null;
                 return (
                   <div className="space-y-2">
@@ -182,7 +222,7 @@ export default async function CreatorDashboardPage() {
                       <span className="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider">Ringkasan Performa</span>
                     </div>
                     <div className="pl-4 border-l-2 border-emerald-500/20">
-                      {observations.map((f: any) => {
+                      {observations.map((f) => {
                         const text = f.template.replace(/\{([a-z_]+)\}/g, (_: string, key: string) => f.slots[key] ?? `{${key}}`);
                         return <p key={f.id} className="text-sm text-neutral-200 leading-relaxed">{text}</p>;
                       })}
@@ -193,7 +233,7 @@ export default async function CreatorDashboardPage() {
 
               {/* Section 2: Analisis (Interpretations) */}
               {(() => {
-                const interpretations = insightInputs.facts.filter((f: any) => f.layer === "interpretation");
+                const interpretations = (insightInputs?.facts ?? []).filter((f) => f.layer === "interpretation");
                 if (interpretations.length === 0) return null;
                 return (
                   <div className="space-y-2">
@@ -202,7 +242,7 @@ export default async function CreatorDashboardPage() {
                       <span className="text-[11px] font-semibold text-blue-400 uppercase tracking-wider">Analisis Data</span>
                     </div>
                     <div className="pl-4 border-l-2 border-blue-500/20">
-                      {interpretations.map((f: any) => {
+                      {interpretations.map((f) => {
                         const text = f.template.replace(/\{([a-z_]+)\}/g, (_: string, key: string) => f.slots[key] ?? `{${key}}`);
                         return <p key={f.id} className="text-sm text-neutral-300 leading-relaxed">{text}</p>;
                       })}
@@ -213,7 +253,7 @@ export default async function CreatorDashboardPage() {
 
               {/* Section 3: Rekomendasi (Suggestions) */}
               {(() => {
-                const suggestions = insightInputs.facts.filter((f: any) => f.layer === "suggestion");
+                const suggestions = (insightInputs?.facts ?? []).filter((f) => f.layer === "suggestion");
                 if (suggestions.length === 0) return null;
                 return (
                   <div className="space-y-2">
@@ -222,7 +262,7 @@ export default async function CreatorDashboardPage() {
                       <span className="text-[11px] font-semibold text-amber-400 uppercase tracking-wider">Rekomendasi</span>
                     </div>
                     <div className="pl-4 border-l-2 border-amber-500/20 space-y-2">
-                      {suggestions.map((f: any) => {
+                      {suggestions.map((f) => {
                         const text = f.template.replace(/\{([a-z_]+)\}/g, (_: string, key: string) => f.slots[key] ?? `{${key}}`);
                         return (
                           <div key={f.id} className="flex items-start gap-2">
@@ -240,7 +280,7 @@ export default async function CreatorDashboardPage() {
             {/* Footer */}
             <div className="px-6 py-3 bg-neutral-900/50 border-t border-neutral-800/50 flex justify-between items-center">
               <p className="text-[10px] text-neutral-500 font-mono">
-                Mode: {insightNarration.mode} • {insightInputs.facts.length} fakta dianalisis
+                Mode: {(insightNarration as { mode?: string })?.mode} • {insightInputs?.facts?.length ?? 0} fakta dianalisis
               </p>
               <p className="text-[10px] text-neutral-600">
                 Semua angka dihitung dari data transaksi, bukan AI
@@ -279,15 +319,30 @@ export default async function CreatorDashboardPage() {
   );
 }
 
-// Komponen Server terpisah untuk mengambil 5 transaksi terakhir agar kode bersih
 async function RecentTransactions({ storeId }: { storeId: string }) {
   if (!storeId) return null;
   
-  const recent = await prisma.transaction.findMany({
-    where: { storeId },
-    orderBy: { createdAt: "desc" },
-    take: 5
-  });
+  // Safe query for recent transactions
+  const prismaAny = prisma as unknown as {
+    transaction?: {
+      findMany: (args: unknown) => Promise<Array<{
+        id: string;
+        createdAt: Date;
+        primaryProductName: string;
+        paymentChannel?: string | null;
+        grossAmount?: number;
+        status: string;
+      }>>;
+    };
+  };
+
+  const recent = prismaAny.transaction
+    ? await prismaAny.transaction.findMany({
+        where: { storeId },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      })
+    : [];
 
   if (recent.length === 0) {
     return (
@@ -319,7 +374,7 @@ async function RecentTransactions({ storeId }: { storeId: string }) {
             </span>
           </td>
           <td className="py-3.5 px-4 font-semibold text-emerald-400 text-right">
-            {fmtRupiah(trx.grossAmount)}
+            {fmtRupiah(trx.grossAmount || 0)}
           </td>
         </tr>
       ))}

@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     const filePath = `uploads/${fileName}`;
 
     // Upload to Supabase storage bucket 'products'
-    const { data: _uploadData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from("products")
       .upload(filePath, buffer, {
         contentType: file.type,

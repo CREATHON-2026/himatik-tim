@@ -3,9 +3,7 @@ import { prisma } from "@/lib/prisma";
 export const SCHEMA_VERSION = "1.1";
 
 const MIN_TRANSACTIONS = 5;
-const MIN_SHARE_TO_HIGHLIGHT = 25.0;
 const MIN_PREV_FOR_TREND = 5;
-const MIN_TRX_FOR_SHARE = 15;
 const COUNTED_STATUSES = ["COMPLETED", "IN_ESCROW"]; // Using Prisma Enums
 
 const MONTHS_ID = [
@@ -46,16 +44,20 @@ export interface Fact {
   slots: Record<string, string>;
 }
 
-function buildFacts(payload: any): Fact[] {
+type InsightPayloadAny = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+function buildFacts(payload: InsightPayloadAny): Fact[] {
   const totals = payload.totals;
-  const categories = payload.breakdown.by_category;
-  const products = payload.breakdown.by_product;
-  const channels = payload.breakdown.by_channel;
+  const categories = payload.breakdown?.by_category;
+  const products = payload.breakdown?.by_product;
+  const channels = payload.breakdown?.by_channel;
   
   if (!categories || categories.length === 0) return [];
   
-  const top = categories[0];
-  const tied = categories.filter((c: any) => c.transactions === top.transactions).map((c: any) => c.name);
+  const top = categories[0] as Record<string, string | number>;
+  const tied = categories
+    .filter((c: Record<string, string | number>) => c.transactions === top.transactions)
+    .map((c: Record<string, string | number>) => String(c.name));
 
   const facts: Fact[] = [];
 
@@ -90,43 +92,43 @@ function buildFacts(payload: any): Fact[] {
       id: "top_category",
       layer: "observation",
       template: "Kategori {cat} memimpin dengan {cat_trx} transaksi ({cat_share} dari total).",
-      slots: { cat: safeName(top.name), cat_trx: fmtInt(top.transactions), cat_share: fmtPct(top.share_pct) + "%" },
+      slots: { cat: safeName(String(top.name)), cat_trx: fmtInt(Number(top.transactions)), cat_share: fmtPct(Number(top.share_pct)) + "%" },
     });
   } else {
     facts.push({
       id: "top_category_tie",
       layer: "observation",
       template: "{cat_list} sama-sama memimpin dengan masing-masing {cat_trx} transaksi.",
-      slots: { cat_list: tied.map(safeName).join(" dan "), cat_trx: fmtInt(top.transactions) },
+      slots: { cat_list: tied.map(safeName).join(" dan "), cat_trx: fmtInt(Number(top.transactions)) },
     });
   }
 
   // Top produk
   if (products && products.length > 0) {
-    const topProd = products[0];
+    const topProd = products[0] as Record<string, string | number>;
     facts.push({
       id: "top_product",
       layer: "observation",
       template: "Produk paling laris adalah {prod}, terjual {prod_trx} kali dengan pendapatan {prod_rev}.",
       slots: {
-        prod: safeName(topProd.name),
-        prod_trx: fmtInt(topProd.transactions),
-        prod_rev: fmtRupiah(topProd.revenue),
+        prod: safeName(String(topProd.name)),
+        prod_trx: fmtInt(Number(topProd.transactions)),
+        prod_rev: fmtRupiah(Number(topProd.revenue)),
       },
     });
   }
 
   // Channel utama
   if (channels && channels.length > 0) {
-    const topCh = channels[0];
+    const topCh = channels[0] as Record<string, string | number>;
     facts.push({
       id: "top_channel",
       layer: "observation",
       template: "Kanal penjualan terbesar adalah {channel} dengan {ch_trx} transaksi ({ch_share} dari total).",
       slots: {
-        channel: safeName(topCh.name),
-        ch_trx: fmtInt(topCh.transactions),
-        ch_share: fmtPct(topCh.share_pct) + "%",
+        channel: safeName(String(topCh.name)),
+        ch_trx: fmtInt(Number(topCh.transactions)),
+        ch_share: fmtPct(Number(topCh.share_pct)) + "%",
       },
     });
   }
@@ -155,28 +157,30 @@ function buildFacts(payload: any): Fact[] {
   }
 
   // Konsentrasi kategori — risiko ketergantungan
-  if (top.share_pct >= 60 && categories.length > 1) {
+  if (Number(top.share_pct) >= 60 && categories.length > 1) {
     facts.push({
       id: "concentration_risk",
       layer: "interpretation",
       template: "Perlu dicatat: {cat} menyumbang {cat_share} dari seluruh transaksi. Ini berarti tokomu sangat bergantung pada satu kategori saja.",
-      slots: { cat: safeName(top.name), cat_share: fmtPct(top.share_pct) + "%" },
+      slots: { cat: safeName(String(top.name)), cat_share: fmtPct(Number(top.share_pct)) + "%" },
     });
   }
 
   // AOV benchmark (apakah tinggi atau rendah relatif terhadap produk)
   if (products && products.length >= 2) {
-    const topProdRev = products[0].revenue / products[0].transactions;
-    const secondProdRev = products[1].revenue / products[1].transactions;
+    const p0 = products[0] as Record<string, string | number>;
+    const p1 = products[1] as Record<string, string | number>;
+    const topProdRev = Number(p0.revenue) / Number(p0.transactions);
+    const secondProdRev = Number(p1.revenue) / Number(p1.transactions);
     if (topProdRev > secondProdRev * 1.5) {
       facts.push({
         id: "aov_gap",
         layer: "interpretation",
         template: "Produk {prod_top} memiliki nilai per transaksi ({aov_top}) yang jauh lebih tinggi dari {prod_second} ({aov_second}). Ini menunjukkan potensi segmen premium.",
         slots: {
-          prod_top: safeName(products[0].name),
+          prod_top: safeName(String(p0.name)),
           aov_top: fmtRupiah(Math.round(topProdRev)),
-          prod_second: safeName(products[1].name),
+          prod_second: safeName(String(p1.name)),
           aov_second: fmtRupiah(Math.round(secondProdRev)),
         },
       });
@@ -199,16 +203,16 @@ function buildFacts(payload: any): Fact[] {
   // ═══════════════════════════════════════════════════════════════════
 
   // Suggestion: diversifikasi jika konsentrasi tinggi
-  if (top.share_pct >= 60 && categories.length > 1) {
-    const weakest = categories[categories.length - 1];
+  if (Number(top.share_pct) >= 60 && categories.length > 1) {
+    const weakest = categories[categories.length - 1] as Record<string, string | number>;
     facts.push({
       id: "suggest_diversify",
       layer: "suggestion",
       template: "Pertimbangkan untuk mendorong kategori {weak_cat} (saat ini hanya {weak_trx} transaksi) melalui promo bundling atau penempatan di halaman utama, agar risiko ketergantungan pada {top_cat} berkurang.",
       slots: {
-        weak_cat: safeName(weakest.name),
-        weak_trx: fmtInt(weakest.transactions),
-        top_cat: safeName(top.name),
+        weak_cat: safeName(String(weakest.name)),
+        weak_trx: fmtInt(Number(weakest.transactions)),
+        top_cat: safeName(String(top.name)),
       },
     });
   }
@@ -237,7 +241,7 @@ function buildFacts(payload: any): Fact[] {
       template: "Pertumbuhan {delta_pct} adalah sinyal positif. Manfaatkan momentum ini dengan menambah stok pada produk {top_prod} yang sedang diminati, dan pertimbangkan untuk menaikkan exposure melalui katalog atau share link.",
       slots: {
         delta_pct: fmtPct(comparison.transactions_delta_pct) + "%",
-        top_prod: products && products.length > 0 ? safeName(products[0].name) : safeName(top.name),
+        top_prod: products && products.length > 0 ? safeName(String((products[0] as Record<string, string | number>).name)) : safeName(String(top.name)),
       },
     });
   }
@@ -278,7 +282,8 @@ export async function buildInsightInputs(storeId: string, storeName: string) {
   const days = 28;
 
   // Layer 2: Revised grouping sets raw query
-  const rawRows: any[] = await prisma.$queryRaw`
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawRows = await (prisma.$queryRaw as any)`
     with rows_ as (
       select
         case when t."createdAt" >= ${start} then 'current' else 'previous' end as period,
@@ -313,13 +318,13 @@ export async function buildInsightInputs(storeId: string, storeName: string) {
   `;
 
   // Parse raw grouping sets
-  const currentTotalRow = rawRows.find(r => r.period === 'current' && r.dimension === 'total');
-  const previousTotalRow = rawRows.find(r => r.period === 'previous' && r.dimension === 'total');
+  const currentTotalRow = rawRows.find((r: Record<string, unknown>) => r.period === 'current' && r.dimension === 'total');
+  const previousTotalRow = rawRows.find((r: Record<string, unknown>) => r.period === 'previous' && r.dimension === 'total');
   
-  const currentTotal = currentTotalRow ? currentTotalRow.transactions : 0;
-  const previousTotal = previousTotalRow ? previousTotalRow.transactions : 0;
+  const currentTotal = currentTotalRow ? Number(currentTotalRow.transactions) : 0;
+  const previousTotal = previousTotalRow ? Number(previousTotalRow.transactions) : 0;
 
-  let payload: any = {
+  const payload: InsightPayloadAny = {
     schema_version: SCHEMA_VERSION,
     creator: { creator_id: storeId, store_name: storeName },
     period: {
@@ -330,7 +335,7 @@ export async function buildInsightInputs(storeId: string, storeName: string) {
     },
     data_quality: {
       status: "ok",
-      transaction_count: currentTotal,
+      transaction_count: currentTotal as number,
       min_required: MIN_TRANSACTIONS,
       counted_statuses: COUNTED_STATUSES,
       notes: [],
@@ -350,22 +355,22 @@ export async function buildInsightInputs(storeId: string, storeName: string) {
 
   // Populate Breakdowns
   const buildBreakdown = (dimensionName: string, limit?: number) => {
-    let rows = rawRows.filter(r => r.period === 'current' && r.dimension === dimensionName);
+    let rows = rawRows.filter((r: Record<string, unknown>) => r.period === 'current' && r.dimension === dimensionName);
     if (limit) rows = rows.slice(0, limit);
-    return rows.map(r => ({
-      name: r.name,
-      transactions: r.transactions,
-      share_pct: Math.round((r.transactions * 100.0 / (currentTotal || 1)) * 10) / 10,
-      revenue: r.revenue
+    return rows.map((r: Record<string, unknown>) => ({
+      name: String(r.name ?? ""),
+      transactions: Number(r.transactions ?? 0),
+      share_pct: Math.round((Number(r.transactions ?? 0) * 100.0 / (currentTotal || 1)) * 10) / 10,
+      revenue: Number(r.revenue ?? 0)
     }));
   };
 
   payload.totals = {
     transactions: currentTotal,
-    gross_revenue: currentTotalRow.revenue,
-    average_order_value: Math.round(currentTotalRow.revenue / currentTotal),
-    unique_buyers: currentTotalRow.unique_buyers,
-    distinct_products: rawRows.filter(r => r.period === 'current' && r.dimension === 'product').length
+    gross_revenue: Number(currentTotalRow?.revenue ?? 0),
+    average_order_value: Math.round(Number(currentTotalRow?.revenue ?? 0) / currentTotal),
+    unique_buyers: Number(currentTotalRow?.unique_buyers ?? 0),
+    distinct_products: rawRows.filter((r: Record<string, unknown>) => r.period === 'current' && r.dimension === 'product').length
   };
 
   payload.breakdown = {

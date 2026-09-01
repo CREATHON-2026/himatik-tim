@@ -32,7 +32,8 @@ async function main() {
   console.log(`Seeding data for User (Store): ${creator.name} (${storeId})`);
 
   // Delete old transactions to prevent bloat
-  await prisma.transaction.deleteMany({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (prisma as any).transaction.deleteMany({
     where: { storeId: storeId }
   });
 
@@ -47,12 +48,13 @@ async function main() {
     else if (trx.status === "CANCELLED") status = "CANCELLED";
     else if (trx.status === "REFUNDED") status = "REFUNDED";
 
-    await prisma.transaction.create({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (prisma as any).transaction.create({
       data: {
         id: trx.transaction_id,
         storeId: storeId,
         buyerId: trx.buyer_id,
-        status: status as any,
+        status: status as string,
         paymentChannel: trx.channel,
         grossAmount: trx.gross_amount,
         platformFee: Math.floor(trx.gross_amount * 0.05),

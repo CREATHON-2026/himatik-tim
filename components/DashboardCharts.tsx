@@ -17,7 +17,42 @@ import {
 
 const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#6366f1", "#8b5cf6", "#ec4899"];
 
-export function ProductCharts({ productData }: { productData: any[] }) {
+interface ProductBreakdownItem {
+  name?: string;
+  transactions?: number;
+  revenue?: number;
+  share_pct?: number;
+}
+
+interface TooltipPayloadItem {
+  value: number;
+  payload: {
+    transactions?: number;
+  };
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadItem[];
+  label?: string;
+}
+
+const CustomTooltipBar = ({ active, payload, label }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-neutral-900 border border-neutral-700 p-3 rounded-lg shadow-xl text-xs">
+        <p className="font-semibold text-white mb-2">{label}</p>
+        <p className="text-emerald-400">
+          Pendapatan: Rp {payload[0].value.toLocaleString("id-ID")}
+        </p>
+        <p className="text-blue-400">Terjual: {payload[0].payload.transactions}x</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+export function ProductCharts({ productData }: { productData: ProductBreakdownItem[] }) {
   if (!productData || productData.length === 0) return null;
 
   // Prepare data for the charts
@@ -27,22 +62,6 @@ export function ProductCharts({ productData }: { productData: any[] }) {
     revenue: p.revenue,
     share: p.share_pct,
   }));
-
-  // Custom Tooltip for Bar Chart
-  const CustomTooltipBar = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-neutral-900 border border-neutral-700 p-3 rounded-lg shadow-xl text-xs">
-          <p className="font-semibold text-white mb-2">{label}</p>
-          <p className="text-emerald-400">
-            Pendapatan: Rp {payload[0].value.toLocaleString("id-ID")}
-          </p>
-          <p className="text-blue-400">Terjual: {payload[0].payload.transactions}x</p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
