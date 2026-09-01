@@ -34,6 +34,47 @@ export async function listCreatorProducts(): Promise<Product[]> {
 }
 
 /**
+ * Fetch public products for buyer catalog with filtering & search
+ */
+export async function getPublicProducts(params?: {
+  category?: string;
+  search?: string;
+  sort?: string;
+  page?: number;
+  limit?: number;
+}): Promise<Product[]> {
+  const query = new URLSearchParams();
+  query.set("public", "true");
+  if (params?.category && params.category !== "ALL") {
+    query.set("category", params.category);
+  }
+  if (params?.search && params.search.trim()) {
+    query.set("search", params.search.trim());
+  }
+  if (params?.sort) {
+    query.set("sort", params.sort);
+  }
+  if (params?.page) {
+    query.set("page", String(params.page));
+  }
+  if (params?.limit) {
+    query.set("limit", String(params.limit));
+  }
+
+  const res = await fetch(`${BASE_URL}?${query.toString()}`, {
+    method: "GET",
+  });
+
+  const json: ApiResponse<Product[]> = await res.json();
+
+  if (!res.ok || json.error) {
+    throw new Error(json.error || "Failed to fetch public products");
+  }
+
+  return (json.data ?? json) as Product[];
+}
+
+/**
  * Create a new product
  * @throws Error with validation message on failure
  */
