@@ -1,82 +1,167 @@
-import { prisma } from "@/lib/prisma";
-import { Database, ShieldCheck, Zap, Server } from "lucide-react";
+"use client";
 
-export default async function Home() {
+import React, { useRef, useEffect, useCallback, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import Lenis from "lenis";
+import { HeroNavbar } from "@/features/landing/components/hero-portal/HeroNavbar";
+import { HeroBoneLayer } from "@/features/landing/components/hero-portal/HeroBoneLayer";
+import { HeroDarkLayer } from "@/features/landing/components/hero-portal/HeroDarkLayer";
+import { HeroSphereLens } from "@/features/landing/components/hero-portal/HeroSphereLens";
+import { SectionFlavors } from "@/features/landing/components/flavors/SectionFlavors";
+import { SectionInside } from "@/features/landing/components/inside/SectionInside";
+import { SectionStory } from "@/features/landing/components/story/SectionStory";
+import { SectionPress } from "@/features/landing/components/press/SectionPress";
+import { SectionWhereAvailable } from "@/features/landing/components/where-available/SectionWhereAvailable";
+import { DirectProduct } from "@/features/landing/components/where-available/types";
+import { useSpherePortal } from "@/features/landing/hooks/useSpherePortal";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+}
+
+export default function StillLandingPage() {
+  const mainContainerRef = useRef<HTMLDivElement>(null);
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const flavorsSectionRef = useRef<HTMLElement>(null);
+  const insideSectionRef = useRef<HTMLElement>(null);
+  const storySectionRef = useRef<HTMLElement>(null);
+  const pressSectionRef = useRef<HTMLElement>(null);
+  const whereAvailableRef = useRef<HTMLElement>(null);
+  const darkIrisRef = useRef<HTMLDivElement>(null);
+  const lettersRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const auraGlowRef = useRef<HTMLDivElement>(null);
+  const canWrapperRef = useRef<HTMLDivElement>(null);
+  const sphereOverlayRef = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
+
+  // Dynamic cart state for e-commerce interaction
+  const [cartCount, setCartCount] = useState(0);
+
+  const handleAddToCart = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (_product: DirectProduct, _packSize: string) => {
+      setCartCount((prev) => prev + 1);
+    },
+    []
+  );
+
+  // Initialize Ultra-Luxury Lenis Momentum Smooth Scroll synchronized with GSAP Ticker
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.4,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Luxurious exponential ease
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.2,
+      syncTouch: true,
+    });
+
+    lenisRef.current = lenis;
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    const tickerCallback = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(tickerCallback);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(tickerCallback);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
+  // Programmatic smooth scroll handler with cinematic deceleration
+  const handleNavigate = useCallback((targetId: string) => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(targetId, {
+        duration: 1.4,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      });
+    } else {
+      gsap.to(window, {
+        scrollTo: { y: targetId, autoKill: false },
+        duration: 1.4,
+        ease: "power3.inOut",
+      });
+    }
+  }, []);
+
+  // Encapsulated physics and smooth lens portal tracking for Hero
+  const {
+    lensPos,
+    currentRadius,
+    currentClipPath,
+    handleMouseMove,
+    handleMouseLeave,
+  } = useSpherePortal({
+    containerRef: heroSectionRef,
+    lettersRef,
+    auraGlowRef,
+    canWrapperRef,
+    baseRadius: 240,
+  });
+
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col items-center justify-center p-6 antialiased selection:bg-emerald-500 selection:text-black">
-      <main className="w-full max-w-3xl space-y-8 text-center sm:text-left">
-        {/* Header Badge */}
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-400">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          Setup Complete: Next.js + Supabase + Prisma
-        </div>
+    <div
+      ref={mainContainerRef}
+      className="relative min-h-screen w-full bg-[#EFEDE6] font-sans text-[#1A1B1D] selection:bg-[#BCD3D8] selection:text-[#1A1B1D]"
+    >
+      {/* 1. Header Navigation with Smooth Programmatic Scrolling & Dynamic Cart */}
+      <HeroNavbar cartCount={cartCount} onNavigate={handleNavigate} />
 
-        {/* Title & Description */}
-        <div className="space-y-3">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
-            Creathon Project
-          </h1>
-          <p className="text-neutral-400 text-base sm:text-lg max-w-xl">
-            Proyek siap dikembangkan dengan arsitektur modern tanpa folder{" "}
-            <code className="text-emerald-400 font-mono text-sm bg-neutral-900 px-1.5 py-0.5 rounded border border-neutral-800">
-              /src
-            </code>
-            , dilengkapi integrasi penuh Supabase SSR dan Prisma ORM.
-          </p>
-        </div>
+      {/* 2. Section 1: Hero (Natural flow with butter-smooth momentum scroll) */}
+      <section
+        ref={heroSectionRef}
+        id="hero"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="relative flex h-dvh w-full items-center justify-center overflow-hidden bg-[#EFEDE6]"
+      >
+        {/* Layer A: Light Bone Base Layer */}
+        <HeroBoneLayer lettersRef={lettersRef} />
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-          <div className="p-4 rounded-xl border border-neutral-800 bg-neutral-900/50 space-y-2 hover:border-neutral-700 transition">
-            <div className="flex items-center gap-2.5 text-white font-semibold">
-              <Database className="w-4 h-4 text-emerald-400" />
-              <span>Prisma ORM</span>
-            </div>
-            <p className="text-xs text-neutral-400">
-              Singleton client di <code className="text-neutral-300">lib/prisma.ts</code> dengan PgBouncer pooler connection.
-            </p>
-          </div>
+        {/* Layer B: Dark Iris Portal Layer (peek into the formula) */}
+        <HeroDarkLayer
+          ref={darkIrisRef}
+          clipPath={currentClipPath}
+          auraGlowRef={auraGlowRef}
+          canWrapperRef={canWrapperRef}
+        />
 
-          <div className="p-4 rounded-xl border border-neutral-800 bg-neutral-900/50 space-y-2 hover:border-neutral-700 transition">
-            <div className="flex items-center gap-2.5 text-white font-semibold">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Supabase SSR</span>
-            </div>
-            <p className="text-xs text-neutral-400">
-              Browser & Server client di <code className="text-neutral-300">lib/supabase/</code> lengkap dengan Next.js auth middleware.
-            </p>
-          </div>
+        {/* Layer C: 3D Transparent Sphere Lens Overlay (Absolute inside Hero) */}
+        <HeroSphereLens
+          ref={sphereOverlayRef}
+          lensPos={lensPos}
+          currentRadius={currentRadius}
+        />
+      </section>
 
-          <div className="p-4 rounded-xl border border-neutral-800 bg-neutral-900/50 space-y-2 hover:border-neutral-700 transition">
-            <div className="flex items-center gap-2.5 text-white font-semibold">
-              <Server className="w-4 h-4 text-emerald-400" />
-              <span>Flat Root Structure</span>
-            </div>
-            <p className="text-xs text-neutral-400">
-              Arsitektur langsung di root (<code className="text-neutral-300">app/</code>, <code className="text-neutral-300">lib/</code>, <code className="text-neutral-300">components/</code>).
-            </p>
-          </div>
+      {/* 3. Section 2: Three Formulations (Pinned GSAP Continuous Scrub + Magnetic Snap) */}
+      <SectionFlavors ref={flavorsSectionRef} />
 
-          <div className="p-4 rounded-xl border border-neutral-800 bg-neutral-900/50 space-y-2 hover:border-neutral-700 transition">
-            <div className="flex items-center gap-2.5 text-white font-semibold">
-              <Zap className="w-4 h-4 text-emerald-400" />
-              <span>Tailwind CSS</span>
-            </div>
-            <p className="text-xs text-neutral-400">
-              Modern styling system dengan helper <code className="text-neutral-300">cn()</code> di <code className="text-neutral-300">lib/utils.ts</code>.
-            </p>
-          </div>
-        </div>
+      {/* 4. Section 3: Functional Ingredients (Pinned GSAP Continuous Scrub + Magnetic Snap) */}
+      <SectionInside ref={insideSectionRef} />
 
-        {/* Action / Next steps */}
-        <div className="pt-4 border-t border-neutral-900 text-xs text-neutral-500 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <span>Creathon Workspace • Ready for Feature Development</span>
-          <span className="font-mono text-neutral-400">npm run dev</span>
-        </div>
-      </main>
+      {/* 5. Section 4: Story Timeline (Pinned GSAP 5-Year Archive Scrub 2021 -> 2025) */}
+      <SectionStory ref={storySectionRef} />
+
+      {/* 6. Section 5: Press & Infinite Marquee Ticker */}
+      <SectionPress ref={pressSectionRef} />
+
+      {/* 7. Section 6: Where Available / Stockists, Direct Shop & Editorial Footer */}
+      <SectionWhereAvailable
+        ref={whereAvailableRef}
+        onAddToCart={handleAddToCart}
+        onNavigate={handleNavigate}
+      />
     </div>
   );
 }
