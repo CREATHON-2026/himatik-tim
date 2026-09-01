@@ -164,7 +164,19 @@ export default function CreatorProductsPage() {
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white shadow-xs hover:shadow-md transition-all duration-300"
+              role="link"
+              tabIndex={0}
+              aria-label={`Lihat detail ${product.name}`}
+              onClick={() =>
+                router.push(`/dashboard/creator/products/${product.id}`)
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  router.push(`/dashboard/creator/products/${product.id}`);
+                }
+              }}
+              className="group flex cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white shadow-xs transition-all duration-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6355D9]"
             >
               <div>
                 {/* Thumbnail Image */}
@@ -188,7 +200,10 @@ export default function CreatorProductsPage() {
                     </span>
                   </div>
 
-                  <div className="absolute top-3 right-3">
+                  <div
+                    className="absolute top-3 right-3"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <DropdownMenu>
                       <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 p-0 shadow-xs hover:bg-white cursor-pointer">
                         <MoreVertical className="h-4 w-4 text-[#292524]" />
@@ -246,6 +261,7 @@ export default function CreatorProductsPage() {
                 <Button
                   variant="ghost"
                   size="sm"
+                  onClick={(e) => e.stopPropagation()}
                   render={
                     <Link
                       href={`/dashboard/creator/products/${product.id}/edit`}
