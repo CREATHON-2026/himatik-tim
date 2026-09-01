@@ -1,4 +1,5 @@
 import * as React from "react";
+import Link from "next/link";
 import { Eye, ShoppingCart, Coins, TrendingUp, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
@@ -69,9 +70,12 @@ export function ProductPerformanceCard({ price }: ProductPerformanceCardProps) {
       </div>
 
       <div className="border-border/10 border-t pt-4 text-center">
-        <button className="text-accent-gold hover:text-accent-gold/80 inline-flex cursor-pointer items-center gap-1.5 text-xs font-semibold">
+        <Link
+          href="/dashboard/creator"
+          className="text-[#6355D9] hover:text-[#5145C6] inline-flex items-center gap-1.5 text-xs font-semibold hover:underline transition-colors"
+        >
           Lihat Analitik Lengkap <ArrowRight className="size-3.5" />
-        </button>
+        </Link>
       </div>
     </Card>
   );
