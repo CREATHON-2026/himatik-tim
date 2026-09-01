@@ -22,21 +22,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-interface ProductItem {
-  id: string;
-  title: string;
-  category: string;
-  price: number;
-  stock: number;
-  images: string[];
-  isPublished: boolean;
-  createdAt: string;
-}
+import type { Product } from "@/features/products/types";
 
 export default function CreatorProductsPage() {
   const router = useRouter();
-  const [products, setProducts] = useState<ProductItem[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [isLoading, setIsLoading] = useState(true);
@@ -75,7 +65,7 @@ export default function CreatorProductsPage() {
   };
 
   const filteredProducts = products.filter((p) => {
-    const matchQuery = p.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchQuery = p.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchCategory =
       selectedCategory === "ALL" || p.category === selectedCategory;
     return matchQuery && matchCategory;
@@ -95,7 +85,8 @@ export default function CreatorProductsPage() {
             Kelola Produk & Karya Gift
           </h1>
           <p className="mt-1 text-sm text-[#78716C]">
-            Tambah produk baru, pantau stok kerajinan, dan perbarui rincian harga kado Anda.
+            Tambah produk baru, pantau stok kerajinan, dan perbarui rincian
+            harga kado Anda.
           </p>
         </div>
 
@@ -158,7 +149,8 @@ export default function CreatorProductsPage() {
             Belum Ada Produk Gift
           </h3>
           <p className="mt-1 max-w-sm text-xs text-[#78716C]">
-            Mulai unggah foto kerajinan tangan atau kado pertama Anda agar pembeli dapat menemukan karya Anda di katalog Creathon.
+            Mulai unggah foto kerajinan tangan atau kado pertama Anda agar
+            pembeli dapat menemukan karya Anda di katalog Creathon.
           </p>
           <Button
             render={<Link href="/dashboard/creator/products/new" />}
@@ -177,10 +169,10 @@ export default function CreatorProductsPage() {
               <div>
                 {/* Thumbnail Image */}
                 <div className="relative aspect-square w-full overflow-hidden bg-[#F5F5F4]">
-                  {product.images?.[0] ? (
+                  {product.imageUrl ? (
                     <Image
-                      src={product.images[0]}
-                      alt={product.title}
+                      src={product.imageUrl}
+                      alt={product.name}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
@@ -198,14 +190,19 @@ export default function CreatorProductsPage() {
 
                   <div className="absolute top-3 right-3">
                     <DropdownMenu>
-                      <DropdownMenuTrigger
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 p-0 shadow-xs hover:bg-white cursor-pointer"
-                      >
+                      <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 p-0 shadow-xs hover:bg-white cursor-pointer">
                         <MoreVertical className="h-4 w-4 text-[#292524]" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-36 rounded-xl border-[#E7E5E4]">
+                      <DropdownMenuContent
+                        align="end"
+                        className="w-36 rounded-xl border-[#E7E5E4]"
+                      >
                         <DropdownMenuItem
-                          onClick={() => router.push(`/dashboard/creator/products/${product.id}/edit`)}
+                          onClick={() =>
+                            router.push(
+                              `/dashboard/creator/products/${product.id}/edit`,
+                            )
+                          }
                           className="cursor-pointer text-xs"
                         >
                           <Edit2 className="mr-2 h-3.5 w-3.5" /> Edit Detail
@@ -224,14 +221,17 @@ export default function CreatorProductsPage() {
                 {/* Content */}
                 <div className="p-4 space-y-2">
                   <h4 className="font-semibold text-sm text-[#111827] line-clamp-1">
-                    {product.title}
+                    {product.name}
                   </h4>
                   <div className="flex items-center justify-between">
                     <span className="font-serif text-base font-bold text-[#6355D9]">
-                      Rp {product.price.toLocaleString("id-ID")}
+                      Rp {Number(product.price).toLocaleString("id-ID")}
                     </span>
                     <span className="text-xs text-[#78716C]">
-                      Stok: <strong className="text-[#111827]">{product.stock}</strong>
+                      Stok:{" "}
+                      <strong className="text-[#111827]">
+                        {product.stock}
+                      </strong>
                     </span>
                   </div>
                 </div>
@@ -246,7 +246,11 @@ export default function CreatorProductsPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  render={<Link href={`/dashboard/creator/products/${product.id}/edit`} />}
+                  render={
+                    <Link
+                      href={`/dashboard/creator/products/${product.id}/edit`}
+                    />
+                  }
                   className="h-8 px-2.5 text-xs text-[#6355D9] hover:bg-[#EDE9FE] hover:text-[#6355D9]"
                 >
                   Edit <Edit2 className="ml-1 h-3 w-3" />

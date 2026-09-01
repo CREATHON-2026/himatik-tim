@@ -35,6 +35,7 @@ interface CreatorProfileData {
   address?: string | null;
   photoUrl?: string | null;
   avatarUrl?: string | null;
+  bannerUrl?: string | null;
   isVerified?: boolean;
 }
 
@@ -50,16 +51,15 @@ export function CreatorProfileForm({
   onCancel,
 }: CreatorProfileFormProps) {
   const [formData, setFormData] = useState<CreatorProfileData>({
-    shopName: initialData?.shopName || initialData?.storeName || "Creathon Studio",
+    shopName: initialData?.shopName || initialData?.storeName || "",
     name: initialData?.name || "",
     email: initialData?.email || "",
     phone: initialData?.phone || "",
-    description:
-      initialData?.description ||
-      "Pengrajin buket bunga segar, kado personal, dan hampers premium berkualitas tinggi.",
+    description: initialData?.description || "",
     city: initialData?.city || "Makassar",
     address: initialData?.address || "",
     photoUrl: initialData?.photoUrl || initialData?.avatarUrl || null,
+    bannerUrl: initialData?.bannerUrl || null,
     isVerified: initialData?.isVerified ?? false,
   });
 
@@ -135,7 +135,29 @@ export function CreatorProfileForm({
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-5 pt-5">
+          <CardContent className="space-y-6 pt-5">
+            {/* Banner Toko / Header Showcase */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-[#111827]">
+                Banner Sampul Sanggar (Header Toko)
+              </label>
+              <div className="flex flex-col gap-3">
+                <div className="w-full max-w-lg">
+                  <ImageUpload
+                    value={formData.bannerUrl || undefined}
+                    onUpload={handleUploadAvatar}
+                    onChange={(url) => setFormData((prev) => ({ ...prev, bannerUrl: url }))}
+                    onRemove={() => setFormData((prev) => ({ ...prev, bannerUrl: null }))}
+                    placeholder="Unggah Banner Sampul Toko"
+                    helperText="Maks. 5MB (Format Landscape 16:9 atau 3:1)"
+                  />
+                </div>
+                <p className="text-xs text-[#78716C]">
+                  Banner ini akan menjadi latar belakang visual utama pada halaman profil toko Anda.
+                </p>
+              </div>
+            </div>
+
             {/* Foto Profil / Logo Studio */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-[#111827]">
@@ -357,8 +379,17 @@ export function CreatorProfileForm({
 
           <div className="overflow-hidden rounded-2xl border border-[#E7E5E4] bg-white shadow-xs">
             {/* Header banner decorative */}
-            <div className="h-20 bg-gradient-to-r from-[#6355D9] via-[#8174E8] to-[#DDD6FE] relative p-3">
-              <div className="absolute -bottom-6 left-4">
+            <div className="h-24 relative overflow-hidden bg-gradient-to-r from-[#6355D9] via-[#8174E8] to-[#DDD6FE] p-3">
+              {formData.bannerUrl && (
+                <Image
+                  src={formData.bannerUrl}
+                  alt="Banner Sanggar"
+                  fill
+                  unoptimized
+                  className="object-cover"
+                />
+              )}
+              <div className="absolute -bottom-6 left-4 z-10">
                 <div className="relative size-14 rounded-xl border-2 border-white bg-white shadow-xs overflow-hidden flex items-center justify-center">
                   {formData.photoUrl ? (
                     <Image

@@ -59,6 +59,7 @@ export async function GET() {
       description: creator.description,
       city: creator.city,
       address: creator.address,
+      bannerUrl: creator.bannerUrl || null,
       isVerified: creator.isVerified,
       photoUrl: creator.user?.avatarUrl || null,
       avatarUrl: creator.user?.avatarUrl || null,
@@ -96,6 +97,7 @@ export async function PUT(request: NextRequest) {
         description: body.description,
         city: body.city,
         address: body.address,
+        bannerUrl: body.bannerUrl !== undefined ? body.bannerUrl : undefined,
       },
       create: {
         userId: user.id,
@@ -103,6 +105,7 @@ export async function PUT(request: NextRequest) {
         description: body.description,
         city: body.city || "Makassar",
         address: body.address,
+        bannerUrl: body.bannerUrl || null,
       },
       include: {
         user: {
@@ -135,6 +138,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({
       ...updated,
+      bannerUrl: updated.bannerUrl || null,
       photoUrl: body.photoUrl ?? body.avatarUrl ?? updated.user?.avatarUrl,
       name: body.name || updated.user?.name,
       phone: body.phone || updated.user?.phone,
