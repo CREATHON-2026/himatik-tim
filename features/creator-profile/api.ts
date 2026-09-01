@@ -28,7 +28,7 @@ export async function getCreatorProfile(): Promise<CreatorProfile | null> {
     throw new Error(json.error || "Failed to fetch profile");
   }
 
-  return (json.data ?? null) as CreatorProfile | null;
+  return (json.data ?? json) as CreatorProfile | null;
 }
 
 /**

@@ -8,7 +8,7 @@ import {
 import { ProductFormSchema } from "@/features/products/schema";
 import { ZodError } from "zod";
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     const supabase = await createClient();
     const {

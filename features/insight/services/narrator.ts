@@ -95,7 +95,7 @@ export function usableFacts(payload: any): Fact[] {
 }
 
 /** Render narasi deterministik tanpa AI — baseline MVP + fallback */
-export function renderTemplate(payload: any): string {
+export function renderTemplate(payload: { data_quality: { status: string; transaction_count?: number }; facts?: Fact[] }): string {
   const quality = payload.data_quality;
   if (quality.status !== "ok") {
     return `Belum cukup transaksi untuk dibuat ringkasannya di periode ini. Baru ada ${quality.transaction_count} transaksi terbayar.`;
@@ -141,7 +141,7 @@ export interface GuardResult {
 export function guardDraft(
   draft: string,
   facts: Fact[],
-  comparison: any,
+  comparison: { available?: boolean; direction?: string } | null | undefined,
   maxSentences = MAX_SENTENCES,
 ): GuardResult {
   // 1. Output tidak boleh kosong
@@ -197,7 +197,7 @@ export interface NarrationResult {
  * @param llm - Optional async callable: (messages) => string. Null = murni template (MVP).
  */
 export async function narrate(
-  payload: any,
+  payload: { data_quality: { status: string }; facts?: Fact[] } & Record<string, unknown>,
   llm?: ((messages: { role: string; content: string }[]) => Promise<string>) | null,
 ): Promise<NarrationResult> {
   const baseline = renderTemplate(payload);
@@ -223,7 +223,7 @@ export async function narrate(
   }
 
   // Guard v2
-  const guard = guardDraft(draft, facts, payload.comparison);
+  const guard = guardDraft(draft, facts, payload.comparison as { available?: boolean; direction?: string } | null);
   if (!guard.ok) {
     console.warn(`[Narrator Guard] Draft ditolak karena: ${guard.reason}. Menggunakan fallback template.`);
     return {

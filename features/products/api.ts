@@ -38,7 +38,7 @@ export async function listCreatorProducts(): Promise<Product[]> {
  * @throws Error with validation message on failure
  */
 export async function createProduct(
-  input: CreateProductInput
+  input: CreateProductInput,
 ): Promise<Product> {
   const res = await fetch(BASE_URL, {
     method: "POST",
@@ -79,7 +79,7 @@ export async function getProduct(id: string): Promise<Product> {
  */
 export async function updateProduct(
   id: string,
-  input: UpdateProductInput
+  input: UpdateProductInput,
 ): Promise<Product> {
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
@@ -114,28 +114,35 @@ export async function deleteProduct(id: string): Promise<void> {
 
 /**
  * Upload a product image (direct form upload)
+ *
+ * Note: Creathon has a single generic upload endpoint at /api/upload
+ * (Supabase Storage bucket "products"), unlike Bicket which has a
+ * per-product endpoint at /api/products/[id]/upload-image. The
+ * generic endpoint returns { url, success }, not the { id, imageUrl }
+ * shape used elsewhere — mapped here to keep the hook/component
+ * contract (UploadImageResponse) stable.
+ *
  * @throws Error on upload failure
  */
 export async function uploadProductImage(
   productId: string,
-  file: File
+  file: File,
 ): Promise<UploadImageResponse> {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("productId", productId);
 
-  const res = await fetch(`${BASE_URL}/upload`, {
+  const res = await fetch("/api/upload", {
     method: "POST",
     body: formData,
   });
 
-  const json: ApiResponse<UploadImageResponse> = await res.json();
+  const json: { url?: string; error?: string } = await res.json();
 
-  if (!res.ok || json.error) {
+  if (!res.ok || json.error || !json.url) {
     throw new Error(json.error || "Failed to upload image");
   }
 
-  return (json.data ?? json) as UploadImageResponse;
+  return { id: productId, imageUrl: json.url };
 }
 
 /**

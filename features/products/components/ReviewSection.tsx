@@ -25,10 +25,8 @@ interface ReviewSectionProps {
 
 export function ReviewSection({
   productId = "",
-  productName: _productName = "Produk Hadiah",
   reviews: initialReviews,
   averageRating: initialAverageRating,
-  reviewCount: _initialReviewCount,
   limit,
 }: ReviewSectionProps) {
   const { user, isAuthenticated } = useAuth();

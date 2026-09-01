@@ -12,6 +12,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import type { CreatorMinimal } from "@/features/products/types";
 
 interface CreatorInfoCardProps {
@@ -26,6 +27,7 @@ interface CreatorInfoCardProps {
 }
 
 export function CreatorInfoCard({ creator, className = "" }: CreatorInfoCardProps) {
+  const router = useRouter();
   // Extract genuine metrics without any dummy fallbacks
   const hasRating = typeof creator.averageRating === "number" && creator.averageRating > 0;
   const ratingVal = hasRating ? creator.averageRating!.toFixed(1) : null;
@@ -157,7 +159,7 @@ export function CreatorInfoCard({ creator, className = "" }: CreatorInfoCardProp
           <div className="flex items-center gap-2 w-full mt-2.5 select-none">
             <Button
               onClick={() => {
-                window.location.href = `/market/creators/${creator.id}`;
+                router.push(`/market/creators/${creator.id}`);
               }}
               variant="skeuo-paper-secondary"
               size="sm"
