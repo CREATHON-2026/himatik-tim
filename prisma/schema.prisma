@@ -23,6 +23,14 @@ enum CreatorStatus {
   SUSPENDED
 }
 
+enum TransactionStatus {
+  PENDING
+  IN_ESCROW
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
 // User profile connected 1-to-1 with Supabase Auth (UUID)
 model User {
   id            String         @id
@@ -41,18 +49,57 @@ model User {
   @@map("users")
 }
 
+model Transaction {
+  id                 String            @id @default(uuid())
+  storeId            String
+  buyerId            String
+  status             TransactionStatus
+  paymentChannel     String?
+  grossAmount        Int
+  platformFee        Int
+  netAmount          Int
+
+  // Denormalisasi: kategori & produk item utama.
+  // Ini yang membuat agregasi cukup satu groupBy, tanpa join items.
+  primaryCategory    String
+  primaryProductId   String
+  primaryProductName String
+
+  createdAt          DateTime
+  paidAt             DateTime?
+  completedAt        DateTime?
+  refundedAt         DateTime?
+
+  @@index([storeId, status, createdAt])
+  @@index([storeId, primaryCategory, createdAt])
+}
+
+model InsightSnapshot {
+  id          String   @id @default(cuid())
+  storeId     String
+  periodStart DateTime @db.Date
+  periodEnd   DateTime @db.Date
+  payload     Json
+  narration   String?
+  source      String   @default("template") // template | llm
+  createdAt   DateTime @default(now())
+
+  @@unique([storeId, periodStart, periodEnd])
+}
+
 model CreatorProfile {
   id          String   @id @default(uuid())
   userId      String   @unique @map("user_id")
   storeName   String   @map("store_name")
   description String?
-  city        String
+  city        String?
   address     String?
   isVerified  Boolean  @default(false) @map("is_verified")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
 
   @@map("creator_profiles")
 }
+
