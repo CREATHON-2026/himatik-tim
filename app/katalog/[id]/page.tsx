@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -30,6 +31,7 @@ interface ProductDetailPageProps {
 }
 
 export default function BuyerProductDetailPage({ params }: ProductDetailPageProps) {
+  const router = useRouter();
   const resolvedParams = React.use(params);
   const productId = resolvedParams.id;
 
@@ -66,12 +68,7 @@ export default function BuyerProductDetailPage({ params }: ProductDetailPageProp
 
   const handleBuyNow = (qty: number) => {
     if (!product) return;
-    const phone = product.creator?.whatsapp || "6281234567890";
-    const cleanPhone = phone.replace(/[^0-9]/g, "");
-    const message = encodeURIComponent(
-      `Halo ${product.creator?.shopName || "Kreator Creathon"}, saya ingin memesan ${qty}x "${product.name}" seharga Rp${(Number(product.price) * qty).toLocaleString("id-ID")} melalui katalog Creathon.`
-    );
-    window.open(`https://wa.me/${cleanPhone}?text=${message}`, "_blank");
+    router.push(`/checkout?productId=${product.id}&qty=${qty}`);
   };
 
   if (isLoading) {
