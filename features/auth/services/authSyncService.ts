@@ -22,6 +22,27 @@ export async function syncUserProfile(params: SyncUserParams) {
   });
 
   if (existingUser) {
+    // Jika user mendaftar sebagai Creator namun di DB masih Customer, upgrade rolenya
+    if (role === Role.CREATOR && existingUser.role === Role.CUSTOMER) {
+      const updatedUser = await prisma.user.update({
+        where: { id },
+        data: {
+          role: Role.CREATOR,
+          creatorStatus: "PENDING_VERIFICATION",
+          creatorProfile:
+            !existingUser.creatorProfile && (storeName || name)
+              ? {
+                  create: {
+                    storeName: storeName || `${name || "Studio"} Rental`,
+                    city: city || "Indonesia",
+                  },
+                }
+              : undefined,
+        },
+        include: { creatorProfile: true },
+      });
+      return updatedUser;
+    }
     return existingUser;
   }
 
