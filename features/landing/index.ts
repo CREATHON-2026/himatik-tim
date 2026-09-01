@@ -1,11 +1,11 @@
 export * from "./types";
-export * from "./components/SectionHero";
-export * from "./components/SectionAgitation";
-export * from "./components/SectionSolution";
-export * from "./components/SectionEarlyBird";
-export * from "./components/SectionShowcase";
-export * from "./components/SectionFooter";
-
-
-
-
+export * from "./components/hero-portal/HeroNavbar";
+export * from "./components/hero-portal/HeroBoneLayer";
+export * from "./components/hero-portal/HeroDarkLayer";
+export * from "./components/hero-portal/HeroSphereLens";
+export * from "./components/flavors/SectionFlavors";
+export * from "./components/inside/SectionInside";
+export * from "./components/story/SectionStory";
+export * from "./components/press/SectionPress";
+export * from "./components/where-available/SectionWhereAvailable";
+export * from "./hooks/useSpherePortal";
