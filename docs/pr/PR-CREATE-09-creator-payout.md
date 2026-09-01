@@ -15,13 +15,13 @@ Pull Request ini menghadirkan fitur **Manajemen Saldo & Penarikan Dana Kreator (
 
 ### 🔴 Must-Have (Kritis & Wajib)
 1. **Ringkasan Saldo 3 Metrik Utama ([`features/payout/components/PayoutBalanceHeader.tsx`](file:///d:/2-Project/creathon/features/payout/components/PayoutBalanceHeader.tsx))**:
-   - **Saldo Siap Ditarik (*Available Balance*)**: Akumulasi pendapatan bersih dari transaksi `COMPLETED`.
+   - **Saldo Siap Ditarik (*Available Balance*)**: Akumulasi pendapatan bersih dari transaksi `COMPLETED` dikurangi total nominal yang telah diajukan penarikannya.
    - **Saldo Tertahan di Escrow (*In Escrow Balance*)**: Dana pesanan `IN_ESCROW` yang sedang dirangkai atau dalam pengiriman kurir.
    - **Total Omzet Kumulatif (*Lifetime Revenue*)**: Akumulasi seluruh omzet kriya sanggar.
 2. **Dialog Pengajuan Penarikan Dana ([`features/payout/components/RequestPayoutModal.tsx`](file:///d:/2-Project/creathon/features/payout/components/RequestPayoutModal.tsx))**:
-   - Input nominal penarikan dengan validasi minimal Rp50.000 dan batas saldo tersedia.
+   - Input nominal penarikan dengan validasi minimal Rp50.000 dan batas saldo riil tersedia.
    - *Quick Preset Chips* (`Rp100.000`, `Rp250.000`, `Rp500.000`, `Rp1.000.000`, dan tombol *"Tarik Semua"*).
-   - Ringkasan rekening tujuan dan estimasi waktu dana tiba.
+   - Penarikan saldo otomatis memotong Saldo Siap Ditarik dan mencatatkan riwayat baru secara real-time.
 3. **Pengaturan Rekening Bank Pencairan ([`features/payout/components/BankAccountCard.tsx`](file:///d:/2-Project/creathon/features/payout/components/BankAccountCard.tsx))**:
    - Menampilkan data bank terdaftar (BCA, Mandiri, BRI, BNI, BSI, Bank Jago, SeaBank, e-Wallet).
    - Modal edit untuk memperbarui rekening bank pencairan kapan saja.

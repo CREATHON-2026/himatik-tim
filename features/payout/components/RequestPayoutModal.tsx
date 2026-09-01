@@ -31,9 +31,9 @@ export function RequestPayoutModal({
   bankAccount,
 }: RequestPayoutModalProps) {
   const queryClient = useQueryClient();
-  const [amount, setAmount] = useState<number>(Math.min(availableBalance, 500000));
-  const [inputStr, setInputStr] = useState<string>(
-    String(Math.min(availableBalance, 500000))
+  const [amount, setAmount] = useState<number>(() => Math.min(availableBalance, 100000));
+  const [inputStr, setInputStr] = useState<string>(() =>
+    String(Math.min(availableBalance, 100000))
   );
 
   const mutation = useMutation({

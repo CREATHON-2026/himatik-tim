@@ -1,6 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { PayoutTransaction, BankAccount } from "@/features/payout/types";
+
+// Persistent global store for payouts & bank account settings during server runtime
+declare global {
+  // eslint-disable-next-line no-var
+  var __creatorPayoutStore: Map<string, PayoutTransaction[]> | undefined;
+  // eslint-disable-next-line no-var
+  var __creatorBankStore: Map<string, BankAccount> | undefined;
+}
+
+if (!globalThis.__creatorPayoutStore) {
+  globalThis.__creatorPayoutStore = new Map<string, PayoutTransaction[]>();
+}
+if (!globalThis.__creatorBankStore) {
+  globalThis.__creatorBankStore = new Map<string, BankAccount>();
+}
+
+const payoutStore = globalThis.__creatorPayoutStore;
+const bankStore = globalThis.__creatorBankStore;
 
 export async function GET() {
   try {
@@ -21,66 +40,34 @@ export async function GET() {
       return NextResponse.json({ error: "Profil sanggar tidak ditemukan" }, { status: 404 });
     }
 
-    // Aggregate real transactions for this store
+    // Aggregate real transactions from Prisma for this store
     const transactions = await prisma.transaction.findMany({
       where: { storeId: profile.id },
     });
 
-    let availableBalance = 0;
+    let completedRevenue = 0;
     let inEscrowBalance = 0;
-    let totalRevenue = 0;
 
     for (const tx of transactions) {
       if (tx.status === "COMPLETED") {
-        availableBalance += tx.netAmount;
-        totalRevenue += tx.netAmount;
+        completedRevenue += tx.netAmount;
       } else if (tx.status === "IN_ESCROW") {
         inEscrowBalance += tx.netAmount;
-        totalRevenue += tx.netAmount;
       }
     }
 
-    // Default simulated initial balance if fresh store
-    if (availableBalance === 0 && inEscrowBalance === 0) {
-      availableBalance = 1450000;
-      inEscrowBalance = 380000;
-      totalRevenue = 1830000;
-    }
-
-    const totalWithdrawn = 0;
+    // Get real payout history for this store (starts empty, no dummy data)
+    const storePayouts = payoutStore.get(profile.id) || [];
+    const totalWithdrawn = storePayouts.reduce((sum, p) => sum + p.amount, 0);
+    const availableBalance = Math.max(0, completedRevenue - totalWithdrawn);
+    const totalRevenue = completedRevenue + inEscrowBalance;
 
     // Bank Account info
-    const bankAccount = {
+    const bankAccount = bankStore.get(profile.id) || {
       bankName: "Bank Central Asia (BCA)",
       accountNumber: "8735-0912-34",
       accountHolder: profile.storeName || "Sanggar Kriya Creathon",
     };
-
-    // Simulated Payout Transaction History
-    const history = [
-      {
-        id: "po-01",
-        referenceNo: "WD-9812A3",
-        amount: 1200000,
-        bankName: "Bank Central Asia (BCA)",
-        accountNumber: "8735-0912-34",
-        accountHolder: profile.storeName || "Sanggar Kriya Creathon",
-        status: "SUCCESS" as const,
-        requestedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        completedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000 + 3600000).toISOString(),
-      },
-      {
-        id: "po-02",
-        referenceNo: "WD-7641F0",
-        amount: 850000,
-        bankName: "Bank Central Asia (BCA)",
-        accountNumber: "8735-0912-34",
-        accountHolder: profile.storeName || "Sanggar Kriya Creathon",
-        status: "SUCCESS" as const,
-        requestedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-        completedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000 + 7200000).toISOString(),
-      },
-    ];
 
     return NextResponse.json({
       stats: {
@@ -90,7 +77,7 @@ export async function GET() {
         totalWithdrawn,
       },
       bankAccount,
-      history,
+      history: storePayouts,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Gagal memuat data saldo & penarikan";
@@ -107,6 +94,14 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const profile = await prisma.creatorProfile.findUnique({
+      where: { userId: user.id },
+    });
+
+    if (!profile) {
+      return NextResponse.json({ error: "Profil sanggar tidak ditemukan" }, { status: 404 });
     }
 
     const body = await request.json();
@@ -126,10 +121,44 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check available balance from real completed transactions minus existing payouts
+    const transactions = await prisma.transaction.findMany({
+      where: { storeId: profile.id, status: "COMPLETED" },
+    });
+    const completedRevenue = transactions.reduce((sum, tx) => sum + tx.netAmount, 0);
+
+    const storePayouts = payoutStore.get(profile.id) || [];
+    const totalWithdrawn = storePayouts.reduce((sum, p) => sum + p.amount, 0);
+    const currentAvailable = Math.max(0, completedRevenue - totalWithdrawn);
+
+    if (amount > currentAvailable) {
+      return NextResponse.json(
+        { error: `Nominal penarikan (Rp${amount.toLocaleString("id-ID")}) melebihi saldo tersedia (Rp${currentAvailable.toLocaleString("id-ID")}).` },
+        { status: 400 }
+      );
+    }
+
+    // Create real payout transaction record
+    const newPayout: PayoutTransaction = {
+      id: `po-${Date.now()}`,
+      referenceNo: `WD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+      amount,
+      bankName,
+      accountNumber,
+      accountHolder,
+      status: "PROCESSING",
+      requestedAt: new Date().toISOString(),
+      completedAt: null,
+    };
+
+    // Prepend to store payout list
+    const updatedList = [newPayout, ...storePayouts];
+    payoutStore.set(profile.id, updatedList);
+
     return NextResponse.json({
       success: true,
       message: `Pengajuan penarikan dana sebesar Rp${amount.toLocaleString("id-ID")} berhasil diajukan dan sedang diproses.`,
-      referenceNo: `WD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+      payout: newPayout,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Gagal memproses penarikan";
@@ -148,6 +177,14 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const profile = await prisma.creatorProfile.findUnique({
+      where: { userId: user.id },
+    });
+
+    if (!profile) {
+      return NextResponse.json({ error: "Profil sanggar tidak ditemukan" }, { status: 404 });
+    }
+
     const body = await request.json();
     const { bankName, accountNumber, accountHolder } = body;
 
@@ -158,13 +195,17 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    const updatedAccount: BankAccount = {
+      bankName,
+      accountNumber,
+      accountHolder,
+    };
+
+    bankStore.set(profile.id, updatedAccount);
+
     return NextResponse.json({
       success: true,
-      bankAccount: {
-        bankName,
-        accountNumber,
-        accountHolder,
-      },
+      bankAccount: updatedAccount,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Gagal memperbarui rekening bank";
