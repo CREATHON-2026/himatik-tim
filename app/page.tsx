@@ -1,135 +1,163 @@
-import Link from "next/link";
-import {
-  Sparkles,
-  ShoppingBag,
-  Store,
-  ShieldCheck,
-  ArrowRight,
-} from "lucide-react";
+"use client";
 
-export default function Home() {
+import React, { useRef, useEffect, useCallback, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import Lenis from "lenis";
+import { HeroNavbar } from "@/features/landing/components/hero-portal/HeroNavbar";
+import { HeroBoneLayer } from "@/features/landing/components/hero-portal/HeroBoneLayer";
+import { HeroDarkLayer } from "@/features/landing/components/hero-portal/HeroDarkLayer";
+import { HeroSphereLens } from "@/features/landing/components/hero-portal/HeroSphereLens";
+import { SectionFlavors } from "@/features/landing/components/flavors/SectionFlavors";
+import { SectionInside } from "@/features/landing/components/inside/SectionInside";
+import { SectionStory } from "@/features/landing/components/story/SectionStory";
+import { SectionPress } from "@/features/landing/components/press/SectionPress";
+import { SectionWhereAvailable } from "@/features/landing/components/where-available/SectionWhereAvailable";
+import { DirectProduct } from "@/features/landing/components/where-available/types";
+import { useSpherePortal } from "@/features/landing/hooks/useSpherePortal";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+}
+
+export default function StillLandingPage() {
+  const mainContainerRef = useRef<HTMLDivElement>(null);
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const flavorsSectionRef = useRef<HTMLElement>(null);
+  const insideSectionRef = useRef<HTMLElement>(null);
+  const storySectionRef = useRef<HTMLElement>(null);
+  const pressSectionRef = useRef<HTMLElement>(null);
+  const whereAvailableRef = useRef<HTMLElement>(null);
+  const darkIrisRef = useRef<HTMLDivElement>(null);
+  const lettersRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const auraGlowRef = useRef<HTMLDivElement>(null);
+  const canWrapperRef = useRef<HTMLDivElement>(null);
+  const sphereOverlayRef = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
+
+  // Dynamic cart state for e-commerce interaction
+  const [cartCount, setCartCount] = useState(0);
+
+  const handleAddToCart = useCallback((_product: DirectProduct, _packSize: string) => {
+    setCartCount((prev) => prev + 1);
+  }, []);
+
+  // Initialize Ultra-Luxury Lenis Momentum Smooth Scroll synchronized with GSAP Ticker
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.4,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Luxurious exponential ease
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.2,
+      syncTouch: true,
+    });
+
+    lenisRef.current = lenis;
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    const tickerCallback = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(tickerCallback);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(tickerCallback);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
+  // Programmatic smooth scroll handler with cinematic deceleration
+  const handleNavigate = useCallback((targetId: string) => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(targetId, {
+        duration: 1.4,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      });
+    } else {
+      gsap.to(window, {
+        scrollTo: { y: targetId, autoKill: false },
+        duration: 1.4,
+        ease: "power3.inOut",
+      });
+    }
+  }, []);
+
+  // Encapsulated physics and smooth lens portal tracking for Hero
+  const {
+    lensPos,
+    currentRadius,
+    currentClipPath,
+    handleMouseMove,
+    handleMouseLeave,
+  } = useSpherePortal({
+    containerRef: heroSectionRef,
+    lettersRef,
+    auraGlowRef,
+    canWrapperRef,
+    baseRadius: 240,
+  });
+
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col justify-between antialiased selection:bg-emerald-500 selection:text-black">
-      {/* Navigation Header */}
-      <header className="w-full border-b border-neutral-900 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-bold text-lg text-white">
-            <span className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-              <Sparkles className="w-4 h-4" />
-            </span>
-            <span>Creathon<span className="text-emerald-400">.</span></span>
-          </Link>
+    <div
+      ref={mainContainerRef}
+      className="relative min-h-screen w-full bg-[#EFEDE6] font-sans text-[#1A1B1D] selection:bg-[#BCD3D8] selection:text-[#1A1B1D]"
+    >
+      {/* 1. Header Navigation with Smooth Programmatic Scrolling & Dynamic Cart */}
+      <HeroNavbar cartCount={cartCount} onNavigate={handleNavigate} />
 
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="px-4 py-2 rounded-xl text-xs font-medium text-neutral-300 hover:text-white transition"
-            >
-              Masuk
-            </Link>
-            <Link
-              href="/register"
-              className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-xs transition shadow-md shadow-emerald-500/20"
-            >
-              Daftar Sekarang
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* 2. Section 1: Hero (Natural flow with butter-smooth momentum scroll) */}
+      <section
+        ref={heroSectionRef}
+        id="hero"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="relative flex h-dvh w-full items-center justify-center overflow-hidden bg-[#EFEDE6]"
+      >
+        {/* Layer A: Light Bone Base Layer */}
+        <HeroBoneLayer lettersRef={lettersRef} />
 
-      {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-12 text-center relative overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/10 blur-[140px] rounded-full pointer-events-none" />
+        {/* Layer B: Dark Iris Portal Layer (peek into the formula) */}
+        <HeroDarkLayer
+          ref={darkIrisRef}
+          clipPath={currentClipPath}
+          auraGlowRef={auraGlowRef}
+          canWrapperRef={canWrapperRef}
+        />
 
-        <div className="max-w-3xl space-y-6 relative z-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-400">
-            <Sparkles className="w-3.5 h-3.5" /> Platform Rental Busana Adat & Kreatif Nusantara
-          </div>
+        {/* Layer C: 3D Transparent Sphere Lens Overlay (Absolute inside Hero) */}
+        <HeroSphereLens
+          ref={sphereOverlayRef}
+          lensPos={lensPos}
+          currentRadius={currentRadius}
+        />
+      </section>
 
-          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-tight">
-            Sewa Pakaian Tradisional & Busana Kreatif dengan Aman
-          </h1>
+      {/* 3. Section 2: Three Formulations (Pinned GSAP Continuous Scrub + Magnetic Snap) */}
+      <SectionFlavors ref={flavorsSectionRef} />
 
-          <p className="text-neutral-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-            Ekosistem marketplace busana adat terlengkap yang menghubungkan penyewa dengan kreator busana di seluruh Indonesia, didukung perlindungan transaksi escrow.
-          </p>
+      {/* 4. Section 3: Functional Ingredients (Pinned GSAP Continuous Scrub + Magnetic Snap) */}
+      <SectionInside ref={insideSectionRef} />
 
-          {/* Action Navigation Matrix */}
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/katalog"
-              className="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm transition flex items-center gap-2 shadow-lg shadow-emerald-500/25"
-            >
-              <ShoppingBag className="w-4 h-4" />
-              <span>Jelajahi Katalog Busana</span>
-            </Link>
+      {/* 5. Section 4: Story Timeline (Pinned GSAP 5-Year Archive Scrub 2021 -> 2025) */}
+      <SectionStory ref={storySectionRef} />
 
-            <Link
-              href="/register?role=CREATOR"
-              className="px-6 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-white font-medium text-sm transition flex items-center gap-2"
-            >
-              <Store className="w-4 h-4 text-emerald-400" />
-              <span>Buka Rental (Creator)</span>
-            </Link>
-          </div>
+      {/* 6. Section 5: Press & Infinite Marquee Ticker */}
+      <SectionPress ref={pressSectionRef} />
 
-          {/* Quick Route Preview Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-8 text-left">
-            <Link
-              href="/katalog"
-              className="p-4 rounded-xl border border-neutral-800/80 bg-neutral-900/40 hover:border-emerald-500/50 hover:bg-neutral-900/80 transition group block"
-            >
-              <div className="flex items-center justify-between text-white font-semibold text-xs mb-1">
-                <span className="flex items-center gap-1.5">
-                  <ShoppingBag className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Katalog Customer</span>
-                </span>
-                <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition" />
-              </div>
-              <p className="text-[11px] text-neutral-400">
-                Lihat busana sewa, filtering adat daerah, dan opsi sewa.
-              </p>
-            </Link>
-
-            <Link
-              href="/dashboard/creator"
-              className="p-4 rounded-xl border border-neutral-800/80 bg-neutral-900/40 hover:border-emerald-500/50 hover:bg-neutral-900/80 transition group block"
-            >
-              <div className="flex items-center justify-between text-white font-semibold text-xs mb-1">
-                <span className="flex items-center gap-1.5">
-                  <Store className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Studio Creator</span>
-                </span>
-                <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition" />
-              </div>
-              <p className="text-[11px] text-neutral-400">
-                Kelola koleksi busana, pantau pesanan sewa & pencairan.
-              </p>
-            </Link>
-
-            <Link
-              href="/dashboard/admin"
-              className="p-4 rounded-xl border border-neutral-800/80 bg-neutral-900/40 hover:border-rose-500/50 hover:bg-neutral-900/80 transition group block"
-            >
-              <div className="flex items-center justify-between text-white font-semibold text-xs mb-1">
-                <span className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Admin Center</span>
-                </span>
-                <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-rose-400 group-hover:translate-x-0.5 transition" />
-              </div>
-              <p className="text-[11px] text-neutral-400">
-                Pusat audit escrow Midtrans & persetujuan verifikasi toko.
-              </p>
-            </Link>
-          </div>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-neutral-900 py-6 text-center text-xs text-neutral-600">
-        &copy; {new Date().getFullYear()} Creathon Marketplace • Next.js 16 + Supabase SSR + Prisma
-      </footer>
+      {/* 7. Section 6: Where Available / Stockists, Direct Shop & Editorial Footer */}
+      <SectionWhereAvailable
+        ref={whereAvailableRef}
+        onAddToCart={handleAddToCart}
+        onNavigate={handleNavigate}
+      />
     </div>
   );
 }
