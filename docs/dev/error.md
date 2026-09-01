@@ -1,24 +1,12 @@
-(base) PS D:\2-Project\creathon> git remote add origin https://github.com/CREATHON-2026/himatik-tim.git
-(base) PS D:\2-Project\creathon> git branch -M main
-(base) PS D:\2-Project\creathon> git push -u origin main
-To https://github.com/CREATHON-2026/himatik-tim.git
- ! [rejected]        main -> main (fetch first)
-error: failed to push some refs to 'https://github.com/CREATHON-2026/himatik-tim.git'
-hint: Updates were rejected because the remote contains work that you do not
-hint: have locally. This is usually caused by another repository pushing to
-hint: the same ref. If you want to integrate the remote changes, use
-hint: 'git pull' before pushing again.
-hint: See the 'Note about fast-forwards' in 'git push --help' for details.
-(base) PS D:\2-Project\creathon> git push -u origin main --force
->> 
-Enumerating objects: 51, done.
-Counting objects: 100% (51/51), done.
-Delta compression using up to 12 threads
-Compressing objects: 100% (47/47), done.
-Writing objects: 100% (51/51), 99.76 KiB | 3.33 MiB/s, done.
-Total 51 (delta 6), reused 0 (delta 0), pack-reused 0 (from 0)
-remote: Resolving deltas: 100% (6/6), done.
-To https://github.com/CREATHON-2026/himatik-tim.git
- + c8fb363...638e0d9 main -> main (forced update)
-branch 'main' set up to track 'origin/main'.
-(base) PS D:\2-Project\creathon> 
+56ms, application-code: 5.2s)
+ GET /katalog 200 in 880ms (next.js: 75ms, proxy.ts: 480ms, application-code: 324ms)
+ GET / 200 in 1070ms (next.js: 50ms, proxy.ts: 799ms, application-code: 221ms)
+ GET /login 200 in 553ms (next.js: 53ms, proxy.ts: 300ms, application-code: 200ms)
+ GET /register 200 in 1054ms (next.js: 76ms, proxy.ts: 793ms, application-code: 184ms)
+ GET /auth/callback?code=7c6c3790-3222-4ba5-8b3f-f7c988bfa5be 307 in 3.6s (next.js: 36ms, proxy.ts: 478ms, application-code: 3.1s)
+
+
+
+ 
+ GET http://localhost:3000/?error=invalid_request&error_code=bad_oauth_state&error_description=OAuth+state+not+found+or+expired net::ERR_HTTP_RESPONSE_CODE_FAILURE 431 (Request Header Fields Too Large)
+

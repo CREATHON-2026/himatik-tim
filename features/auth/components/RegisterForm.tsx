@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useAuth } from "../hooks/useAuth";
 import { registerSchema } from "../schema";
 import { RoleSwitcher } from "./RoleSwitcher";
-import { GoogleAuthButton } from "./GoogleAuthButton";
 import { Eye, EyeOff, Loader2, AlertCircle, Building2, MapPin } from "lucide-react";
 
 export function RegisterForm() {
@@ -20,7 +19,7 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const { signUp, signInWithGoogle, isLoading, error, setError } = useAuth();
+  const { signUp, isLoading, error, setError } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,21 +56,6 @@ export function RegisterForm() {
     <div className="space-y-5">
       {/* Role Selection Switcher */}
       <RoleSwitcher selectedRole={role} onSelectRole={setRole} />
-
-      {/* OAuth Button */}
-      <GoogleAuthButton
-        onClick={() => signInWithGoogle(role)}
-        isLoading={isLoading}
-        label={`Daftar dengan Google (${role === "CREATOR" ? "Kreator" : "Customer"})`}
-      />
-
-      {/* Divider */}
-      <div className="relative flex items-center justify-center">
-        <div className="border-t border-neutral-800 w-full" />
-        <span className="bg-neutral-900 px-3 text-[11px] uppercase tracking-wider text-neutral-500 font-medium">
-          atau lengkapi formulir
-        </span>
-      </div>
 
       {/* Global Error Banner */}
       {error && (

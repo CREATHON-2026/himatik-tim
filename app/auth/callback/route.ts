@@ -16,8 +16,11 @@ export async function GET(request: Request) {
       const user = data.user;
       const metadata = user.user_metadata || {};
 
-      const rawRole = (metadata.role as string)?.toUpperCase();
-      const role: Role = rawRole === "CREATOR" ? Role.CREATOR : Role.CUSTOMER;
+      // Cek role dari query param (Google OAuth) atau metadata (Email signup)
+      const queryRole = requestUrl.searchParams.get("role")?.toUpperCase();
+      const metaRole = (metadata.role as string)?.toUpperCase();
+      const isCreator = queryRole === "CREATOR" || metaRole === "CREATOR";
+      const role: Role = isCreator ? Role.CREATOR : Role.CUSTOMER;
 
       // Sinkronisasi ke PostgreSQL via Prisma
       const profile = await syncUserProfile({

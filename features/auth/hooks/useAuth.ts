@@ -100,7 +100,7 @@ export function useAuth() {
     setError(null);
 
     try {
-      const redirectUrl = `${window.location.origin}/auth/callback`;
+      const redirectUrl = `${window.location.origin}/auth/callback?role=${encodeURIComponent(role)}`;
 
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -109,7 +109,6 @@ export function useAuth() {
           queryParams: {
             access_type: "offline",
             prompt: "consent",
-            role: role,
           },
         },
       });
