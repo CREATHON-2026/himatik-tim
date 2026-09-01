@@ -41,11 +41,13 @@ interface CreatorProfileData {
 interface CreatorProfileFormProps {
   initialData?: CreatorProfileData | null;
   onSaveSuccess?: () => void;
+  onCancel?: () => void;
 }
 
 export function CreatorProfileForm({
   initialData,
   onSaveSuccess,
+  onCancel,
 }: CreatorProfileFormProps) {
   const [formData, setFormData] = useState<CreatorProfileData>({
     shopName: initialData?.shopName || initialData?.storeName || "Creathon Studio",
@@ -290,6 +292,17 @@ export function CreatorProfileForm({
 
         {/* Submit Actions */}
         <div className="flex items-center justify-end gap-3 pt-2">
+          {onCancel && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              disabled={isSaving}
+              className="h-11 px-5 rounded-xl border-[#E7E5E4] text-[#78716C] hover:bg-[#FAFAF9]"
+            >
+              Batal
+            </Button>
+          )}
           <Button
             type="submit"
             disabled={isSaving}

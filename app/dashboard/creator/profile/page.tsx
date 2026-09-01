@@ -1,14 +1,27 @@
 "use client";
 
-import React from "react";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import React, { useState } from "react";
+import { ArrowLeft, Sparkles, Edit3 } from "lucide-react";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { CreatorProfileForm } from "@/features/creator-profile/components/CreatorProfileForm";
+import { CreatorProfileView } from "@/features/creator-profile/components/CreatorProfileView";
 import { useCreatorProfile } from "@/features/creator-profile/hooks/useCreatorProfile";
 
 export default function CreatorProfilePage() {
+  const queryClient = useQueryClient();
   const { profile, isLoading } = useCreatorProfile();
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleSaveSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["creator-profile"] });
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+  };
 
   return (
     <div className="flex-1 space-y-8 p-6 md:p-10 max-w-6xl mx-auto">
@@ -21,14 +34,25 @@ export default function CreatorProfilePage() {
             </span>
           </div>
           <h1 className="mt-2 font-serif text-2xl font-bold tracking-tight text-[#111827] sm:text-3xl">
-            Profil Toko & Etalase Kreator
+            {isEditing ? "Edit Profil Sanggar Kreator" : "Profil Toko & Etalase Kreator"}
           </h1>
           <p className="mt-1 text-sm text-[#78716C]">
-            Kelola identitas merek, logo sanggar, alamat pengiriman, dan informasi kontak bisnis Anda.
+            {isEditing
+              ? "Perbarui nama toko, logo, lokasi workshop, dan nomor WhatsApp bisnis Anda."
+              : "Tampilan identitas toko dan profil sanggar Anda yang siap dilihat oleh pelanggan di katalog."}
           </p>
         </div>
 
         <div className="flex items-center gap-2">
+          {!isEditing && (
+            <Button
+              onClick={() => setIsEditing(true)}
+              size="sm"
+              className="rounded-xl bg-[#6355D9] hover:bg-[#5145C6] text-white text-xs font-semibold shadow-xs"
+            >
+              <Edit3 className="mr-1.5 h-3.5 w-3.5" /> Edit Profil
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -59,8 +83,17 @@ export default function CreatorProfilePage() {
             <div className="h-64 rounded-2xl border border-[#E7E5E4] bg-white p-6 animate-pulse" />
           </div>
         </div>
+      ) : isEditing ? (
+        <CreatorProfileForm
+          initialData={profile}
+          onSaveSuccess={handleSaveSuccess}
+          onCancel={handleCancel}
+        />
       ) : (
-        <CreatorProfileForm initialData={profile} />
+        <CreatorProfileView
+          data={profile}
+          onEdit={() => setIsEditing(true)}
+        />
       )}
     </div>
   );
