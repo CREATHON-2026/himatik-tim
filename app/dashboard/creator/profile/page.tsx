@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArrowLeft, Sparkles, Edit3 } from "lucide-react";
+import { ArrowLeft, Sparkles, Pencil } from "lucide-react";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -24,63 +24,60 @@ export default function CreatorProfilePage() {
   };
 
   return (
-    <div className="flex-1 space-y-8 p-6 md:p-10 max-w-6xl mx-auto">
-      {/* Header Bar */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#E7E5E4] pb-6">
-        <div>
+    <div className="flex-1 space-y-6 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+      {/* ─── HEADER BAR (Aligned with profil-toko.png) ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#F5F3FF] px-2.5 py-0.5 text-xs font-semibold text-[#6355D9] border border-[#DDD6FE]">
-              <Sparkles className="h-3 w-3" /> Pengaturan Sanggar
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FAF8FF] px-3 py-1 text-xs font-semibold text-[#6355D9] border border-[#DDD6FE] shadow-2xs">
+              <Sparkles className="size-3.5 text-[#8B7CF6]" />
+              <span className="uppercase tracking-wider">PENGATURAN SANGGAR</span>
             </span>
           </div>
-          <h1 className="mt-2 font-serif text-2xl font-bold tracking-tight text-[#111827] sm:text-3xl">
+          <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-normal text-[#111827] tracking-tight leading-tight">
             {isEditing ? "Edit Profil Sanggar Kreator" : "Profil Toko & Etalase Kreator"}
           </h1>
-          <p className="mt-1 text-sm text-[#78716C]">
+          <p className="text-xs sm:text-sm text-[#78716C] font-normal leading-normal">
             {isEditing
               ? "Perbarui nama toko, logo, lokasi workshop, dan nomor WhatsApp bisnis Anda."
               : "Tampilan identitas toko dan profil sanggar Anda yang siap dilihat oleh pelanggan di katalog."}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 shrink-0">
           {!isEditing && (
             <Button
               onClick={() => setIsEditing(true)}
               size="sm"
-              className="rounded-xl bg-[#6355D9] hover:bg-[#5145C6] text-white text-xs font-semibold shadow-xs"
+              className="rounded-xl bg-[#6355D9] hover:bg-[#5145C6] text-white text-xs sm:text-sm font-semibold shadow-xs transition-all cursor-pointer"
             >
-              <Edit3 className="mr-1.5 h-3.5 w-3.5" /> Edit Profil
+              <Pencil className="mr-1.5 size-3.5" />
+              <span>Edit Profil</span>
             </Button>
           )}
           <Button
             variant="outline"
             size="sm"
             render={<Link href="/dashboard/creator" />}
-            className="rounded-xl border-[#E7E5E4] text-xs font-medium"
+            className="rounded-xl border-[#E7E5E4] text-xs sm:text-sm font-medium text-[#111827] hover:bg-[#FAFAF9] shadow-2xs transition-colors cursor-pointer"
           >
-            <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Kembali ke Ringkasan
+            <ArrowLeft className="mr-1.5 size-3.5 text-[#78716C]" />
+            <span>Kembali ke Ringkasan</span>
           </Button>
         </div>
       </div>
 
-      {/* Main Content Area */}
+      {/* ─── MAIN CONTENT AREA ─── */}
       {isLoading ? (
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-2">
-            <div className="h-64 rounded-2xl border border-[#E7E5E4] bg-white p-6 animate-pulse space-y-4">
-              <div className="h-5 w-1/3 rounded bg-[#F5F5F4]" />
-              <div className="h-20 w-full rounded-xl bg-[#FAFAF9]" />
-              <div className="h-10 w-full rounded-xl bg-[#F5F5F4]" />
-            </div>
-            <div className="h-48 rounded-2xl border border-[#E7E5E4] bg-white p-6 animate-pulse space-y-4">
-              <div className="h-5 w-1/4 rounded bg-[#F5F5F4]" />
-              <div className="h-10 w-full rounded-xl bg-[#F5F5F4]" />
-            </div>
+        <div className="space-y-6">
+          <div className="h-96 rounded-3xl border border-[#E7E5E4] bg-white p-6 animate-pulse space-y-4 shadow-2xs">
+            <div className="h-44 w-full rounded-2xl bg-[#F5F5F4]" />
+            <div className="h-8 w-1/3 rounded-xl bg-[#FAFAF9]" />
+            <div className="h-16 w-full rounded-xl bg-[#F5F5F4]" />
           </div>
-          <div className="space-y-6">
-            <div className="h-40 rounded-2xl border border-[#E7E5E4] bg-white p-6 animate-pulse" />
-            <div className="h-64 rounded-2xl border border-[#E7E5E4] bg-white p-6 animate-pulse" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="h-48 rounded-3xl border border-[#E7E5E4] bg-white p-6 animate-pulse shadow-2xs" />
+            <div className="h-48 rounded-3xl border border-[#E7E5E4] bg-white p-6 animate-pulse shadow-2xs" />
           </div>
         </div>
       ) : isEditing ? (
