@@ -27,3 +27,10 @@ export interface AuthState {
   isLoading: boolean;
   error: string | null;
 }
+
+export interface ApiResponse<T = unknown> {
+  data?: T;
+  error?: string;
+  message?: string;
+  status?: number;
+}
