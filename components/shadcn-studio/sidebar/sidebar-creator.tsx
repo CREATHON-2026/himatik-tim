@@ -29,8 +29,6 @@ import {
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarMenuBadge,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -290,7 +288,7 @@ export function SidebarCreator({
         </SidebarHeader>
 
         {/* MIDDLE SECTION: DATA-DRIVEN SHADCN SIDEBAR MENU GROUPS */}
-        <SidebarContent className="p-0 overflow-y-auto no-scrollbar space-y-3 w-full my-2">
+        <SidebarContent className="p-0 overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden space-y-3 w-full my-2 flex-1">
           {navigationSections.map((section, sectionIdx) => (
             <React.Fragment key={section.label}>
               {sectionIdx > 0 && (
@@ -321,53 +319,69 @@ export function SidebarCreator({
 
                       return (
                         <SidebarMenuItem key={item.title}>
-                          <SidebarMenuButton
-                            render={item.disabled ? undefined : <Link href={item.href} />}
-                            disabled={item.disabled}
-                            isActive={isActive}
-                            tooltip={isCollapsed ? item.title : undefined}
-                            className={cn(
-                              "w-full flex items-center gap-2.5 rounded-xl text-xs font-medium transition-all duration-150 relative cursor-pointer",
-                              isCollapsed ? "justify-center p-2.5" : "px-3 py-2.5",
-                              isActive
-                                ? "bg-[#F5F3FF] text-[#6355D9] font-semibold border border-[#DDD6FE] shadow-2xs"
-                                : "text-[#44403C] hover:bg-[#F5F5F4] hover:text-[#111827]",
-                              item.disabled && "opacity-50 cursor-not-allowed hover:bg-transparent"
-                            )}
-                          >
-                            <Icon
+                          {item.disabled ? (
+                            <div
                               className={cn(
-                                "size-4.5 shrink-0 transition-colors",
-                                isActive ? "text-[#6355D9]" : "text-[#78716C]"
+                                "w-full flex items-center gap-2.5 rounded-xl text-xs font-medium opacity-50 cursor-not-allowed",
+                                isCollapsed ? "justify-center p-2.5" : "px-3 py-2.5"
                               )}
-                            />
-
-                            <AnimatePresence>
+                            >
+                              <Icon className="size-4.5 shrink-0 text-[#78716C]" />
                               {!isCollapsed && (
-                                <motion.span
-                                  variants={textRevealVariants}
-                                  initial="hidden"
-                                  animate="visible"
-                                  exit="exit"
-                                  className="truncate flex-1 text-left"
-                                >
-                                  {item.title}
-                                </motion.span>
+                                <span className="truncate flex-1 text-left">{item.title}</span>
                               )}
-                            </AnimatePresence>
+                              {!isCollapsed && item.badgeText && (
+                                <span className="text-[9px] font-semibold tracking-wider text-[#78716C] bg-[#F5F5F4] border border-[#E7E5E4] px-1.5 py-0.5 rounded-md uppercase">
+                                  {item.badgeText}
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <Link
+                              href={item.href}
+                              prefetch={false}
+                              className={cn(
+                                "w-full flex items-center gap-2.5 rounded-xl text-xs font-medium transition-all duration-150 relative cursor-pointer outline-none select-none",
+                                isCollapsed ? "justify-center p-2.5" : "px-3 py-2.5",
+                                isActive
+                                  ? "bg-[#F5F3FF] text-[#6355D9] font-semibold border border-[#DDD6FE] shadow-2xs"
+                                  : "text-[#44403C] hover:bg-[#F5F5F4] hover:text-[#111827]"
+                              )}
+                            >
+                              <Icon
+                                className={cn(
+                                  "size-4.5 shrink-0 transition-colors",
+                                  isActive ? "text-[#6355D9]" : "text-[#78716C]"
+                                )}
+                              />
 
-                            {!isCollapsed && item.badgeCount !== undefined && item.badgeCount > 0 && (
-                              <SidebarMenuBadge className="bg-[#6355D9] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                                {item.badgeCount}
-                              </SidebarMenuBadge>
-                            )}
+                              <AnimatePresence>
+                                {!isCollapsed && (
+                                  <motion.span
+                                    variants={textRevealVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    exit="exit"
+                                    className="truncate flex-1 text-left"
+                                  >
+                                    {item.title}
+                                  </motion.span>
+                                )}
+                              </AnimatePresence>
 
-                            {!isCollapsed && item.badgeText && (
-                              <span className="text-[9px] font-semibold tracking-wider text-[#78716C] bg-[#F5F5F4] border border-[#E7E5E4] px-1.5 py-0.5 rounded-md uppercase">
-                                {item.badgeText}
-                              </span>
-                            )}
-                          </SidebarMenuButton>
+                              {!isCollapsed && item.badgeCount !== undefined && item.badgeCount > 0 && (
+                                <span className="bg-[#6355D9] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                                  {item.badgeCount}
+                                </span>
+                              )}
+
+                              {!isCollapsed && item.badgeText && (
+                                <span className="text-[9px] font-semibold tracking-wider text-[#78716C] bg-[#F5F5F4] border border-[#E7E5E4] px-1.5 py-0.5 rounded-md uppercase">
+                                  {item.badgeText}
+                                </span>
+                              )}
+                            </Link>
+                          )}
                         </SidebarMenuItem>
                       );
                     })}

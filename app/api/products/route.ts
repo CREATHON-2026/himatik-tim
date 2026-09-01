@@ -19,20 +19,24 @@ export async function GET(_request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Find creator profile
-    const creator = await prisma.creatorProfile.findUnique({
+    // Find creator profile, or return empty list gracefully
+    let creator = await prisma.creatorProfile.findUnique({
       where: { userId: user.id },
     });
 
     if (!creator) {
-      return NextResponse.json(
-        { error: "Creator profile not found" },
-        { status: 404 }
-      );
+      // Auto-create creator profile for seamless onboarding
+      creator = await prisma.creatorProfile.create({
+        data: {
+          userId: user.id,
+          storeName: user.user_metadata?.studio_name || "Creathon Studio",
+          city: user.user_metadata?.city || "Makassar",
+        },
+      });
     }
 
     const products = await getProductsByCreator(creator.id);
-    return NextResponse.json(products);
+    return NextResponse.json(products ?? []);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json({ error: message }, { status: 500 });
