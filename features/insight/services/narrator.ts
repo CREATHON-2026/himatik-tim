@@ -73,7 +73,7 @@ const SYSTEM_PROMPT =
 // --- Utility ----------------------------------------------------------------
 
 /** Pilih & urutkan fakta berdasarkan prioritas */
-export function usableFacts(payload: any): Fact[] {
+export function usableFacts(payload: { facts?: Fact[]; [key: string]: unknown }): Fact[] {
   const layers = new Set(["observation", "interpretation"]);
   if (ENABLE_SUGGESTION) layers.add("suggestion");
 
@@ -83,14 +83,18 @@ export function usableFacts(payload: any): Fact[] {
   }
 
   const ordered: Fact[] = [];
-  for (const id of NARRATION_PRIORITY) {
-    const f = pool.get(id);
-    if (f) ordered.push(f);
+  for (const factId of NARRATION_PRIORITY) {
+    const f = pool.get(factId);
+    if (f) {
+      ordered.push(f);
+      pool.delete(factId);
+    }
   }
-  // tambahkan yang belum masuk priority
-  for (const f of payload.facts ?? []) {
-    if (layers.has(f.layer) && !ordered.includes(f)) ordered.push(f);
+
+  for (const f of pool.values()) {
+    ordered.push(f);
   }
+
   return ordered.slice(0, MAX_FACTS);
 }
 
