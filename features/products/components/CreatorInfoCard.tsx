@@ -3,12 +3,9 @@
 import React from "react";
 import Image from "next/image";
 import {
-  Star,
   Store,
-  CheckCircle2,
   MapPin,
   Clock,
-  Package,
   MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,42 +25,14 @@ interface CreatorInfoCardProps {
 
 export function CreatorInfoCard({ creator, className = "" }: CreatorInfoCardProps) {
   const router = useRouter();
-  // Extract genuine metrics without any dummy fallbacks
-  const hasRating = typeof creator.averageRating === "number" && creator.averageRating > 0;
-  const ratingVal = hasRating ? creator.averageRating!.toFixed(1) : null;
-  const reviewCount = creator.totalReviewCount && creator.totalReviewCount > 0 ? `${creator.totalReviewCount} ulasan` : null;
-  const districtName = creator.district ? creator.district.split(",")[0].trim() : null;
-  const productCount = creator.activeProductCount && creator.activeProductCount > 0 ? `${creator.activeProductCount} Produk` : null;
-  const openingHours = creator.openingHours?.trim() || null;
-  const whatsappNumber = creator.whatsapp?.replace(/\D/g, "") || null;
 
-  // Build array of genuine metadata items to display
-  const metricsItems: React.ReactNode[] = [];
-  if (ratingVal) {
-    metricsItems.push(
-      <span key="rating" className="flex items-center gap-0.5">
-        <span>{ratingVal}</span>
-        <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-        {reviewCount && <span className="text-[10px] text-[#78865C]/80 font-normal">({reviewCount})</span>}
-      </span>
-    );
-  }
-  if (productCount) {
-    metricsItems.push(
-      <span key="products" className="flex items-center gap-1">
-        <Package className="w-3 h-3 text-[#78865C]" />
-        <span>{productCount}</span>
-      </span>
-    );
-  }
-  if (districtName) {
-    metricsItems.push(
-      <span key="district" className="flex items-center gap-1">
-        <MapPin className="w-3 h-3 text-[#78865C]" />
-        <span>{districtName}</span>
-      </span>
-    );
-  }
+  const storeName = creator.shopName || "Gifterya";
+  const storeBio =
+    creator.bio ||
+    "Pengrajin buket bunga segar, kado personal, dan hampers premium berkualitas tinggi.";
+  const locationCity = creator.district || "Korean";
+  const avatarUrl = creator.photoUrl || "/aset/gifteria-logo.png";
+  const whatsappNumber = creator.whatsapp?.replace(/\D/g, "") || "089526293221";
 
   const handleWhatsApp = () => {
     if (!whatsappNumber) return;
@@ -72,117 +41,81 @@ export function CreatorInfoCard({ creator, className = "" }: CreatorInfoCardProp
       : whatsappNumber.startsWith("62")
       ? whatsappNumber
       : `62${whatsappNumber}`;
-    const text = encodeURIComponent(`Halo ${creator.shopName}, saya melihat produk Anda di Bicket dan tertarik untuk bertanya/memesan.`);
+    const text = encodeURIComponent(
+      `Halo ${storeName}, saya melihat produk Anda di Gifteria dan tertarik untuk bertanya/memesan.`
+    );
     window.open(`https://wa.me/${formattedNumber}?text=${text}`, "_blank");
   };
 
   return (
     <div
-      className={`paper-texture paper-skeuo relative flex flex-col rounded-[22px] border border-[#78865C]/25 bg-[#FAF4EC] shadow-sm overflow-hidden ${className}`}
+      className={`relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl border border-[#E7E5E4] bg-white shadow-xs ${className}`}
     >
-      {/* 1. Art Nouveau Botanical Header Banner */}
-      <div className="relative h-12 lg:h-14 w-full bg-linear-to-r from-[#3E5237] via-[#4D6344] to-[#3E5237] flex items-center justify-between px-3 overflow-hidden">
-        {/* Subtle Decorative Floral Line-Art Curves */}
-        <svg
-          className="absolute inset-0 w-full h-full text-white/12 pointer-events-none"
-          viewBox="0 0 300 60"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M-10 60C30 20 80 50 120 15C160 -20 200 45 250 20C290 0 320 40 340 60"
-            stroke="currentColor"
-            strokeWidth="1.2"
+      {/* Left Avatar & Store Info */}
+      <div className="flex items-start sm:items-center gap-4 min-w-0 flex-1">
+        {/* Circular Avatar */}
+        <div className="relative size-14 sm:size-16 rounded-full overflow-hidden border-2 border-white bg-[#FAF8FF] shadow-sm shrink-0">
+          <Image
+            src={avatarUrl}
+            alt={storeName}
+            fill
+            unoptimized
+            className="object-cover object-center"
           />
-          <circle cx="60" cy="25" r="8" stroke="currentColor" strokeWidth="0.8" />
-          <circle cx="240" cy="25" r="8" stroke="currentColor" strokeWidth="0.8" />
-        </svg>
+        </div>
+
+        {/* Store Name, Status & Bio */}
+        <div className="space-y-1 min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h4 className="font-serif text-lg sm:text-xl font-bold text-[#111827] leading-tight">
+              {storeName}
+            </h4>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold border border-emerald-200">
+              <span className="size-1.5 rounded-full bg-emerald-500" />
+              <span>Aktif</span>
+            </span>
+          </div>
+
+          <p className="text-xs text-[#78716C] leading-relaxed line-clamp-2">
+            {storeBio}
+          </p>
+
+          <div className="flex items-center gap-4 text-xs text-[#78716C] pt-0.5 flex-wrap">
+            <span className="flex items-center gap-1 font-medium text-[#44403C]">
+              <MapPin className="size-3.5 text-[#6355D9]" />
+              <span>{locationCity}</span>
+            </span>
+            <span className="flex items-center gap-1 text-[#78716C]">
+              <Clock className="size-3.5 text-[#A8A29E]" />
+              <span>Respons ~15 Menit</span>
+            </span>
+          </div>
+        </div>
       </div>
 
-      {/* 2. Main Content: Centered on Mobile/MD, Side-by-side on Desktop (LG) */}
-      <div className="relative flex flex-col lg:flex-row items-center lg:items-start gap-3 lg:gap-4 px-4 pb-3.5 -mt-6 lg:-mt-7">
-        {/* Avatar: Standard 60px on Mobile/MD, +50% Enlarged (90px) on Desktop (LG) */}
-        <div className="relative h-15 w-15 lg:h-22 lg:w-22 rounded-full overflow-hidden border-2 lg:border-3 border-[#FAF4EC] bg-[#FAF6F0] shadow-md shrink-0">
-          {creator.photoUrl ? (
-            <Image
-              src={creator.photoUrl}
-              alt={creator.shopName}
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-[#78865C]/15 text-[#3E5237]">
-              <Store className="h-6 w-6 lg:h-9 lg:w-9" />
-            </div>
-          )}
-          {/* Verified Badge Icon */}
-          <div className="absolute bottom-0 right-0 p-0.5 rounded-full bg-[#FAF4EC] shadow-xs">
-            <CheckCircle2 className="h-3.5 w-3.5 lg:h-4.5 lg:w-4.5 text-[#566B4D] fill-[#566B4D]" />
-          </div>
-        </div>
+      {/* Right Action Buttons */}
+      <div className="flex sm:flex-col items-center gap-2.5 w-full sm:w-auto shrink-0 select-none pt-2 sm:pt-0">
+        <Button
+          onClick={() => {
+            router.push(`/katalog`);
+          }}
+          variant="outline"
+          size="sm"
+          className="flex-1 sm:w-36 h-9 rounded-xl border-[#DDD6FE] text-[#6355D9] hover:bg-[#FAF8FF] text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs transition"
+        >
+          <Store className="size-3.5" />
+          <span>Kunjungi Toko</span>
+        </Button>
 
-        {/* Shop Details: Centered on Mobile/MD, Left-aligned on Desktop (LG) */}
-        <div className="flex flex-col items-center lg:items-start flex-1 min-w-0 text-center lg:text-left w-full">
-          {/* Shop Name */}
-          <h4 className="font-heading text-base lg:text-lg font-bold text-white leading-tight truncate max-w-full drop-shadow-xs">
-            {creator.shopName}
-          </h4>
-
-          {/* Shop Bio / Tagline with pt-2 padding */}
-          {creator.bio && (
-            <p className="text-[11px] font-sans text-[#78865C] pt-2 line-clamp-2 leading-tight">
-              {creator.bio}
-            </p>
-          )}
-
-          {/* Genuine Metrics (Only rendered if actual data exists) */}
-          {metricsItems.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-2.5 gap-y-1 mt-1.5 text-[10.5px] lg:text-[11px] font-sans font-semibold text-[#3E5237] select-none">
-              {metricsItems.map((item, idx) => (
-                <React.Fragment key={idx}>
-                  {idx > 0 && <span className="text-[#78865C]/40">•</span>}
-                  {item}
-                </React.Fragment>
-              ))}
-            </div>
-          )}
-
-          {/* Opening Hours if available */}
-          {openingHours && (
-            <div className="flex items-center gap-1 text-[10.5px] font-sans text-[#78865C] mt-1 select-none">
-              <Clock className="w-3 h-3 text-[#78865C]" />
-              <span>{openingHours}</span>
-            </div>
-          )}
-
-          {/* Action Buttons: Kunjungi Toko + Chat WhatsApp (Secondary Skeuo) */}
-          <div className="flex items-center gap-2 w-full mt-2.5 select-none">
-            <Button
-              onClick={() => {
-                router.push(`/market/creators/${creator.id}`);
-              }}
-              variant="skeuo-paper-secondary"
-              size="sm"
-              className="flex-1 h-8 lg:h-8.5 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer rounded-xl border-[#78865C]/25 text-[#3E5237] shadow-xs"
-            >
-              <Store className="h-3.5 w-3.5 text-[#78865C]" />
-              <span>Kunjungi Toko</span>
-            </Button>
-
-            {whatsappNumber && (
-              <Button
-                onClick={handleWhatsApp}
-                variant="skeuo-forest-secondary"
-                size="sm"
-                className="h-8 lg:h-8.5 px-3 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer rounded-xl shadow-xs"
-                title="Chat WhatsApp Toko"
-              >
-                <MessageCircle className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Chat</span>
-              </Button>
-            )}
-          </div>
-        </div>
+        <Button
+          onClick={handleWhatsApp}
+          variant="outline"
+          size="sm"
+          className="flex-1 sm:w-36 h-9 rounded-xl border-[#DDD6FE] text-[#6355D9] hover:bg-[#FAF8FF] text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs transition"
+        >
+          <MessageCircle className="size-3.5" />
+          <span>Chat</span>
+        </Button>
       </div>
     </div>
   );
