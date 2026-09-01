@@ -65,7 +65,8 @@ export default function CreatorProductsPage() {
   };
 
   const filteredProducts = products.filter((p) => {
-    const matchQuery = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const productName = p.name || (p as unknown as { title?: string }).title || "";
+    const matchQuery = productName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchCategory =
       selectedCategory === "ALL" || p.category === selectedCategory;
     return matchQuery && matchCategory;
