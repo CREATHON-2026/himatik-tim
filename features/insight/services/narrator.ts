@@ -72,7 +72,7 @@ const SYSTEM_PROMPT =
 // --- Utility ----------------------------------------------------------------
 
 /** Pilih & urutkan fakta berdasarkan prioritas */
-function usableFacts(payload: any): Fact[] {
+function usableFacts(payload: { facts?: import("./insightInputs").Fact[]; data_quality?: { status: string } }): import("./insightInputs").Fact[] {
   const layers = new Set(["observation", "interpretation"]);
   if (ENABLE_SUGGESTION) layers.add("suggestion");
 
@@ -94,7 +94,7 @@ function usableFacts(payload: any): Fact[] {
 }
 
 /** Render narasi deterministik tanpa AI — baseline MVP + fallback */
-export function renderTemplate(payload: any): string {
+export function renderTemplate(payload: { data_quality: { status: string; transaction_count?: number }; facts?: Fact[] }): string {
   const quality = payload.data_quality;
   if (quality.status !== "ok") {
     return `Belum cukup transaksi untuk dibuat ringkasannya di periode ini. Baru ada ${quality.transaction_count} transaksi terbayar.`;
@@ -134,7 +134,7 @@ export interface GuardResult {
 export function guardDraft(
   draft: string,
   facts: Fact[],
-  comparison: any,
+  comparison: { available?: boolean; direction?: string } | null | undefined,
   maxSentences = MAX_SENTENCES,
 ): GuardResult {
   // 1. Digit — angka HANYA dari kode
@@ -173,8 +173,8 @@ export function guardDraft(
   }
 
   // 5. Arah terbalik
-  if (comparison?.available) {
-    const pattern = DIRECTION_BANNED[comparison.direction];
+  if (comparison?.available && comparison.direction) {
+    const pattern = DIRECTION_BANNED[comparison.direction as string];
     if (pattern && pattern.test(draft)) {
       return { ok: false, reason: "direction_inverted" };
     }
@@ -223,7 +223,7 @@ export interface NarrationResult {
  * @param llm - Optional async callable: (messages) => string. Null = murni template (MVP).
  */
 export async function narrate(
-  payload: any,
+  payload: { data_quality: { status: string }; facts?: Fact[] } & Record<string, unknown>,
   llm?: ((messages: { role: string; content: string }[]) => Promise<string>) | null,
 ): Promise<NarrationResult> {
   const baseline = renderTemplate(payload);
@@ -248,7 +248,7 @@ export async function narrate(
   }
 
   // Guard v2
-  const guard = guardDraft(draft, facts, payload.comparison);
+  const guard = guardDraft(draft, facts, payload.comparison as { available?: boolean; direction?: string } | null);
   if (!guard.ok) {
     return {
       text: baseline,

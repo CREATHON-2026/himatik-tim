@@ -39,9 +39,13 @@ export default function StillLandingPage() {
   // Dynamic cart state for e-commerce interaction
   const [cartCount, setCartCount] = useState(0);
 
-  const handleAddToCart = useCallback((_product: DirectProduct, _packSize: string) => {
-    setCartCount((prev) => prev + 1);
-  }, []);
+  const handleAddToCart = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (_product: DirectProduct, _packSize: string) => {
+      setCartCount((prev) => prev + 1);
+    },
+    []
+  );
 
   // Initialize Ultra-Luxury Lenis Momentum Smooth Scroll synchronized with GSAP Ticker
   useEffect(() => {
