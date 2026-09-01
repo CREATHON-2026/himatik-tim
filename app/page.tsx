@@ -1,82 +1,135 @@
-import { prisma } from "@/lib/prisma";
-import { Database, ShieldCheck, Zap, Server } from "lucide-react";
+import Link from "next/link";
+import {
+  Sparkles,
+  ShoppingBag,
+  Store,
+  ShieldCheck,
+  ArrowRight,
+} from "lucide-react";
 
-export default async function Home() {
+export default function Home() {
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col items-center justify-center p-6 antialiased selection:bg-emerald-500 selection:text-black">
-      <main className="w-full max-w-3xl space-y-8 text-center sm:text-left">
-        {/* Header Badge */}
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-400">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          Setup Complete: Next.js + Supabase + Prisma
-        </div>
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col justify-between antialiased selection:bg-emerald-500 selection:text-black">
+      {/* Navigation Header */}
+      <header className="w-full border-b border-neutral-900 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 font-bold text-lg text-white">
+            <span className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+              <Sparkles className="w-4 h-4" />
+            </span>
+            <span>Creathon<span className="text-emerald-400">.</span></span>
+          </Link>
 
-        {/* Title & Description */}
-        <div className="space-y-3">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
-            Creathon Project
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="px-4 py-2 rounded-xl text-xs font-medium text-neutral-300 hover:text-white transition"
+            >
+              Masuk
+            </Link>
+            <Link
+              href="/register"
+              className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-xs transition shadow-md shadow-emerald-500/20"
+            >
+              Daftar Sekarang
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-12 text-center relative overflow-hidden">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/10 blur-[140px] rounded-full pointer-events-none" />
+
+        <div className="max-w-3xl space-y-6 relative z-10">
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-400">
+            <Sparkles className="w-3.5 h-3.5" /> Platform Rental Busana Adat & Kreatif Nusantara
+          </div>
+
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-tight">
+            Sewa Pakaian Tradisional & Busana Kreatif dengan Aman
           </h1>
-          <p className="text-neutral-400 text-base sm:text-lg max-w-xl">
-            Proyek siap dikembangkan dengan arsitektur modern tanpa folder{" "}
-            <code className="text-emerald-400 font-mono text-sm bg-neutral-900 px-1.5 py-0.5 rounded border border-neutral-800">
-              /src
-            </code>
-            , dilengkapi integrasi penuh Supabase SSR dan Prisma ORM.
+
+          <p className="text-neutral-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+            Ekosistem marketplace busana adat terlengkap yang menghubungkan penyewa dengan kreator busana di seluruh Indonesia, didukung perlindungan transaksi escrow.
           </p>
-        </div>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-          <div className="p-4 rounded-xl border border-neutral-800 bg-neutral-900/50 space-y-2 hover:border-neutral-700 transition">
-            <div className="flex items-center gap-2.5 text-white font-semibold">
-              <Database className="w-4 h-4 text-emerald-400" />
-              <span>Prisma ORM</span>
-            </div>
-            <p className="text-xs text-neutral-400">
-              Singleton client di <code className="text-neutral-300">lib/prisma.ts</code> dengan PgBouncer pooler connection.
-            </p>
+          {/* Action Navigation Matrix */}
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/katalog"
+              className="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm transition flex items-center gap-2 shadow-lg shadow-emerald-500/25"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              <span>Jelajahi Katalog Busana</span>
+            </Link>
+
+            <Link
+              href="/register"
+              className="px-6 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-white font-medium text-sm transition flex items-center gap-2"
+            >
+              <Store className="w-4 h-4 text-emerald-400" />
+              <span>Buka Rental (Creator)</span>
+            </Link>
           </div>
 
-          <div className="p-4 rounded-xl border border-neutral-800 bg-neutral-900/50 space-y-2 hover:border-neutral-700 transition">
-            <div className="flex items-center gap-2.5 text-white font-semibold">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Supabase SSR</span>
-            </div>
-            <p className="text-xs text-neutral-400">
-              Browser & Server client di <code className="text-neutral-300">lib/supabase/</code> lengkap dengan Next.js auth middleware.
-            </p>
-          </div>
+          {/* Quick Route Preview Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-8 text-left">
+            <Link
+              href="/katalog"
+              className="p-4 rounded-xl border border-neutral-800/80 bg-neutral-900/40 hover:border-emerald-500/50 hover:bg-neutral-900/80 transition group block"
+            >
+              <div className="flex items-center justify-between text-white font-semibold text-xs mb-1">
+                <span className="flex items-center gap-1.5">
+                  <ShoppingBag className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Katalog Customer</span>
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition" />
+              </div>
+              <p className="text-[11px] text-neutral-400">
+                Lihat busana sewa, filtering adat daerah, dan opsi sewa.
+              </p>
+            </Link>
 
-          <div className="p-4 rounded-xl border border-neutral-800 bg-neutral-900/50 space-y-2 hover:border-neutral-700 transition">
-            <div className="flex items-center gap-2.5 text-white font-semibold">
-              <Server className="w-4 h-4 text-emerald-400" />
-              <span>Flat Root Structure</span>
-            </div>
-            <p className="text-xs text-neutral-400">
-              Arsitektur langsung di root (<code className="text-neutral-300">app/</code>, <code className="text-neutral-300">lib/</code>, <code className="text-neutral-300">components/</code>).
-            </p>
-          </div>
+            <Link
+              href="/dashboard/creator"
+              className="p-4 rounded-xl border border-neutral-800/80 bg-neutral-900/40 hover:border-emerald-500/50 hover:bg-neutral-900/80 transition group block"
+            >
+              <div className="flex items-center justify-between text-white font-semibold text-xs mb-1">
+                <span className="flex items-center gap-1.5">
+                  <Store className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Studio Creator</span>
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition" />
+              </div>
+              <p className="text-[11px] text-neutral-400">
+                Kelola koleksi busana, pantau pesanan sewa & pencairan.
+              </p>
+            </Link>
 
-          <div className="p-4 rounded-xl border border-neutral-800 bg-neutral-900/50 space-y-2 hover:border-neutral-700 transition">
-            <div className="flex items-center gap-2.5 text-white font-semibold">
-              <Zap className="w-4 h-4 text-emerald-400" />
-              <span>Tailwind CSS</span>
-            </div>
-            <p className="text-xs text-neutral-400">
-              Modern styling system dengan helper <code className="text-neutral-300">cn()</code> di <code className="text-neutral-300">lib/utils.ts</code>.
-            </p>
+            <Link
+              href="/dashboard/admin"
+              className="p-4 rounded-xl border border-neutral-800/80 bg-neutral-900/40 hover:border-rose-500/50 hover:bg-neutral-900/80 transition group block"
+            >
+              <div className="flex items-center justify-between text-white font-semibold text-xs mb-1">
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Admin Center</span>
+                </span>
+                <ArrowRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-rose-400 group-hover:translate-x-0.5 transition" />
+              </div>
+              <p className="text-[11px] text-neutral-400">
+                Pusat audit escrow Midtrans & persetujuan verifikasi toko.
+              </p>
+            </Link>
           </div>
-        </div>
-
-        {/* Action / Next steps */}
-        <div className="pt-4 border-t border-neutral-900 text-xs text-neutral-500 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <span>Creathon Workspace • Ready for Feature Development</span>
-          <span className="font-mono text-neutral-400">npm run dev</span>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="w-full border-t border-neutral-900 py-6 text-center text-xs text-neutral-600">
+        &copy; {new Date().getFullYear()} Creathon Marketplace • Next.js 16 + Supabase SSR + Prisma
+      </footer>
     </div>
   );
 }
