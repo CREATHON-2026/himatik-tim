@@ -12,10 +12,10 @@ import {
   Wallet,
   Store,
   MessageSquare,
-  Sparkles,
   PanelLeftClose,
   PanelLeftOpen,
   ArrowUpRight,
+  ChevronDown,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -32,8 +32,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { useCreatorProfile } from "@/features/creator-profile/hooks/useCreatorProfile";
-import { useCreatorOrders } from "@/features/orders/hooks/useCreatorOrders";
 
 interface NavItemConfig {
   title: string;
@@ -51,19 +49,16 @@ interface NavSectionConfig {
 }
 
 interface SidebarCreatorProps {
+  storeName?: string;
   userEmail?: string;
-  onLogout?: () => void;
-  isLoggingOut?: boolean;
   className?: string;
 }
 
 export function SidebarCreator({
-  userEmail = "",
+  storeName = "Studio Flora",
   className,
 }: SidebarCreatorProps) {
   const pathname = usePathname();
-  const { profile } = useCreatorProfile();
-  const { orders } = useCreatorOrders();
   const { state, toggleSidebar, isMobile } = useSidebar();
   const systemReduceMotion = useReducedMotion();
   const isMounted = React.useSyncExternalStore(
@@ -75,26 +70,11 @@ export function SidebarCreator({
 
   const isCollapsed = state === "collapsed" && !isMobile;
 
-  // Calculate pending / actionable orders count
-  const pendingOrdersCount = React.useMemo(() => {
-    if (!orders || orders.length === 0) return 0;
-    return orders.filter(
-      (o) =>
-        o.status === "PAID" ||
-        o.status === "PROCESSING" ||
-        o.status === "PENDING"
-    ).length;
-  }, [orders]);
-
-  const shopName =
-    profile?.shopName ||
-    (userEmail ? userEmail.split("@")[0] : "Creathon Studio");
-
-  // Centralized Declarative Navigation Structure
+  // Centralized Navigation Sections aligned with ringkasan-page.png
   const navigationSections = React.useMemo<NavSectionConfig[]>(
     () => [
       {
-        label: "Utama",
+        label: "UTAMA",
         items: [
           { title: "Ringkasan", href: "/dashboard/creator", icon: LayoutGrid, exact: true },
           { title: "Produk Saya", href: "/dashboard/creator/products", icon: Gift },
@@ -102,34 +82,32 @@ export function SidebarCreator({
             title: "Pesanan Masuk",
             href: "/dashboard/creator/orders",
             icon: ClipboardList,
-            badgeCount: pendingOrdersCount,
           },
         ],
       },
       {
-        label: "Keuangan",
+        label: "KEUANGAN",
         items: [
           { title: "Saldo & Penarikan", href: "/dashboard/creator/payout", icon: Wallet },
         ],
       },
       {
-        label: "Toko & Pengaturan",
+        label: "TOKO & PENGATURAN",
         items: [
           { title: "Profil Toko & Etalase", href: "/dashboard/creator/profile", icon: Store },
           {
-            title: "Pesan / Chat Pembeli",
+            title: "Pesan / Chat",
             href: "#",
             icon: MessageSquare,
             disabled: true,
-            badgeText: "Soon",
+            badgeText: "SOON",
           },
         ],
       },
     ],
-    [pendingOrdersCount]
+    []
   );
 
-  // Motion animation variants for text fade/reveal
   const textRevealVariants: Variants = {
     hidden: { opacity: 0, x: shouldReduceMotion ? 0 : -6 },
     visible: {
@@ -156,7 +134,7 @@ export function SidebarCreator({
         className
       )}
     >
-      {/* SIDEBAR CONTAINER WITH STAGED SPRING ANIMATION (w-16 = 64px, w-60 = 240px) */}
+      {/* SIDEBAR CONTAINER */}
       <motion.div
         animate={{ width: isCollapsed ? 68 : 252 }}
         transition={
@@ -170,25 +148,20 @@ export function SidebarCreator({
           isCollapsed ? "p-2 items-center" : "p-3.5"
         )}
       >
-        {/* FLOATING EXPAND / COLLAPSE BUTTON */}
+        {/* FLOATING COLLAPSE/EXPAND BUTTON */}
         <motion.button
           type="button"
           onClick={toggleSidebar}
-          whileHover={
-            shouldReduceMotion
-              ? {}
-              : { scale: 1.1 }
-          }
-          whileTap={shouldReduceMotion ? {} : { scale: 0.92 }}
-          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          whileHover={shouldReduceMotion ? {} : { scale: 1.08 }}
+          whileTap={shouldReduceMotion ? {} : { scale: 0.94 }}
           className={cn(
-            "absolute top-5 z-50 size-7.5 rounded-full cursor-pointer",
+            "absolute top-5 z-50 size-7 rounded-full cursor-pointer",
             isCollapsed ? "left-[calc(100%+6px)]" : "-right-3.5",
             "bg-white text-[#78716C] hover:text-[#6355D9] hover:border-[#6355D9]",
-            "border border-[#E7E5E4] shadow-md",
+            "border border-[#E7E5E4] shadow-xs",
             "flex items-center justify-center transition-colors"
           )}
-          title={isCollapsed ? "Buka Sidebar (Ctrl+B)" : "Tutup Sidebar (Ctrl+B)"}
+          title={isCollapsed ? "Buka Sidebar" : "Tutup Sidebar"}
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -207,17 +180,17 @@ export function SidebarCreator({
           </AnimatePresence>
         </motion.button>
 
-        {/* TOP SECTION: BRAND HEADER & PROFILE CAPSULE */}
+        {/* TOP SECTION: BRAND HEADER & TOKO AKTIF PILL */}
         <SidebarHeader className="p-0 space-y-3 w-full">
-          {/* Brand Header */}
+          {/* Brand Header: Gifteria Seller Studio */}
           <div
             className={cn(
               "flex items-center gap-2.5 pt-1",
               isCollapsed ? "justify-center" : "justify-start"
             )}
           >
-            <div className="size-9 rounded-xl bg-[#F5F3FF] border border-[#DDD6FE] flex items-center justify-center shrink-0 shadow-xs">
-              <Sparkles className="size-4.5 text-[#6355D9]" />
+            <div className="size-10 rounded-2xl bg-[#F5F3FF] border border-[#DDD6FE]/70 flex items-center justify-center shrink-0 shadow-2xs">
+              <Gift className="size-5 text-[#6355D9]" />
             </div>
 
             <AnimatePresence>
@@ -229,36 +202,26 @@ export function SidebarCreator({
                   exit="exit"
                   className="min-w-0 flex flex-col overflow-hidden"
                 >
-                  <span className="font-serif text-base font-extrabold tracking-tight text-[#111827] leading-tight truncate">
-                    CREATHON
+                  <span className="font-serif text-lg font-normal tracking-tight text-[#111827] leading-tight truncate">
+                    Gifteria
                   </span>
-                  <span className="text-[9px] font-bold tracking-[0.2em] text-[#6355D9] uppercase leading-none mt-0.5">
-                    Creator Studio
+                  <span className="text-[10px] font-semibold text-[#6355D9] leading-none mt-0.5">
+                    Seller Studio
                   </span>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Creator Profile Soft-Box */}
+          {/* Store Status Box (Toko Aktif - Online) */}
           <div
             className={cn(
-              "bg-[#FAFAF9] border border-[#E7E5E4] rounded-xl p-2 flex items-center gap-2.5 shadow-xs",
-              isCollapsed ? "justify-center p-1.5" : "justify-start"
+              "bg-[#FAFAF9] border border-[#E7E5E4] rounded-xl p-2.5 flex items-center gap-2.5 shadow-2xs",
+              isCollapsed ? "justify-center p-2" : "justify-start"
             )}
           >
-            <div className="size-8 rounded-lg bg-white border border-[#E7E5E4] flex items-center justify-center shrink-0 shadow-xs overflow-hidden relative">
-              {profile?.photoUrl ? (
-                <Image
-                  src={profile.photoUrl}
-                  alt={shopName}
-                  fill
-                  sizes="32px"
-                  className="object-cover"
-                />
-              ) : (
-                <Store className="size-4 text-[#6355D9]" />
-              )}
+            <div className="size-7 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
+              <Store className="size-3.5 text-emerald-600" />
             </div>
 
             <AnimatePresence>
@@ -270,144 +233,123 @@ export function SidebarCreator({
                   exit="exit"
                   className="min-w-0 flex-1 overflow-hidden"
                 >
-                  <span className="font-semibold text-xs text-[#111827] truncate block leading-tight">
-                    {shopName}
+                  <span className="font-semibold text-xs text-[#111827] block leading-tight">
+                    Toko Aktif
                   </span>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="size-1.5 rounded-full bg-emerald-500 shrink-0" />
-                    <span className="text-[10px] text-[#78716C] font-medium leading-none">
-                      Toko Aktif
+                    <span className="text-[10px] text-emerald-600 font-medium leading-none">
+                      Online
                     </span>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
-
-          <Separator className="h-px bg-[#E7E5E4]" />
         </SidebarHeader>
 
-        {/* MIDDLE SECTION: DATA-DRIVEN SHADCN SIDEBAR MENU GROUPS */}
-        <SidebarContent className="p-0 overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden space-y-3 w-full my-2 flex-1">
-          {navigationSections.map((section, sectionIdx) => (
-            <React.Fragment key={section.label}>
-              {sectionIdx > 0 && (
-                <Separator className="h-px w-full bg-[#E7E5E4] my-2" />
-              )}
-              <SidebarGroup className="p-0">
-                <AnimatePresence>
-                  {!isCollapsed && (
-                    <motion.div
-                      variants={textRevealVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                    >
-                      <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-[#A8A29E] uppercase px-2 h-4 text-left">
-                        {section.label}
-                      </SidebarGroupLabel>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <SidebarGroupContent className="mt-1">
-                  <SidebarMenu className="space-y-1">
-                    {section.items.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = item.exact
-                        ? pathname === item.href
-                        : item.href !== "#" && pathname.startsWith(item.href);
+        {/* MIDDLE SECTION: NAVIGATION MENU GROUPS */}
+        <SidebarContent className="p-0 overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden space-y-3.5 w-full my-3 flex-1">
+          {navigationSections.map((section) => (
+            <SidebarGroup key={section.label} className="p-0">
+              <AnimatePresence>
+                {!isCollapsed && (
+                  <motion.div
+                    variants={textRevealVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <SidebarGroupLabel className="text-[10px] font-semibold tracking-wider text-[#A8A29E] uppercase px-2 h-4 text-left">
+                      {section.label}
+                    </SidebarGroupLabel>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <SidebarGroupContent className="mt-1">
+                <SidebarMenu className="space-y-1">
+                  {section.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = item.exact
+                      ? pathname === item.href
+                      : item.href !== "#" && pathname.startsWith(item.href);
 
-                      return (
-                        <SidebarMenuItem key={item.title}>
-                          {item.disabled ? (
-                            <div
+                    return (
+                      <SidebarMenuItem key={item.title}>
+                        {item.disabled ? (
+                          <div
+                            className={cn(
+                              "w-full flex items-center gap-2.5 rounded-xl text-xs font-medium opacity-60 cursor-not-allowed",
+                              isCollapsed ? "justify-center p-2.5" : "px-3 py-2.5"
+                            )}
+                          >
+                            <Icon className="size-4 shrink-0 text-[#78716C]" />
+                            {!isCollapsed && (
+                              <span className="truncate flex-1 text-left text-[#78716C]">{item.title}</span>
+                            )}
+                            {!isCollapsed && item.badgeText && (
+                              <span className="text-[9px] font-bold tracking-wider text-[#6355D9] bg-[#EDE9FE] px-1.5 py-0.5 rounded-md uppercase">
+                                {item.badgeText}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            prefetch={false}
+                            className={cn(
+                              "w-full flex items-center gap-2.5 rounded-xl text-xs font-medium transition-all duration-150 relative cursor-pointer outline-none select-none",
+                              isCollapsed ? "justify-center p-2.5" : "px-3 py-2.5",
+                              isActive
+                                ? "bg-[#F5F3FF] text-[#6355D9] font-semibold border border-[#DDD6FE]/80 shadow-2xs"
+                                : "text-[#44403C] hover:bg-[#F5F5F4] hover:text-[#111827]"
+                            )}
+                          >
+                            <Icon
                               className={cn(
-                                "w-full flex items-center gap-2.5 rounded-xl text-xs font-medium opacity-50 cursor-not-allowed",
-                                isCollapsed ? "justify-center p-2.5" : "px-3 py-2.5"
+                                "size-4 shrink-0 transition-colors",
+                                isActive ? "text-[#6355D9]" : "text-[#78716C]"
                               )}
-                            >
-                              <Icon className="size-4.5 shrink-0 text-[#78716C]" />
+                            />
+
+                            <AnimatePresence>
                               {!isCollapsed && (
-                                <span className="truncate flex-1 text-left">{item.title}</span>
+                                <motion.span
+                                  variants={textRevealVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  exit="exit"
+                                  className="truncate flex-1 text-left"
+                                >
+                                  {item.title}
+                                </motion.span>
                               )}
-                              {!isCollapsed && item.badgeText && (
-                                <span className="text-[9px] font-semibold tracking-wider text-[#78716C] bg-[#F5F5F4] border border-[#E7E5E4] px-1.5 py-0.5 rounded-md uppercase">
-                                  {item.badgeText}
-                                </span>
-                              )}
-                            </div>
-                          ) : (
-                            <Link
-                              href={item.href}
-                              prefetch={false}
-                              className={cn(
-                                "w-full flex items-center gap-2.5 rounded-xl text-xs font-medium transition-all duration-150 relative cursor-pointer outline-none select-none",
-                                isCollapsed ? "justify-center p-2.5" : "px-3 py-2.5",
-                                isActive
-                                  ? "bg-[#F5F3FF] text-[#6355D9] font-semibold border border-[#DDD6FE] shadow-2xs"
-                                  : "text-[#44403C] hover:bg-[#F5F5F4] hover:text-[#111827]"
-                              )}
-                            >
-                              <Icon
-                                className={cn(
-                                  "size-4.5 shrink-0 transition-colors",
-                                  isActive ? "text-[#6355D9]" : "text-[#78716C]"
-                                )}
-                              />
-
-                              <AnimatePresence>
-                                {!isCollapsed && (
-                                  <motion.span
-                                    variants={textRevealVariants}
-                                    initial="hidden"
-                                    animate="visible"
-                                    exit="exit"
-                                    className="truncate flex-1 text-left"
-                                  >
-                                    {item.title}
-                                  </motion.span>
-                                )}
-                              </AnimatePresence>
-
-                              {!isCollapsed && item.badgeCount !== undefined && item.badgeCount > 0 && (
-                                <span className="bg-[#6355D9] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                                  {item.badgeCount}
-                                </span>
-                              )}
-
-                              {!isCollapsed && item.badgeText && (
-                                <span className="text-[9px] font-semibold tracking-wider text-[#78716C] bg-[#F5F5F4] border border-[#E7E5E4] px-1.5 py-0.5 rounded-md uppercase">
-                                  {item.badgeText}
-                                </span>
-                              )}
-                            </Link>
-                          )}
-                        </SidebarMenuItem>
-                      );
-                    })}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-            </React.Fragment>
+                            </AnimatePresence>
+                          </Link>
+                        )}
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
           ))}
         </SidebarContent>
 
-        {/* BOTTOM SECTION: FOOTER & MARKETPLACE LINK */}
+        {/* BOTTOM SECTION: FOOTER & USER PROFILE PILL */}
         <SidebarFooter className="p-0 pt-2 space-y-2 w-full">
-          <Separator className="h-px bg-[#E7E5E4]" />
-
           {/* Direct Link to Public Catalog */}
           <Link
             href="/katalog"
             className={cn(
-              "flex items-center gap-2 rounded-xl text-xs font-medium transition-colors border border-transparent",
+              "flex items-center gap-2 rounded-xl text-xs font-medium transition-colors border border-[#E7E5E4] bg-white",
               "text-[#44403C] hover:text-[#6355D9] hover:bg-[#F5F3FF] hover:border-[#DDD6FE]",
               isCollapsed ? "justify-center p-2" : "px-3 py-2 justify-between"
             )}
-            title="Lihat Marketplace Publik"
+            title="Lihat Marketplace"
           >
             <div className="flex items-center gap-2 truncate">
-              <Store className="size-4 text-[#78716C]" />
+              <Store className="size-3.5 text-[#78716C]" />
               <AnimatePresence>
                 {!isCollapsed && (
                   <motion.span
@@ -415,19 +357,60 @@ export function SidebarCreator({
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="truncate"
+                    className="truncate text-[11px]"
                   >
                     Lihat Marketplace
                   </motion.span>
                 )}
               </AnimatePresence>
             </div>
-            {!isCollapsed && <ArrowUpRight className="size-3.5 text-[#A8A29E]" />}
+            {!isCollapsed && <ArrowUpRight className="size-3 text-[#A8A29E]" />}
           </Link>
 
-          {/* Copyright & Watermark */}
+          {/* User Profile Soft-Pill (Studio Flora) */}
+          <div
+            className={cn(
+              "bg-[#FAFAF9] border border-[#E7E5E4] rounded-xl p-2 flex items-center justify-between shadow-2xs cursor-pointer hover:bg-[#F5F5F4] transition",
+              isCollapsed ? "justify-center p-1.5" : "px-2.5 py-2"
+            )}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="size-7 rounded-full bg-gradient-to-br from-amber-200 to-rose-200 border border-white flex items-center justify-center shrink-0 shadow-2xs overflow-hidden relative">
+                <Image
+                  src="/aset/bglogin.png"
+                  alt={storeName}
+                  fill
+                  sizes="28px"
+                  className="object-cover"
+                />
+              </div>
+
+              <AnimatePresence>
+                {!isCollapsed && (
+                  <motion.div
+                    variants={textRevealVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="min-w-0 flex-1 overflow-hidden text-left"
+                  >
+                    <span className="font-semibold text-xs text-[#111827] truncate block leading-tight">
+                      {storeName}
+                    </span>
+                    <span className="text-[10px] text-[#78716C] leading-none block mt-0.5">
+                      Lihat Profil
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {!isCollapsed && <ChevronDown className="size-3.5 text-[#A8A29E] shrink-0 ml-1" />}
+          </div>
+
+          {/* Copyright Watermark */}
           <AnimatePresence>
-            {!isCollapsed ? (
+            {!isCollapsed && (
               <motion.div
                 variants={textRevealVariants}
                 initial="hidden"
@@ -435,14 +418,10 @@ export function SidebarCreator({
                 exit="exit"
                 className="text-center pt-1"
               >
-                <span className="text-[10px] text-[#A8A29E] font-medium tracking-wide">
-                  © 2026 Creathon Creative
+                <span className="text-[10px] text-[#A8A29E] font-normal">
+                  © 2026 Gifteria. All rights reserved.
                 </span>
               </motion.div>
-            ) : (
-              <div className="flex justify-center pt-1">
-                <span className="size-2 rounded-full bg-[#DDD6FE]" />
-              </div>
             )}
           </AnimatePresence>
         </SidebarFooter>
