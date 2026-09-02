@@ -41,6 +41,7 @@ generate-dummy-data.py
 
 # project base docs
 project_base.md
+FLOW_LOGIKA.md
 
 # vercel
 .vercel

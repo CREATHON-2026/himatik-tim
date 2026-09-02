@@ -47,6 +47,13 @@ export function CreatorInfoCard({ creator, className = "" }: CreatorInfoCardProp
     window.open(`https://wa.me/${formattedNumber}?text=${text}`, "_blank");
   };
 
+  const handleChat = () => {
+    // Generate conversationId based on creatorId
+    // Format: chat-{creatorId}
+    const conversationId = `chat-${creator.id}`;
+    router.push(`/dashboard/messages/${conversationId}`);
+  };
+
   return (
     <div
       className={`relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl border border-[#E7E5E4] bg-white shadow-xs ${className}`}
@@ -108,7 +115,7 @@ export function CreatorInfoCard({ creator, className = "" }: CreatorInfoCardProp
         </Button>
 
         <Button
-          onClick={handleWhatsApp}
+          onClick={handleChat}
           variant="outline"
           size="sm"
           className="flex-1 sm:w-36 h-9 rounded-xl border-[#DDD6FE] text-[#6355D9] hover:bg-[#FAF8FF] text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs transition"

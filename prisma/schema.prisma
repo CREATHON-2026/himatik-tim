@@ -46,6 +46,12 @@ model User {
   // Relasi opsional untuk Mitra / Creator
   creatorProfile CreatorProfile?
 
+  // Order Brief Relations
+  createdOrderBriefs OrderBrief[]          @relation("OrderBriefCreatedBy")
+  createdRevisions   OrderBriefRevision[]  @relation("RevisionCreatedBy")
+  briefConsents      OrderBriefConsent[]   @relation("OrderBriefConsents")
+  briefAuditEvents   OrderBriefAuditEvent[] @relation("OrderBriefAudits")
+
   @@map("users")
 }
 
@@ -125,4 +131,231 @@ model Product {
   creatorProfile CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 
   @@map("products")
+}
+
+enum KnowledgeStatus {
+  DRAFT
+  APPROVED
+  ARCHIVED
+}
+
+enum RiskLevel {
+  GENERAL
+  POLICY
+  LEGAL_OR_FINANCIAL
+}
+
+model CreatorKnowledgeArticle {
+  id               String          @id @default(cuid())
+  slug             String          @unique
+  title            String
+  category         String
+  content          String          @db.Text
+  keywords         String?
+  status           KnowledgeStatus @default(DRAFT)
+  riskLevel        RiskLevel       @default(GENERAL)
+  version          Int             @default(1)
+  effectiveFrom    DateTime?
+  expiresAt        DateTime?
+  approvedAt       DateTime?
+  approvedById     String?
+  allowedActionKeys Json?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@map("creator_knowledge_articles")
+}
+
+enum ConversationStatus {
+  OPEN
+  ESCALATED
+  CLOSED
+}
+
+model CreatorAssistantConversation {
+  id                  String             @id @default(cuid())
+  userId              String?
+  anonymousSessionHash String?
+  status              ConversationStatus @default(OPEN)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  messages CreatorAssistantMessage[]
+
+  @@map("creator_assistant_conversations")
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+enum MessageAnswerStatus {
+  ANSWERED
+  CLARIFY
+  ESCALATE
+}
+
+model CreatorAssistantMessage {
+  id               String               @id @default(cuid())
+  conversationId   String
+  role             MessageRole
+  content          String               @db.Text
+  answerStatus     MessageAnswerStatus?
+  sourceArticleIds Json?
+  actionKeys       Json?
+  groundingScore   Float?
+  createdAt        DateTime             @default(now())
+
+  conversation CreatorAssistantConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  feedbacks    CreatorAssistantFeedback[]
+
+  @@map("creator_assistant_messages")
+}
+
+enum FeedbackRating {
+  HELPFUL
+  NOT_HELPFUL
+}
+
+model CreatorAssistantFeedback {
+  id        String         @id @default(cuid())
+  messageId String
+  userId    String?
+  rating    FeedbackRating
+  reason    String?        @db.Text
+  createdAt DateTime       @default(now())
+
+  message CreatorAssistantMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@map("creator_assistant_feedbacks")
+}
+
+// =============================================================================
+// ORDER BRIEF SYSTEM - Phase 1
+// =============================================================================
+
+enum OrderBriefStatus {
+  DRAFT
+  AWAITING_REVIEW
+  PARTIALLY_AGREED
+  AGREED
+  SUPERSEDED
+  CANCELLED
+}
+
+enum OrderBriefRevisionCreatedByType {
+  AI
+  BUYER
+  CREATOR
+  OPERATIONS
+}
+
+enum OrderBriefRevisionStatus {
+  DRAFT
+  PROPOSED
+  AGREED
+  SUPERSEDED
+}
+
+enum OrderBriefConsentParty {
+  BUYER
+  CREATOR
+}
+
+enum OrderBriefFieldState {
+  EXPLICIT
+  INFERRED_NEEDS_CONFIRMATION
+  MISSING
+  CONFLICT
+  HUMAN_CONFIRMED
+  NOT_APPLICABLE
+}
+
+// Core Order Brief entity
+model OrderBrief {
+  id                String            @id @default(cuid())
+  conversationId    String            // Reference to chat conversation
+  orderId           String?           // Nullable until actual order is created
+  createdById       String            // User who initiated the brief
+  currentRevisionId String?           // Current active revision
+  status            OrderBriefStatus  @default(DRAFT)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  // Relations
+  createdBy       User                   @relation("OrderBriefCreatedBy", fields: [createdById], references: [id])
+  currentRevision OrderBriefRevision?    @relation("OrderBriefCurrentRevision", fields: [currentRevisionId], references: [id])
+  revisions       OrderBriefRevision[]   @relation("OrderBriefRevisions")
+  consents        OrderBriefConsent[]    @relation("OrderBriefConsents")
+  auditEvents     OrderBriefAuditEvent[]
+
+  @@map("order_briefs")
+}
+
+// Revision history for Order Brief
+model OrderBriefRevision {
+  id                      String                          @id @default(cuid())
+  orderBriefId            String
+  version                 Int                             // Sequential version number
+  snapshotJson            Json                            // Complete brief snapshot
+  snapshotHash            String?                         // SHA-256 hash for integrity
+  sourceFromMessageId     String?                         // First message used as source
+  sourceThroughMessageId  String?                         // Last message used as source
+  createdByType           OrderBriefRevisionCreatedByType
+  createdById             String?                         // Nullable for system/AI
+  modelName               String?                         // AI model used
+  promptVersion           String?                         // Prompt version
+  schemaVersion           String                          @default("1.0")
+  status                  OrderBriefRevisionStatus        @default(DRAFT)
+  createdAt               DateTime                        @default(now())
+  immutableAt             DateTime?                       // When revision became immutable
+
+  // Relations
+  orderBrief      OrderBrief              @relation("OrderBriefRevisions", fields: [orderBriefId], references: [id], onDelete: Cascade)
+  createdBy       User?                   @relation("RevisionCreatedBy", fields: [createdById], references: [id])
+  consents        OrderBriefConsent[]
+  auditEvents     OrderBriefAuditEvent[]
+  currentFor      OrderBrief[]            @relation("OrderBriefCurrentRevision")
+
+  @@unique([orderBriefId, version])
+  @@map("order_brief_revisions")
+}
+
+// Consent tracking for Phase 3 (prepared but not active)
+model OrderBriefConsent {
+  id           String                 @id @default(cuid())
+  orderBriefId String                 // Added for direct relation
+  revisionId   String
+  party        OrderBriefConsentParty
+  actorUserId  String
+  snapshotHash String                 // Hash of agreed snapshot
+  agreedAt     DateTime
+  createdAt    DateTime               @default(now())
+
+  // Relations
+  orderBrief OrderBrief         @relation("OrderBriefConsents", fields: [orderBriefId], references: [id], onDelete: Cascade)
+  revision   OrderBriefRevision @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+  actor      User               @relation("OrderBriefConsents", fields: [actorUserId], references: [id])
+
+  @@unique([revisionId, party])
+  @@map("order_brief_consents")
+}
+
+// Audit trail for all Order Brief operations
+model OrderBriefAuditEvent {
+  id           String   @id @default(cuid())
+  orderBriefId String
+  revisionId   String?
+  actorUserId  String?
+  eventType    String   // CREATE, UPDATE, AGREE, COMPILE, etc.
+  metadataJson Json     // Event-specific metadata (no secrets)
+  createdAt    DateTime @default(now())
+
+  // Relations
+  orderBrief OrderBrief          @relation(fields: [orderBriefId], references: [id], onDelete: Cascade)
+  revision   OrderBriefRevision? @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+  actor      User?               @relation("OrderBriefAudits", fields: [actorUserId], references: [id])
+
+  @@map("order_brief_audit_events")
 }
