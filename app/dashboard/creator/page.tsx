@@ -2,7 +2,6 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { buildInsightInputs, fmtRupiah, fmtPct } from "@/features/insight/services/insightInputs";
-import { narrate } from "@/features/insight/services/narrator";
 import { DashboardHeader } from "@/features/dashboard-creator/components/DashboardHeader";
 import { MetricSummaryCards } from "@/features/dashboard-creator/components/MetricSummaryCards";
 import { PerformanceAnalyticsSection } from "@/features/dashboard-creator/components/PerformanceAnalyticsSection";
@@ -63,12 +62,10 @@ export default async function CreatorDashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  let insightNarration = null;
   let insightInputs: InsightInputs | null = null;
   let storeName = "";
   let creatorProfileId = "";
   let actualProductCount = 3;
-  let publishedProductCount = 3;
 
   if (user) {
     try {
@@ -81,19 +78,16 @@ export default async function CreatorDashboardPage() {
       creatorProfileId = userProfile?.creatorProfile?.id ?? "";
 
       if (creatorProfileId) {
-        const [dbActualProductCount, dbPublishedProductCount] = await Promise.all([
-          prisma.product.count({ where: { creatorId: creatorProfileId } }),
-          prisma.product.count({ where: { creatorId: creatorProfileId, isPublished: true } }),
-        ]);
+        const dbActualProductCount = await prisma.product.count({
+          where: { creatorId: creatorProfileId },
+        });
         if (dbActualProductCount > 0) {
           actualProductCount = dbActualProductCount;
-          publishedProductCount = dbPublishedProductCount;
         }
       }
 
       if (storeName) {
         insightInputs = (await buildInsightInputs(user.id, storeName)) as unknown as InsightInputs;
-        insightNarration = await narrate(insightInputs as Parameters<typeof narrate>[0], null);
       }
     } catch (e) {
       console.warn("Using default/fallback analytics dataset:", e);

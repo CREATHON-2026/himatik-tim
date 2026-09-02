@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { Product as PrismaProduct } from "@prisma/client";
+import type { Prisma, Product as PrismaProduct } from "@prisma/client";
 import { CreateProductInput, UpdateProductInput } from "../types";
 import type { Product as ApiProduct } from "../types";
 
@@ -63,7 +63,7 @@ export async function getPublicProducts(options?: {
   page?: number;
   limit?: number;
 }) {
-  const where: any = {
+  const where: Prisma.ProductWhereInput = {
     isPublished: true,
   };
 
@@ -84,19 +84,19 @@ export async function getPublicProducts(options?: {
 
     if (mappedTerms && mappedTerms.length > 0) {
       where.OR = mappedTerms.map((term) => ({
-        category: { contains: term, mode: "insensitive" },
+        category: { contains: term, mode: "insensitive" as const },
       }));
     } else {
-      where.category = { contains: options.category, mode: "insensitive" };
+      where.category = { contains: options.category, mode: "insensitive" as const };
     }
   }
 
   if (options?.search && options.search.trim()) {
     const q = options.search.trim();
-    const searchConditions = [
-      { title: { contains: q, mode: "insensitive" } },
-      { description: { contains: q, mode: "insensitive" } },
-      { category: { contains: q, mode: "insensitive" } },
+    const searchConditions: Prisma.ProductWhereInput[] = [
+      { title: { contains: q, mode: "insensitive" as const } },
+      { description: { contains: q, mode: "insensitive" as const } },
+      { category: { contains: q, mode: "insensitive" as const } },
     ];
 
     if (where.OR) {

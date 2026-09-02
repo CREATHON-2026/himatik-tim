@@ -16,7 +16,6 @@ import {
   Store,
   ChevronRight,
   ShoppingBag,
-  User,
   LogOut,
   PackageOpen,
   LayoutDashboard,
@@ -76,8 +75,6 @@ export default function KatalogPage() {
       }),
   });
 
-  const products = Array.isArray(rawProducts) ? rawProducts : [];
-
   // Fetch buyer orders count for dynamic badge
   const { data: orders = [] } = useQuery({
     queryKey: ["buyer-orders-count", user?.id],
@@ -104,7 +101,7 @@ export default function KatalogPage() {
 
   // Client-side instant filter & search & sorting
   const filteredProducts = React.useMemo(() => {
-    let list = Array.isArray(products) ? [...products] : [];
+    let list = Array.isArray(rawProducts) ? [...rawProducts] : [];
 
     // Category filter
     if (selectedCategory !== "ALL") {
@@ -145,17 +142,17 @@ export default function KatalogPage() {
     }
 
     return list;
-  }, [products, selectedCategory, searchQuery, selectedSort]);
+  }, [rawProducts, selectedCategory, searchQuery, selectedSort]);
 
   // Helper initials for user avatar
-  const userInitials = React.useMemo(() => {
+  const userInitials = (() => {
     if (!user?.name) return "G";
     const parts = user.name.trim().split(" ");
     if (parts.length >= 2) {
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     }
     return user.name.slice(0, 2).toUpperCase();
-  }, [user?.name]);
+  })();
 
   return (
     <div className="min-h-screen bg-[#FAFAF9] text-[#111827] antialiased selection:bg-[#6355D9]/20 selection:text-[#6355D9]">

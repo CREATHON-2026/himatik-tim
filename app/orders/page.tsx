@@ -27,7 +27,7 @@ interface OrderSummary {
 }
 
 export default function OrdersListPage() {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const [activeStatusTab, setActiveStatusTab] = React.useState("ALL");
 
   const { data: orders = [], isLoading } = useQuery<OrderSummary[]>({

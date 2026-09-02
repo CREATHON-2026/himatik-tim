@@ -3,7 +3,6 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion, type Variants } from "framer-motion";
 import {
   LayoutGrid,
@@ -30,7 +29,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
 
 interface NavItemConfig {
   title: string;
@@ -232,8 +230,8 @@ export function SidebarCreator({
                   exit="exit"
                   className="min-w-0 flex-1 overflow-hidden"
                 >
-                  <span className="font-semibold text-xs text-[#111827] block leading-tight">
-                    Toko Aktif
+                  <span className="font-semibold text-xs text-[#111827] block leading-tight truncate">
+                    {storeName || "Toko Aktif"}
                   </span>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="size-1.5 rounded-full bg-emerald-500 shrink-0" />

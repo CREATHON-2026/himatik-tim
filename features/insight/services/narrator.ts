@@ -38,11 +38,10 @@ const NARRATION_PRIORITY = [
   "suggest_upsell",
 ];
 
-// --- Guard v2 Patterns ------------------------------------------------------
+// --- Guard v2 Patterns (Planned) --------------------------------------------
 const PLACEHOLDER_RE = /\{([a-z_]+)\}/g;
-const DIGIT_RE = /\d/;
-const WORD_NUMBER_RE =
-  /\b(setengah|separuh|sepertiga|seperempat|dua kali lipat|tiga kali lipat|berkali[- ]kali|nol|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|puluh|ratus|ribu|juta|miliar)\b/i;
+// const DIGIT_RE = /\d/;
+// const WORD_NUMBER_RE = /\b(setengah|separuh|sepertiga|seperempat|dua kali lipat|tiga kali lipat|berkali[- ]kali|nol|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|puluh|ratus|ribu|juta|miliar)\b/i;
 const UNVERIFIABLE_RE =
   /\b(seperti biasa|seperti bulan[- ]bulan sebelumnya|pelanggan setia|kemungkinan|sepertinya|mungkin akan|diperkirakan|bakal)\b/i;
 
@@ -51,10 +50,7 @@ const DIRECTION_BANNED: Record<string, RegExp> = {
   down: /\b(naik|meningkat|bertambah|lebih banyak|menguat|melonjak)\b/i,
 };
 
-const ADVICE_MARKERS = [
-  "sebaiknya", "kamu bisa", "kamu sebaiknya", "coba ",
-  "disarankan", "rekomendasi", "pertimbangkan", "harus",
-];
+// const ADVICE_MARKERS = ["sebaiknya", "kamu bisa", "kamu sebaiknya", "coba ", "disarankan", "rekomendasi", "pertimbangkan", "harus"];
 
 // --- Prompt -----------------------------------------------------------------
 const SYSTEM_PROMPT =

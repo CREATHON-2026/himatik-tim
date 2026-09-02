@@ -69,7 +69,9 @@ export default function BuyerProductDetailPage({ params }: ProductDetailPageProp
     try {
       const stored = localStorage.getItem("gifteria_cart");
       const currentCart = stored ? JSON.parse(stored) : [];
-      const existingIdx = currentCart.findIndex((i: any) => i.productId === product.id);
+      const existingIdx = currentCart.findIndex(
+        (i: { productId: string; quantity: number }) => i.productId === product.id
+      );
 
       if (existingIdx > -1) {
         currentCart[existingIdx].quantity += qty;

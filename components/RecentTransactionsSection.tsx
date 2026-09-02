@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Image from "next/image";
 import {
   Search,
   Download,
@@ -348,9 +349,11 @@ export function RecentTransactionsSection() {
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-3 min-w-[200px]">
                         <div className="size-9 rounded-lg bg-[#F5F5F4] border border-[#E7E5E4] overflow-hidden shrink-0 relative">
-                          <img
+                          <Image
                             src="/aset/bglogin.png"
                             alt={trx.productName}
+                            width={36}
+                            height={36}
                             className="size-full object-cover"
                           />
                         </div>
