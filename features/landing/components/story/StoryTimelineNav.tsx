@@ -13,7 +13,7 @@ export const StoryTimelineNav: React.FC<StoryTimelineNavProps> = ({
   onSelectYear,
 }) => {
   return (
-    <div className="flex flex-col items-start gap-4 border-l border-[#1A1B1D]/15 pl-4 select-none">
+    <div className="flex flex-col items-start gap-4 border-l border-[#E7E5E4] pl-4 select-none">
       {STORY_CHAPTERS_DATA.map((chapter, idx) => {
         const chapterNumber = idx + 1; // 1 to 5
         const isActive = activeIdx === chapterNumber;
@@ -23,15 +23,15 @@ export const StoryTimelineNav: React.FC<StoryTimelineNavProps> = ({
             key={chapter.id}
             type="button"
             onClick={() => onSelectYear(chapterNumber)}
-            className={`group relative flex items-center text-sm font-mono tracking-widest transition-all duration-300 ${
+            className={`group relative flex items-center text-xs sm:text-sm font-mono tracking-widest transition-all duration-300 cursor-pointer ${
               isActive
-                ? "font-bold text-[#1A1B1D] scale-110 translate-x-1"
-                : "text-[#737578]/40 hover:text-[#1A1B1D] hover:scale-105"
+                ? "font-bold text-[#111827] scale-105 translate-x-1"
+                : "text-[#78716C]/60 hover:text-[#111827] hover:scale-102"
             }`}
           >
             {/* Smooth Active Notch Bar */}
             {isActive && (
-              <span className="absolute -left-[19px] h-4 w-[3.5px] bg-[#1A1B1D] rounded-full shadow-sm" />
+              <span className="absolute -left-[19px] h-4 w-[3.5px] bg-[#6355D9] rounded-full shadow-xs" />
             )}
             <span>{chapter.year}</span>
           </button>

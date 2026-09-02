@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useRef } from "react";
+import Link from "next/link";
+import { Sparkles, ArrowRight, ShieldCheck, Heart, Gift } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { FlavorItem } from "./types";
@@ -13,11 +15,11 @@ export const FlavorCanShowcase: React.FC<FlavorCanShowcaseProps> = ({
   flavor,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const canRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const watermarkRef = useRef<HTMLSpanElement>(null);
-  const labelRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  // GSAP Choreographed Animation on flavor switch (matching STILL..mp4)
+  // GSAP Choreographed Animation on category switch
   useGSAP(
     () => {
       // 1. Watermark depth scale & fade animation
@@ -25,7 +27,7 @@ export const FlavorCanShowcase: React.FC<FlavorCanShowcaseProps> = ({
         gsap.fromTo(
           watermarkRef.current,
           {
-            scale: 0.94,
+            scale: 0.92,
             opacity: 0,
           },
           {
@@ -37,13 +39,13 @@ export const FlavorCanShowcase: React.FC<FlavorCanShowcaseProps> = ({
         );
       }
 
-      // 2. Can Label Graphics Crossfade
-      if (labelRef.current) {
+      // 2. Card Content Crossfade
+      if (contentRef.current) {
         gsap.fromTo(
-          labelRef.current,
+          contentRef.current,
           {
             opacity: 0,
-            y: 8,
+            y: 12,
           },
           {
             opacity: 1,
@@ -54,10 +56,10 @@ export const FlavorCanShowcase: React.FC<FlavorCanShowcaseProps> = ({
         );
       }
 
-      // 3. Can Micro-Rotation on variant switch
-      if (canRef.current) {
+      // 3. Card Micro-Tilt on variant switch
+      if (cardRef.current) {
         gsap.fromTo(
-          canRef.current,
+          cardRef.current,
           {
             rotateY: -6,
           },
@@ -74,26 +76,26 @@ export const FlavorCanShowcase: React.FC<FlavorCanShowcaseProps> = ({
 
   // Mouse Parallax Tilt Handler
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!canRef.current) return;
+    if (!cardRef.current) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const normX = (x - rect.width / 2) / (rect.width / 2);
-    const normY = (y - rect.height / 2) / (rect.height / 2);
+    const normY = (y - rect.height / 2) / (innerHeight / 2);
 
-    gsap.to(canRef.current, {
-      rotateY: normX * 16,
-      rotateX: -normY * 12,
-      x: normX * 12,
-      y: normY * 8,
+    gsap.to(cardRef.current, {
+      rotateY: normX * 12,
+      rotateX: -normY * 9,
+      x: normX * 10,
+      y: normY * 6,
       duration: 0.6,
       ease: "power2.out",
     });
   };
 
   const handleMouseLeave = () => {
-    if (!canRef.current) return;
-    gsap.to(canRef.current, {
+    if (!cardRef.current) return;
+    gsap.to(cardRef.current, {
       rotateY: 0,
       rotateX: 0,
       x: 0,
@@ -108,111 +110,107 @@ export const FlavorCanShowcase: React.FC<FlavorCanShowcaseProps> = ({
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative flex h-[clamp(340px,50vh,460px)] w-full items-center justify-center overflow-hidden"
+      className="relative flex h-[clamp(340px,50vh,460px)] w-full items-center justify-center overflow-hidden [perspective:1000px]"
     >
-      {/* 1. Giant Outlined Watermark Number (01 / 02 / 03 with GSAP spatial depth) */}
+      {/* 1. Giant Outlined Watermark Number (01 / 02 / 03) */}
       <span
         ref={watermarkRef}
         aria-hidden="true"
-        className="pointer-events-none absolute right-2 select-none font-sans font-black tracking-tight will-change-[transform,opacity]"
+        className="pointer-events-none absolute right-2 select-none font-serif font-bold tracking-tight will-change-[transform,opacity]"
         style={{
-          fontSize: "clamp(200px, 22vw, 360px)",
+          fontSize: "clamp(200px, 24vw, 380px)",
           color: "transparent",
-          WebkitTextStroke: "1.5px rgba(26, 27, 29, 0.08)",
+          WebkitTextStroke: "1.5px rgba(99, 85, 217, 0.08)",
           lineHeight: 0.8,
         }}
       >
         {flavor.number}
       </span>
 
-      {/* 2. Flavor-Specific Dynamic Ambient Radial Aura Glow */}
+      {/* 2. Category-Specific Dynamic Ambient Radial Aura Glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute h-[45vh] w-[45vh] rounded-full transition-all duration-700"
+        className="pointer-events-none absolute h-[48vh] w-[48vh] rounded-full transition-all duration-700"
         style={{
-          background: `radial-gradient(circle, ${flavor.accentColor} 0%, ${flavor.glowColor} 45%, transparent 75%)`,
-          filter: "blur(50px)",
+          background: `radial-gradient(circle, ${flavor.accentColor}25 0%, ${flavor.glowColor} 45%, transparent 75%)`,
+          filter: "blur(60px)",
           opacity: 0.8,
         }}
       />
 
-      {/* 3. Matte White Aluminum Minimalist Can (Reference: STILL..mp4) */}
+      {/* 3. Modern Editorial Exhibition Card (3D Tilt) */}
       <div
-        ref={canRef}
-        className="relative z-10 flex h-[clamp(330px,46vh,430px)] w-[clamp(180px,20vw,235px)] flex-col items-center justify-between rounded-[32px] p-5 shadow-2xl transition-all duration-700 will-change-transform"
-        style={{
-          background:
-            "linear-gradient(135deg, #FFFFFF 0%, #FAF9F6 40%, #EFECE6 100%)",
-          border: "1px solid rgba(26, 27, 29, 0.12)",
-          boxShadow:
-            "0 25px 50px -10px rgba(26, 27, 29, 0.22), inset 0 2px 4px rgba(255, 255, 255, 0.9), inset 0 -4px 8px rgba(0, 0, 0, 0.08)",
-        }}
+        ref={cardRef}
+        className="relative z-10 flex h-[clamp(320px,46vh,420px)] w-[clamp(260px,26vw,340px)] flex-col justify-between rounded-3xl p-6 bg-white/95 backdrop-blur-md border border-[#E7E5E4] shadow-xl transition-all duration-700 will-change-transform"
       >
-        {/* Top Aluminum Rim */}
-        <div className="flex w-full items-center justify-between border-b border-[#1A1B1D]/10 pb-2">
-          <span className="text-[8px] font-mono font-bold tracking-[0.28em] uppercase text-[#1A1B1D]/60">
-            Nootropic Blend
-          </span>
-          <span className="text-[8px] font-mono tracking-[0.2em] uppercase text-[#737578]">
-            250ml
-          </span>
-        </div>
-
-        {/* Can Center Body Graphics (Crossfading with GSAP) */}
-        <div
-          ref={labelRef}
-          className="relative my-auto flex w-full items-center justify-between px-1 will-change-[transform,opacity]"
-        >
-          {/* Vertical STILL Wordmark on Left */}
-          <div
-            className="select-none text-xl font-black tracking-tight text-[#1A1B1D]"
+        {/* Top Header Row */}
+        <div className="flex items-center justify-between border-b border-[#F5F5F4] pb-3">
+          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#78716C]">
+            <Sparkles className="size-3.5" style={{ color: flavor.accentColor }} />
+            <span>Koleksi Terkurasi</span>
+          </div>
+          <span
+            className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border"
             style={{
-              writingMode: "vertical-rl",
-              transform: "rotate(180deg)",
+              borderColor: `${flavor.accentColor}40`,
+              color: flavor.accentColor,
+              backgroundColor: `${flavor.accentColor}10`,
             }}
           >
-            STILL
+            {flavor.previewBadge}
+          </span>
+        </div>
+
+        {/* Center Emblem Visual */}
+        <div
+          ref={contentRef}
+          className="my-auto flex flex-col items-center justify-center text-center py-4 space-y-3"
+        >
+          <div
+            className="size-16 rounded-2xl flex items-center justify-center shadow-xs transition-transform duration-500 hover:scale-105"
+            style={{
+              backgroundColor: `${flavor.accentColor}15`,
+              color: flavor.accentColor,
+            }}
+          >
+            {flavor.id === "floral" ? (
+              <Heart className="size-8" />
+            ) : flavor.id === "hampers" ? (
+              <Gift className="size-8" />
+            ) : (
+              <Sparkles className="size-8" />
+            )}
           </div>
 
-          {/* Big Number & Flavor Title */}
-          <div className="flex flex-1 flex-col items-center text-center pl-1.5">
-            <span className="font-sans text-5xl font-black leading-none tracking-tighter text-[#1A1B1D]">
-              {flavor.number}
+          <div>
+            <span className="font-mono text-xs font-bold tracking-widest text-[#78716C] uppercase">
+              Karya Nomor {flavor.number}
             </span>
-            <h4 className="mt-0.5 font-serif text-2xl font-light tracking-tight text-[#1A1B1D]">
+            <h4 className="font-serif text-2xl font-bold text-[#111827] mt-0.5">
               {flavor.name}
             </h4>
-            <p className="mt-1 text-[10px] italic text-[#737578]">
-              Sustained focus, naturally
+            <p className="text-xs text-[#78716C] mt-1 line-clamp-2 max-w-xs">
+              {flavor.subtitle}
             </p>
-
-            {/* Micro Ingredient Table on Can Face */}
-            <div className="mt-3 flex flex-col gap-0.5 w-full max-w-28 border-t border-[#1A1B1D]/10 pt-2">
-              {flavor.ingredients.map((ing, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-between text-[7.5px] font-mono uppercase text-[#737578]"
-                >
-                  <span className="truncate">{ing.name}</span>
-                  <span className="font-semibold text-[#1A1B1D]">{ing.dose}</span>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
 
-        {/* Bottom Base Stamp */}
-        <div className="w-full border-t border-[#1A1B1D]/10 pt-2 text-center">
-          <p className="text-[8px] font-mono tracking-[0.26em] uppercase text-[#737578]">
-            0 Sugar · 0 Caffeine
-          </p>
-        </div>
+        {/* Bottom Card Footer */}
+        <div className="border-t border-[#F5F5F4] pt-3 flex items-center justify-between">
+          <div className="flex items-center gap-1.5 text-[11px] text-[#78716C]">
+            <ShieldCheck className="size-3.5 text-emerald-600" />
+            <span>100% Escrow</span>
+          </div>
 
-        {/* Specular White Light Reflection Strip */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-5 w-6 bg-linear-to-r from-transparent via-white/40 to-transparent blur-[1px]"
-        />
+          <Link
+            href="/katalog"
+            className="text-xs font-semibold flex items-center gap-1 hover:underline"
+            style={{ color: flavor.accentColor }}
+          >
+            <span>Beli Sekarang</span>
+            <ArrowRight className="size-3" />
+          </Link>
+        </div>
       </div>
     </div>
   );
