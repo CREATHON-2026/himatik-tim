@@ -1,8 +1,8 @@
 "use client";
 
-import React, { forwardRef, useRef, useEffect, useCallback } from "react";
-import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import React, { forwardRef, useRef } from "react";
+import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
 import gsap from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
 import { useGSAP } from "@gsap/react";
@@ -20,59 +20,22 @@ export const HeroBoneLayer = forwardRef<HTMLDivElement, HeroBoneLayerProps>(
     const typewriterTextRef = useRef<HTMLHeadingElement>(null);
     const cursorRef = useRef<HTMLSpanElement>(null);
     const finalWordmarkRef = useRef<HTMLDivElement>(null);
-    const dioramaWrapperRef = useRef<HTMLDivElement>(null);
-    const dioramaImageRef = useRef<HTMLDivElement>(null);
 
-    // Wordmark configuration with Adaptive Dual-Tone Styling
+    // Wordmark letters centered in clean luxury editorial typography
     const wordmarkConfig = [
-      { char: "B", className: "text-[#3E5237]" },
-      { char: "I", className: "text-[#3E5237]" },
-      { char: "C", className: "text-[#3E5237]" },
-      { char: "K", className: "text-[#3E5237]" },
-      {
-        char: "E",
-        // Transition letter bridging the boundary into the diorama
-        className:
-          "text-[#4A5D43] sm:text-[#65785E] lg:text-[#8D9F86] drop-shadow-[0_2px_10px_rgba(0,0,0,0.18)]",
-      },
-      {
-        char: "T",
-        // Positioned inside the dark diorama: Light Ivory Cream with 3D relief
-        className:
-          "text-[#FAF4EC] drop-shadow-[0_4px_16px_rgba(0,0,0,0.45)] sm:text-[#FAF4EC]",
-      },
+      { char: "G" },
+      { char: "I" },
+      { char: "F" },
+      { char: "T" },
+      { char: "E" },
+      { char: "R" },
+      { char: "I" },
+      { char: "A" },
     ];
 
-    // GSAP Animations (Typewriter + Diorama Cinematic Reveal + Ambient Levitation)
+    // GSAP Typewriter Sequence: KADO -> G -> GIFTERIA.
     useGSAP(() => {
-      // 1. Diorama Cinematic Entrance
-      if (dioramaWrapperRef.current) {
-        gsap.fromTo(
-          dioramaWrapperRef.current,
-          { y: 70, opacity: 0, scale: 0.94 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 1.6,
-            ease: "power3.out",
-            delay: 0.25,
-          }
-        );
-      }
-
-      // 2. Diorama Organic Floating / Breathing Loop
-      if (dioramaImageRef.current) {
-        gsap.to(dioramaImageRef.current, {
-          y: -7,
-          duration: 3.4,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-        });
-      }
-
-      // 3. Blinking Cursor Animation
+      // Blinking Cursor
       if (cursorRef.current) {
         gsap.to(cursorRef.current, {
           opacity: 0,
@@ -83,31 +46,24 @@ export const HeroBoneLayer = forwardRef<HTMLDivElement, HeroBoneLayerProps>(
         });
       }
 
-      // 4. Typewriter Storytelling Sequence: BOUQUET -> G -> GIFTERIA. -> Dual-Tone Magnetic Reveal
       const masterTypewriterTimeline = gsap.timeline({
         repeat: -1,
-        repeatDelay: 2.8,
+        repeatDelay: 3.5,
         defaults: { ease: "none" },
       });
 
-      const brandTargetText = {
-        main: {
-          scrambleTarget: "GIFTERIA",
-          text: "GIFTERIA.",
-        },
-      };
-
       if (typewriterTextRef.current && finalWordmarkRef.current && cursorRef.current) {
-        masterTypewriterTimeline.to(typewriterTextRef.current, {
-          text: "BOUQUET",
-          duration: 0.75,
-          ease: "none",
-        })
+        masterTypewriterTimeline
+          .to(typewriterTextRef.current, {
+            text: "KADO",
+            duration: 0.6,
+            ease: "none",
+          })
           .to(typewriterTextRef.current, {
             text: "G",
-            duration: 0.45,
+            duration: 0.4,
             ease: "none",
-            delay: 0.35,
+            delay: 0.3,
           })
           .to(typewriterTextRef.current, {
             text: "GIFTERIA.",
@@ -119,7 +75,6 @@ export const HeroBoneLayer = forwardRef<HTMLDivElement, HeroBoneLayerProps>(
             duration: 0.3,
             delay: 0.25,
             onComplete: () => {
-              // Smoothly fade from plain typed text to dual-tone magnetic letters
               gsap.to(typewriterTextRef.current, { opacity: 0, duration: 0.3 });
               gsap.fromTo(
                 finalWordmarkRef.current,
@@ -131,187 +86,123 @@ export const HeroBoneLayer = forwardRef<HTMLDivElement, HeroBoneLayerProps>(
       }
     });
 
-    // 5. Interactive 3D Parallax & Mouse Tilt Physics on Diorama
-    const handleMouseMove = useCallback((e: MouseEvent) => {
-      if (!dioramaWrapperRef.current) return;
-      const { innerWidth, innerHeight } = window;
-      const normX = (e.clientX - innerWidth / 2) / (innerWidth / 2);
-      const normY = (e.clientY - innerHeight / 2) / (innerHeight / 2);
-
-      gsap.to(dioramaWrapperRef.current, {
-        rotateY: normX * 6,
-        rotateX: -normY * 4.5,
-        x: normX * 12,
-        y: normY * 8,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-    }, []);
-
-    const handleMouseLeave = useCallback(() => {
-      if (!dioramaWrapperRef.current) return;
-      gsap.to(dioramaWrapperRef.current, {
-        rotateY: 0,
-        rotateX: 0,
-        x: 0,
-        y: 0,
-        duration: 1.2,
-        ease: "elastic.out(1, 0.5)",
-      });
-    }, []);
-
-    useEffect(() => {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseleave", handleMouseLeave);
-      return () => {
-        window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("mouseleave", handleMouseLeave);
-      };
-    }, [handleMouseMove, handleMouseLeave]);
-
     return (
       <div
         ref={ref}
-        className="absolute inset-0 z-10 flex flex-col justify-between px-6 md:px-14 lg:px-20 pt-[calc(64px+clamp(6px,1.5vh,16px))] pb-[clamp(18px,3vh,32px)] select-none text-[#3E5237] overflow-hidden"
+        className="absolute inset-0 z-10 flex flex-col justify-between px-6 md:px-14 lg:px-20 pt-[calc(64px+clamp(12px,2vh,24px))] pb-[clamp(18px,3vh,32px)] select-none text-[#111827] overflow-hidden bg-[#FAFAF9]"
       >
-        {/* 1. Photorealistic Ivory Studio Background with Natural Dappled Sunlight Shadow */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
-          <Image
-            src="/asset-landing/hero-bg-ivory-sunlight.webp"
-            alt="Warm Ivory Studio Wall with Natural Window Sunlight Shadows"
-            fill
-            priority
-            quality={95}
-            className="object-cover object-center"
-          />
-        </div>
-
-        {/* 2. Right Side: Massive Circular Diorama Showcase with 3D Mouse Parallax & Ambient Levitation */}
+        {/* Subtle Ambient Radial Light Pattern (Zero Heavy Images) */}
         <div
-          ref={dioramaWrapperRef}
           aria-hidden="true"
-          className="pointer-events-none absolute right-[clamp(0px,3vw,80px)] bottom-[clamp(-10px,-8vh,-25px)] z-10 h-[clamp(440px,52vw,740px)] w-[clamp(440px,52vw,740px)] [perspective:1000px] will-change-transform"
-        >
-          <div
-            ref={dioramaImageRef}
-            className="relative h-full w-full will-change-transform"
-          >
-            <Image
-              src="/asset-landing/hero-diorama-frame1.webp"
-              alt="Gifteria Curated Gifts & Floral Showcase"
-              fill
-              priority
-              sizes="(max-width: 768px) 450px, (max-width: 1200px) 620px, 740px"
-              className="object-contain object-bottom drop-shadow-[0_30px_50px_rgba(62,82,55,0.22)]"
-            />
-          </div>
-        </div>
+          className="pointer-events-none absolute inset-0 z-0 opacity-60"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 50% 40%, rgba(99, 85, 217, 0.06) 0%, rgba(245, 243, 255, 0.5) 45%, transparent 75%)",
+          }}
+        />
 
-        {/* 3. Giant Center-Left Typography: Typewriter Intro + Dual-Tone Magnetic B I C K E T . */}
-        <div className="relative flex flex-1 items-center my-auto w-full max-w-360 mx-auto z-20 pointer-events-none">
-          <div className="w-full pl-[clamp(12px,2vw,40px)] pointer-events-auto relative">
-            {/* Live Typewriter Intro Stage */}
-            <div className="flex items-baseline absolute inset-0 z-10">
+        {/* Top Spacer */}
+        <div className="w-full" />
+
+        {/* ─── Center Hero Content (Fully Centered Layout) ─── */}
+        <div className="relative z-20 flex flex-col items-center justify-center text-center my-auto w-full max-w-5xl mx-auto space-y-5">
+          {/* Micro Tagline Pill */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E7E5E4] shadow-2xs text-[#6355D9]">
+            <Sparkles className="size-3.5" />
+            <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-[0.2em] uppercase">
+              Platform Kriya & Kado Personal Terkurasi
+            </span>
+          </div>
+
+          {/* Centered Giant Typography: Typewriter Intro & Wordmark */}
+          <div className="relative w-full py-2 flex items-center justify-center">
+            {/* Live Typewriter Stage (Centered) */}
+            <div className="flex items-baseline justify-center absolute inset-0 z-10">
               <h1
                 ref={typewriterTextRef}
-                className="inline-block text-[clamp(96px,18.5vw,290px)] font-serif font-light leading-[0.76] tracking-[-0.02em] text-[#3E5237]"
+                className="inline-block text-[clamp(64px,14vw,190px)] font-serif font-light leading-[0.85] tracking-[-0.03em] text-[#111827]"
               >
-                {/* GSAP TextPlugin populates this dynamically */}
+                {/* Dynamically populated by GSAP */}
               </h1>
               <span
                 ref={cursorRef}
-                className="inline-block text-[clamp(80px,16vw,250px)] font-light text-[#566B4D] leading-none ml-1 align-baseline select-none"
+                className="inline-block text-[clamp(56px,12vw,170px)] font-light text-[#6355D9] leading-none ml-1 select-none"
               >
                 |
               </span>
             </div>
 
-            {/* Permanent Dual-Tone Interactive Magnetic Wordmark */}
-            <div ref={finalWordmarkRef} className="opacity-0">
-              <h1 className="flex items-baseline text-[clamp(96px,18.5vw,290px)] font-serif font-light leading-[0.76] tracking-[-0.02em]">
+            {/* Permanent Magnetic Wordmark (Centered) */}
+            <div ref={finalWordmarkRef} className="opacity-0 flex justify-center w-full">
+              <h1 className="flex items-baseline justify-center text-[clamp(64px,14vw,190px)] font-serif font-light leading-[0.85] tracking-[-0.03em] text-[#111827]">
                 {wordmarkConfig.map((item, i) => (
                   <span
                     key={i}
                     ref={(el) => {
                       lettersRef.current[i] = el;
                     }}
-                    className={`inline-block will-change-transform ${item.className}`}
+                    className="inline-block will-change-transform text-[#111827]"
                   >
                     {item.char}
                   </span>
                 ))}
                 <span
                   ref={(el) => {
-                    lettersRef.current[6] = el;
+                    lettersRef.current[wordmarkConfig.length] = el;
                   }}
-                  className="inline-block text-[#FAF4EC] drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)] will-change-transform ml-1"
+                  className="inline-block text-[#6355D9] will-change-transform ml-1"
                 >
                   .
                 </span>
               </h1>
             </div>
           </div>
-        </div>
 
-        {/* 4. Left Meta Description (Aligned vertically under letter 'B') */}
-        <div className="absolute left-[clamp(32px,7.5vw,120px)] bottom-[clamp(80px,13vh,145px)] z-30 flex flex-col items-start gap-3.5 max-w-xs pointer-events-auto">
-          {/* Micro Floral Star Icon */}
-          <div className="flex items-center gap-1.5 text-[#566B4D]">
-            <svg
-              className="h-4 w-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
+          {/* Centered Editorial Subtitle */}
+          <p className="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-[#78716C] leading-relaxed font-sans">
+            Temukan buket bunga artisan, hampers tematik, dan kriya kustom buatan tangan langsung dari sanggar kreator independen di seluruh Indonesia.
+          </p>
+
+          {/* Centered Call to Action Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
+            <Link
+              href="/katalog"
+              className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#6355D9] hover:bg-[#5145C6] text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-98"
             >
-              <circle cx="12" cy="12" r="2" fill="currentColor" />
-              <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-            </svg>
-          </div>
+              <span>Jelajahi Katalog Kado</span>
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
 
-          <div className="space-y-0.5">
-            <p className="font-mono text-[10px] sm:text-[11px] font-semibold tracking-[0.22em] uppercase text-[#3E5237]/85 leading-relaxed">
-              Curated Gifts <br />
-              And Creative Products <br />
-              Made by Local Artisans
-            </p>
+            <Link
+              href="/register"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-[#E7E5E4] bg-white hover:bg-[#F5F5F4] text-xs sm:text-sm font-semibold text-[#111827] transition shadow-2xs"
+            >
+              <span>Buka Sanggar Kriya</span>
+            </Link>
           </div>
-
-          <a
-            href="#flavors"
-            className="group inline-flex items-center gap-2 font-mono text-[10px] sm:text-[11px] font-bold tracking-[0.22em] uppercase text-[#3E5237] transition-all hover:text-[#566B4D]"
-          >
-            <span className="border-b border-[#3E5237]/40 pb-0.5 group-hover:border-[#566B4D]">
-              Explore Collection
-            </span>
-            <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
-          </a>
         </div>
 
-        {/* 5. Bottom Baseline Bar (Makassar Origin & Scroll Indicator - Clean No Border) */}
+        {/* ─── Bottom Baseline Bar (Centered Info) ─── */}
         <div className="flex items-end justify-between w-full max-w-360 mx-auto z-30 pt-4">
-          {/* Bottom Left: Curated in Makassar */}
           <div className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#566B4D]" />
-            <span className="font-mono text-[9px] sm:text-[10px] font-medium tracking-[0.26em] uppercase text-[#3E5237]/75">
-              Curated in Makassar, Indonesia
+            <span className="h-1.5 w-1.5 rounded-full bg-[#6355D9]" />
+            <span className="font-mono text-[9px] sm:text-[10px] font-medium tracking-[0.24em] uppercase text-[#78716C]">
+              Kriya & Kado Terkurasi Indonesia
             </span>
           </div>
 
-          {/* Bottom Center: Scroll to Discover Pill Indicator */}
-          <div className="hidden sm:flex flex-col items-center gap-2">
-            <span className="font-mono text-[9px] font-semibold tracking-[0.28em] uppercase text-[#3E5237]/80">
-              Scroll to Discover
+          <div className="hidden sm:flex flex-col items-center gap-1.5">
+            <span className="font-mono text-[9px] font-semibold tracking-[0.24em] uppercase text-[#78716C]">
+              Gulir untuk Eksplorasi
             </span>
-            <div className="relative h-6 w-3.5 rounded-full border border-[#3E5237]/35 p-0.5 flex justify-center">
-              <div className="h-1.5 w-1 rounded-full bg-[#566B4D] animate-bounce" />
+            <div className="relative h-5 w-3 rounded-full border border-[#D6D3D1] p-0.5 flex justify-center">
+              <div className="h-1 w-1 rounded-full bg-[#6355D9] animate-bounce" />
             </div>
           </div>
 
-          {/* Bottom Right: Edition Label */}
           <div className="text-right hidden sm:block">
-            <span className="font-mono text-[9px] font-semibold tracking-[0.24em] uppercase text-[#3E5237]/70">
-              Artisan Edition 01
+            <span className="font-mono text-[9px] font-semibold tracking-[0.24em] uppercase text-[#78716C]">
+              100% Escrow Protection
             </span>
           </div>
         </div>
