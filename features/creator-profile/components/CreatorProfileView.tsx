@@ -15,7 +15,6 @@ import {
   Clock,
   Building2,
   ArrowRight,
-  MessageCircle,
   Navigation,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

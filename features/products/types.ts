@@ -21,6 +21,12 @@ export interface Product {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  creator?: {
+    id?: string;
+    storeName?: string;
+    shopName?: string;
+    city?: string;
+  };
 }
 
 export interface CreateProductInput {

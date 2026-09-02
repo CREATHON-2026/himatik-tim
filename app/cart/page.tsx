@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
-  Sparkles,
   ShoppingBag,
   Trash2,
   Plus,
@@ -31,6 +30,17 @@ interface CartItem {
   quantity: number;
 }
 
+const DEFAULT_DEMO_ITEM: CartItem = {
+  id: "cart-1",
+  productId: "cm3softlilac001",
+  name: "Paket Souvenir Soft Lilac",
+  price: 110000,
+  imageUrl: "/aset/produk-soft-lilac.jpg",
+  shopName: "Gifteria Studio",
+  category: "Gift Box & Hampers",
+  quantity: 1,
+};
+
 export default function CartPage() {
   const router = useRouter();
   const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
@@ -38,47 +48,27 @@ export default function CartPage() {
 
   // Load cart from LocalStorage on mount
   React.useEffect(() => {
-    try {
-      const stored = localStorage.getItem("gifteria_cart");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setCartItems(parsed);
+    const timer = setTimeout(() => {
+      try {
+        const stored = localStorage.getItem("gifteria_cart");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setCartItems(parsed);
+          } else {
+            setCartItems([DEFAULT_DEMO_ITEM]);
+          }
         } else {
-          // Default initial demo cart item for pleasant first-time user experience
-          setCartItems([
-            {
-              id: "cart-1",
-              productId: "cm3softlilac001",
-              name: "Paket Souvenir Soft Lilac",
-              price: 110000,
-              imageUrl: "/aset/produk-soft-lilac.jpg",
-              shopName: "Gifteria Studio",
-              category: "Gift Box & Hampers",
-              quantity: 1,
-            },
-          ]);
+          setCartItems([DEFAULT_DEMO_ITEM]);
         }
-      } else {
-        // Initial demo cart item
-        setCartItems([
-          {
-            id: "cart-1",
-            productId: "cm3softlilac001",
-            name: "Paket Souvenir Soft Lilac",
-            price: 110000,
-            imageUrl: "/aset/produk-soft-lilac.jpg",
-            shopName: "Gifteria Studio",
-            category: "Gift Box & Hampers",
-            quantity: 1,
-          },
-        ]);
+      } catch {
+        setCartItems([]);
+      } finally {
+        setIsLoaded(true);
       }
-    } catch {
-      setCartItems([]);
-    } finally {
-      setIsLoaded(true);
-    }
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const saveCart = (items: CartItem[]) => {

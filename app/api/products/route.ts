@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import {
@@ -28,7 +28,11 @@ export async function GET(request: NextRequest) {
         page,
         limit,
       });
-      return NextResponse.json(publicProducts);
+      return NextResponse.json(publicProducts, {
+        headers: {
+          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+        },
+      });
     }
 
     const supabase = await createClient();

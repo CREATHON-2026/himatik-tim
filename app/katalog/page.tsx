@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Sparkles,
   Search,
@@ -16,13 +16,12 @@ import {
   Store,
   ChevronRight,
   ShoppingBag,
-  User,
   LogOut,
   PackageOpen,
   LayoutDashboard,
   ChevronDown,
 } from "lucide-react";
-import { getPublicProducts } from "@/features/products/api";
+import { getPublicProducts, getProductDetail } from "@/features/products/api";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
   DropdownMenu,
@@ -60,13 +59,15 @@ const formatRupiah = (price: number | string) => {
 
 export default function KatalogPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user, isAuthenticated, signOut, isLoading: isAuthLoading } = useAuth();
   const [searchQuery, setSearchQuery] = React.useState("");
+  const deferredSearchQuery = React.useDeferredValue(searchQuery);
   const [selectedCategory, setSelectedCategory] = React.useState("ALL");
   const [selectedSort, setSelectedSort] = React.useState("newest");
   const [likedProducts, setLikedProducts] = React.useState<Record<string, boolean>>({});
 
-  // Fetch public products from real database
+  // Fetch public products from real database with 5-minute cache
   const { data: rawProducts = [], isLoading } = useQuery({
     queryKey: ["public-products", selectedCategory, selectedSort],
     queryFn: () =>
@@ -74,9 +75,9 @@ export default function KatalogPage() {
         category: selectedCategory,
         sort: selectedSort,
       }),
+    staleTime: 1000 * 60 * 5, // 5 minutes cache for instant back navigation
+    gcTime: 1000 * 60 * 30, // 30 minutes garbage collection
   });
-
-  const products = Array.isArray(rawProducts) ? rawProducts : [];
 
   // Fetch buyer orders count for dynamic badge
   const { data: orders = [] } = useQuery({
@@ -104,7 +105,7 @@ export default function KatalogPage() {
 
   // Client-side instant filter & search & sorting
   const filteredProducts = React.useMemo(() => {
-    let list = Array.isArray(products) ? [...products] : [];
+    let list = Array.isArray(rawProducts) ? [...rawProducts] : [];
 
     // Category filter
     if (selectedCategory !== "ALL") {
@@ -124,9 +125,9 @@ export default function KatalogPage() {
       });
     }
 
-    // Search query filter
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
+    // Search query filter using deferred search value for responsive typing
+    if (deferredSearchQuery.trim()) {
+      const q = deferredSearchQuery.toLowerCase().trim();
       list = list.filter(
         (p) =>
           (p.name && p.name.toLowerCase().includes(q)) ||
@@ -145,17 +146,17 @@ export default function KatalogPage() {
     }
 
     return list;
-  }, [products, selectedCategory, searchQuery, selectedSort]);
+  }, [rawProducts, selectedCategory, deferredSearchQuery, selectedSort]);
 
   // Helper initials for user avatar
-  const userInitials = React.useMemo(() => {
+  const userInitials = (() => {
     if (!user?.name) return "G";
     const parts = user.name.trim().split(" ");
     if (parts.length >= 2) {
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     }
     return user.name.slice(0, 2).toUpperCase();
-  }, [user?.name]);
+  })();
 
   return (
     <div className="min-h-screen bg-[#FAFAF9] text-[#111827] antialiased selection:bg-[#6355D9]/20 selection:text-[#6355D9]">
@@ -175,12 +176,13 @@ export default function KatalogPage() {
           <div className="hidden md:flex items-center flex-1 max-w-md relative">
             <input
               type="text"
+              aria-label="Cari produk kado, buket bunga, dan hampers kriya"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari hampers, buket bunga, lukisan custom..."
               className="w-full pl-9 pr-4 py-2 rounded-full bg-[#F5F5F4] border border-[#E7E5E4] focus:border-[#6355D9] focus:bg-white text-xs text-[#111827] placeholder:text-[#A8A29E] outline-none transition-all shadow-2xs focus:ring-2 focus:ring-[#6355D9]/15"
             />
-            <Search className="w-4 h-4 text-[#A8A29E] absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#A8A29E] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
           {/* User & Creator Actions (Auth-State Aware) */}
@@ -378,24 +380,29 @@ export default function KatalogPage() {
         <div className="flex md:hidden items-center w-full relative">
           <input
             type="text"
+            aria-label="Cari produk kado, buket bunga, dan hampers kriya"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari hadiah, hampers, buket..."
             className="w-full pl-9 pr-4 py-2.5 rounded-2xl bg-white border border-[#E7E5E4] focus:border-[#6355D9] text-xs text-[#111827] placeholder:text-[#A8A29E] outline-none shadow-2xs"
           />
-          <Search className="w-4 h-4 text-[#A8A29E] absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#A8A29E] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
 
         {/* ─── Filter Pills & Sort Bar ─── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E7E5E4] pb-4">
           {/* Category Tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none" role="tablist">
             {CATEGORIES.map((cat) => {
               const Icon = cat.icon;
               const isActive = selectedCategory === cat.id;
               return (
                 <button
                   key={cat.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-label={`Kategori ${cat.label}`}
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all shadow-2xs cursor-pointer ${
                     isActive
@@ -417,6 +424,7 @@ export default function KatalogPage() {
             </span>
             <select
               value={selectedSort}
+              aria-label="Urutkan daftar produk"
               onChange={(e) => setSelectedSort(e.target.value)}
               className="bg-white border border-[#E7E5E4] rounded-full px-3 py-1.5 text-xs font-semibold text-[#111827] outline-none focus:border-[#6355D9] cursor-pointer shadow-2xs"
             >
@@ -435,12 +443,27 @@ export default function KatalogPage() {
             {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
               <div
                 key={n}
-                className="bg-white rounded-3xl p-4 border border-[#E7E5E4] space-y-3 animate-pulse shadow-xs"
+                className="bg-white rounded-3xl p-4 border border-[#E7E5E4] space-y-3.5 shadow-xs overflow-hidden"
               >
-                <div className="w-full aspect-square bg-[#F5F5F4] rounded-2xl" />
-                <div className="h-4 bg-[#F5F5F4] rounded-full w-3/4" />
-                <div className="h-3 bg-[#F5F5F4] rounded-full w-1/2" />
-                <div className="h-5 bg-[#F5F5F4] rounded-full w-2/3 pt-2" />
+                {/* Image Placeholder with Shimmer */}
+                <div className="relative w-full aspect-square bg-[#F5F5F4] rounded-2xl overflow-hidden animate-pulse">
+                  <div className="absolute bottom-3 left-3 h-5 w-20 bg-[#E7E5E4] rounded-full" />
+                </div>
+                {/* Store Name & City */}
+                <div className="flex items-center gap-2 animate-pulse">
+                  <div className="size-3.5 rounded-full bg-[#E7E5E4]" />
+                  <div className="h-3 bg-[#E7E5E4] rounded-full w-2/5" />
+                </div>
+                {/* Title Lines */}
+                <div className="space-y-1.5 animate-pulse">
+                  <div className="h-4 bg-[#E7E5E4] rounded-full w-4/5" />
+                  <div className="h-4 bg-[#E7E5E4] rounded-full w-3/5" />
+                </div>
+                {/* Price & Detail Row */}
+                <div className="pt-2 border-t border-[#F5F5F4] flex items-center justify-between animate-pulse">
+                  <div className="h-5 bg-[#E7E5E4] rounded-full w-24" />
+                  <div className="h-4 bg-[#E7E5E4] rounded-full w-12" />
+                </div>
               </div>
             ))}
           </div>
@@ -459,83 +482,96 @@ export default function KatalogPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => {
+            {filteredProducts.map((product, idx) => {
               const isLiked = !!likedProducts[product.id];
-              // Safe access creator fields
-              const creatorInfo = (product as unknown as { creator?: { shopName?: string; storeName?: string; city?: string } })?.creator;
+              const creatorInfo = product.creator;
               const storeName = creatorInfo?.shopName || creatorInfo?.storeName || "Gifteria Studio";
               const cityName = creatorInfo?.city || "Makassar";
 
               return (
-                <Link
+                <div
                   key={product.id}
-                  href={`/katalog/${product.id}`}
                   className="group relative bg-white rounded-3xl border border-[#E7E5E4] hover:border-[#DDD6FE] transition-all duration-300 hover:shadow-md flex flex-col overflow-hidden"
+                  onMouseEnter={() => {
+                    queryClient.prefetchQuery({
+                      queryKey: ["public-product-detail", product.id],
+                      queryFn: () => getProductDetail(product.id),
+                      staleTime: 1000 * 60 * 5,
+                    });
+                  }}
                 >
-                  {/* Image Container with aspect ratio */}
-                  <div className="relative w-full aspect-square bg-[#F5F5F4] overflow-hidden">
-                    <Image
-                      src={
-                        product.imageUrl ||
-                        "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80"
-                      }
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
+                  {/* Clean Link wrapper without nested buttons */}
+                  <Link
+                    href={`/katalog/${product.id}`}
+                    className="flex flex-col flex-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6355D9] rounded-3xl"
+                  >
+                    {/* Image Container with aspect ratio */}
+                    <div className="relative w-full aspect-square bg-[#F5F5F4] overflow-hidden">
+                      <Image
+                        src={
+                          product.imageUrl ||
+                          "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80"
+                        }
+                        alt={product.name}
+                        fill
+                        priority={idx < 4}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover group-hover:scale-105 motion-reduce:group-hover:scale-100 transition-transform duration-500"
+                      />
 
-                    {/* Like/Wishlist Heart Toggle */}
-                    <button
-                      onClick={(e) => toggleLike(product.id, e)}
-                      aria-label="Simpan ke favorit"
-                      className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-all shadow-xs cursor-pointer ${
-                        isLiked
-                          ? "bg-rose-50 text-rose-500 fill-rose-500 scale-110"
-                          : "bg-white/80 text-[#78716C] hover:text-[#111827] hover:bg-white"
-                      }`}
-                    >
-                      <Heart className={`w-4 h-4 ${isLiked ? "fill-rose-500" : ""}`} />
-                    </button>
-
-                    {/* Ready / Preorder Badge */}
-                    <div className="absolute bottom-3 left-3">
-                      <span className="px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-md border border-[#E7E5E4] text-[10px] font-bold text-[#44403C] shadow-2xs">
-                        {product.type === "PREORDER" ? "Pre-order" : "Ready Stock"}
-                      </span>
+                      {/* Ready / Preorder Badge */}
+                      <div className="absolute bottom-3 left-3">
+                        <span className="px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-md border border-[#E7E5E4] text-[10px] font-bold text-[#44403C] shadow-2xs">
+                          {product.type === "PREORDER" ? "Pre-order" : "Ready Stock"}
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Product Details */}
-                  <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                    <div className="space-y-1">
-                      {/* Creator Shop Name & City */}
-                      <div className="flex items-center gap-1.5 text-[11px] text-[#78716C]">
-                        <Store className="w-3 h-3 text-[#6355D9]" />
-                        <span className="font-medium truncate">{storeName}</span>
-                        <span>•</span>
-                        <span className="truncate">{cityName}</span>
+                    {/* Product Details */}
+                    <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                      <div className="space-y-1">
+                        {/* Creator Shop Name & City */}
+                        <div className="flex items-center gap-1.5 text-[11px] text-[#78716C]">
+                          <Store className="w-3 h-3 text-[#6355D9]" />
+                          <span className="font-medium truncate">{storeName}</span>
+                          <span>•</span>
+                          <span className="truncate">{cityName}</span>
+                        </div>
+
+                        {/* Title */}
+                        <h4 className="font-serif font-bold text-sm text-[#111827] line-clamp-2 leading-snug group-hover:text-[#6355D9] transition-colors">
+                          {product.name}
+                        </h4>
                       </div>
 
-                      {/* Title */}
-                      <h4 className="font-serif font-bold text-sm text-[#111827] line-clamp-2 leading-snug group-hover:text-[#6355D9] transition-colors">
-                        {product.name}
-                      </h4>
-                    </div>
+                      {/* Price & Action Row */}
+                      <div className="pt-2 border-t border-[#F5F5F4] flex items-center justify-between">
+                        <div className="font-serif text-base font-bold text-[#111827]">
+                          {formatRupiah(product.price)}
+                        </div>
 
-                    {/* Price & Action Row */}
-                    <div className="pt-2 border-t border-[#F5F5F4] flex items-center justify-between">
-                      <div className="font-serif text-base font-bold text-[#111827]">
-                        {formatRupiah(product.price)}
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6355D9] group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0 transition-transform">
+                          <span>Detail</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </span>
                       </div>
-
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6355D9] group-hover:translate-x-0.5 transition-transform">
-                        <span>Detail</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </span>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+
+                  {/* Like/Wishlist Heart Toggle (Placed OUTSIDE Link for HTML5/WCAG compliance) */}
+                  <button
+                    type="button"
+                    onClick={(e) => toggleLike(product.id, e)}
+                    aria-label={isLiked ? `Hapus ${product.name} dari favorit` : `Simpan ${product.name} ke favorit`}
+                    className={`absolute top-3 right-3 z-10 p-2 rounded-full backdrop-blur-md transition-all shadow-xs cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6355D9] ${
+                      isLiked
+                        ? "bg-rose-50 text-rose-500 fill-rose-500 scale-110"
+                        : "bg-white/80 text-[#78716C] hover:text-[#111827] hover:bg-white"
+                    }`}
+                  >
+                    <Heart className={`w-4 h-4 ${isLiked ? "fill-rose-500" : ""}`} />
+                  </button>
+                </div>
               );
             })}
           </div>

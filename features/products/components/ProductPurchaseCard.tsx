@@ -85,14 +85,15 @@ export function ProductPurchaseCard({
           <span>Beli Sekarang</span>
         </Button>
 
-        {/* Tambah ke Keranjang: Disabled State */}
+        {/* Tambah ke Keranjang */}
         <Button
           variant="outline"
           size="lg"
-          disabled
-          className="w-full h-12 rounded-xl border-[#E7E5E4] bg-[#F5F5F4] text-[#A8A29E] font-semibold text-sm shadow-none cursor-not-allowed flex items-center justify-center gap-2 opacity-80 select-none hover:bg-[#F5F5F4] hover:text-[#A8A29E]"
+          onClick={() => onAddToCart?.(qty)}
+          disabled={!onAddToCart}
+          className="w-full h-12 rounded-xl border-[#E7E5E4] bg-white hover:bg-[#F5F5F4] text-[#111827] font-semibold text-sm shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          <ShoppingCart className="size-4 text-[#A8A29E]" />
+          <ShoppingCart className="size-4 text-[#6355D9]" />
           <span>Tambahkan ke Keranjang</span>
         </Button>
       </div>

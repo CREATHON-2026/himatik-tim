@@ -1,13 +1,11 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { PayoutTransaction, BankAccount } from "@/features/payout/types";
 
 // Persistent global store for payouts & bank account settings during server runtime
 declare global {
-  // eslint-disable-next-line no-var
   var __creatorPayoutStore: Map<string, PayoutTransaction[]> | undefined;
-  // eslint-disable-next-line no-var
   var __creatorBankStore: Map<string, BankAccount> | undefined;
 }
 

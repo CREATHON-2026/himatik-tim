@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { Product as PrismaProduct } from "@prisma/client";
+import type { Prisma, Product as PrismaProduct } from "@prisma/client";
 import { CreateProductInput, UpdateProductInput } from "../types";
 import type { Product as ApiProduct } from "../types";
 
@@ -24,7 +24,15 @@ function generateSlug(title: string): string {
  * tags, showStock) are given safe defaults on read and are NOT persisted
  * on write until the schema is extended.
  */
-function toApiProduct(p: PrismaProduct): ApiProduct {
+function toApiProduct(
+  p: PrismaProduct & {
+    creatorProfile?: {
+      id?: string;
+      storeName?: string | null;
+      city?: string | null;
+    } | null;
+  }
+): ApiProduct {
   const [imageUrl = null, ...gallery] = p.images ?? [];
   return {
     id: p.id,
@@ -45,6 +53,14 @@ function toApiProduct(p: PrismaProduct): ApiProduct {
     isActive: p.isPublished,
     createdAt: p.createdAt.toISOString(),
     updatedAt: p.updatedAt.toISOString(),
+    creator: p.creatorProfile
+      ? {
+          id: p.creatorProfile.id,
+          storeName: p.creatorProfile.storeName ?? undefined,
+          shopName: p.creatorProfile.storeName ?? undefined,
+          city: p.creatorProfile.city ?? undefined,
+        }
+      : undefined,
   };
 }
 
@@ -63,7 +79,7 @@ export async function getPublicProducts(options?: {
   page?: number;
   limit?: number;
 }) {
-  const where: any = {
+  const where: Prisma.ProductWhereInput = {
     isPublished: true,
   };
 
@@ -84,19 +100,19 @@ export async function getPublicProducts(options?: {
 
     if (mappedTerms && mappedTerms.length > 0) {
       where.OR = mappedTerms.map((term) => ({
-        category: { contains: term, mode: "insensitive" },
+        category: { contains: term, mode: "insensitive" as const },
       }));
     } else {
-      where.category = { contains: options.category, mode: "insensitive" };
+      where.category = { contains: options.category, mode: "insensitive" as const };
     }
   }
 
   if (options?.search && options.search.trim()) {
     const q = options.search.trim();
-    const searchConditions = [
-      { title: { contains: q, mode: "insensitive" } },
-      { description: { contains: q, mode: "insensitive" } },
-      { category: { contains: q, mode: "insensitive" } },
+    const searchConditions: Prisma.ProductWhereInput[] = [
+      { title: { contains: q, mode: "insensitive" as const } },
+      { description: { contains: q, mode: "insensitive" as const } },
+      { category: { contains: q, mode: "insensitive" as const } },
     ];
 
     if (where.OR) {
@@ -122,8 +138,10 @@ export async function getPublicProducts(options?: {
     skip,
     include: {
       creatorProfile: {
-        include: {
-          user: true,
+        select: {
+          id: true,
+          storeName: true,
+          city: true,
         },
       },
     },

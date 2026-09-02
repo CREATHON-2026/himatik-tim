@@ -101,8 +101,9 @@ export function PerformanceAnalyticsSection({
 
           <button
             type="button"
+            aria-label={`Ubah rentang waktu analisis, saat ini ${selectedPeriod}`}
             onClick={() => setSelectedPeriod((prev) => (prev === "28 Hari" ? "7 Hari" : "28 Hari"))}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E7E5E4] bg-white text-xs font-medium text-[#292524] hover:bg-[#FAFAF9] transition shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E7E5E4] bg-white text-xs font-medium text-[#292524] hover:bg-[#FAFAF9] transition shadow-2xs cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6355D9]"
           >
             <span>{selectedPeriod}</span>
             <ChevronDown className="size-3.5 text-[#78716C]" />
@@ -135,7 +136,14 @@ export function PerformanceAnalyticsSection({
                   </span>
                 </div>
 
-                <div className="w-full h-3.5 bg-[#F5F5F4] rounded-full overflow-hidden relative">
+                <div
+                  role="progressbar"
+                  aria-valuenow={Math.round(barWidthPercent)}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={`${item.name}: ${item.revenueFormatted}`}
+                  className="w-full h-3.5 bg-[#F5F5F4] rounded-full overflow-hidden relative"
+                >
                   <div
                     className="h-full rounded-full transition-all duration-500 ease-out"
                     style={{
@@ -174,6 +182,8 @@ export function PerformanceAnalyticsSection({
         <div className="py-4 flex flex-col items-center justify-center">
           <div className="relative size-44 sm:size-48 flex items-center justify-center">
             <svg
+              role="img"
+              aria-label={`Diagram lingkaran kontribusi omzet kriya dari total ${totalTransactions} transaksi`}
               className="size-full -rotate-90"
               viewBox="0 0 160 160"
             >
