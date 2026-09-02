@@ -1,4 +1,4 @@
-﻿import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import type { Product as PrismaProduct } from "@prisma/client";
 import { CreateProductInput, UpdateProductInput } from "../types";
 import type { Product as ApiProduct } from "../types";
@@ -63,27 +63,48 @@ export async function getPublicProducts(options?: {
   page?: number;
   limit?: number;
 }) {
-  const where: {
-    isPublished: boolean;
-    category?: string;
-    OR?: Array<{
-      title?: { contains: string; mode: "insensitive" };
-      description?: { contains: string; mode: "insensitive" };
-    }>;
-  } = {
+  const where: any = {
     isPublished: true,
   };
 
+  // Category mapping dictionary for smooth matching
+  const CATEGORY_MAP: Record<string, string[]> = {
+    HAMPERS: ["Gift Box & Hampers", "Hampers", "Gift Box"],
+    FLORAL: ["Bouquet & Floral Gifts", "Buket", "Floral", "Bunga"],
+    CUSTOM_ART: ["Personalized & Custom Gifts", "Custom Art", "Kriya", "Custom"],
+    FOOD: ["Food & Sweet Gifts", "Food", "Cookies", "Cake"],
+    HANDMADE: ["Handmade & Creative Gifts", "Handmade", "Craft"],
+    LIFESTYLE: ["Lifestyle & Accessories Gifts", "Accessories", "Aksesoris"],
+    SOUVENIR: ["Souvenir & Cendera Mata", "Souvenir", "Cendera Mata"],
+  };
+
   if (options?.category && options.category !== "ALL") {
-    where.category = options.category;
+    const catKey = options.category.toUpperCase().replace(/[^A-Z0-9_]/g, "_");
+    const mappedTerms = CATEGORY_MAP[catKey];
+
+    if (mappedTerms && mappedTerms.length > 0) {
+      where.OR = mappedTerms.map((term) => ({
+        category: { contains: term, mode: "insensitive" },
+      }));
+    } else {
+      where.category = { contains: options.category, mode: "insensitive" };
+    }
   }
 
   if (options?.search && options.search.trim()) {
     const q = options.search.trim();
-    where.OR = [
+    const searchConditions = [
       { title: { contains: q, mode: "insensitive" } },
       { description: { contains: q, mode: "insensitive" } },
+      { category: { contains: q, mode: "insensitive" } },
     ];
+
+    if (where.OR) {
+      where.AND = [{ OR: where.OR }, { OR: searchConditions }];
+      delete where.OR;
+    } else {
+      where.OR = searchConditions;
+    }
   }
 
   let orderBy: Record<string, "asc" | "desc"> = { createdAt: "desc" };
