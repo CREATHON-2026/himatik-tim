@@ -50,15 +50,19 @@ export async function GET(request: NextRequest) {
         city: metadata.city || null,
       });
 
-      // Role-based redirect
+      // Role-based redirect (explicit untuk semua role)
       if (profile.role === Role.ADMIN) {
         return NextResponse.redirect(new URL("/dashboard/admin", origin));
       } else if (profile.role === Role.CREATOR) {
         return NextResponse.redirect(new URL("/dashboard/creator", origin));
+      } else {
+        // CUSTOMER — arahkan langsung ke Katalog Gift
+        return NextResponse.redirect(new URL("/katalog", origin));
       }
     } catch (syncError) {
       console.error("Profile sync after email verify failed:", syncError);
       // User sudah terverifikasi di Supabase, lanjut redirect meski sync gagal
+      return NextResponse.redirect(new URL("/katalog", origin));
     }
   }
 
