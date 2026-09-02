@@ -24,7 +24,15 @@ function generateSlug(title: string): string {
  * tags, showStock) are given safe defaults on read and are NOT persisted
  * on write until the schema is extended.
  */
-function toApiProduct(p: PrismaProduct): ApiProduct {
+function toApiProduct(
+  p: PrismaProduct & {
+    creatorProfile?: {
+      id?: string;
+      storeName?: string | null;
+      city?: string | null;
+    } | null;
+  }
+): ApiProduct {
   const [imageUrl = null, ...gallery] = p.images ?? [];
   return {
     id: p.id,
@@ -45,6 +53,14 @@ function toApiProduct(p: PrismaProduct): ApiProduct {
     isActive: p.isPublished,
     createdAt: p.createdAt.toISOString(),
     updatedAt: p.updatedAt.toISOString(),
+    creator: p.creatorProfile
+      ? {
+          id: p.creatorProfile.id,
+          storeName: p.creatorProfile.storeName ?? undefined,
+          shopName: p.creatorProfile.storeName ?? undefined,
+          city: p.creatorProfile.city ?? undefined,
+        }
+      : undefined,
   };
 }
 
@@ -122,8 +138,10 @@ export async function getPublicProducts(options?: {
     skip,
     include: {
       creatorProfile: {
-        include: {
-          user: true,
+        select: {
+          id: true,
+          storeName: true,
+          city: true,
         },
       },
     },

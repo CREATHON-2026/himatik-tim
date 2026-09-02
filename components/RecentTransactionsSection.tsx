@@ -262,6 +262,18 @@ export function RecentTransactionsSection() {
     setPage(1);
   }
 
+  // Close modal on Escape key for keyboard accessibility
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && modalOpen) {
+        setModalOpen(false);
+        setReceipt(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [modalOpen]);
+
   // ── Handlers ─────────────────────────────────────────────────────────────
 
   function copyId(id: string, e?: React.MouseEvent) {
@@ -402,6 +414,9 @@ export function RecentTransactionsSection() {
       {/* ── MODAL OVERLAY ──────────────────────────────────────────────── */}
       {modalOpen && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="trx-modal-title"
           className="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-sm overflow-y-auto"
           onClick={() => { setModalOpen(false); setReceipt(null); }}
         >
@@ -412,19 +427,21 @@ export function RecentTransactionsSection() {
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#E7E5E4] bg-white rounded-t-2xl sticky top-0 z-10">
               <div>
-                <h2 className="font-bold text-lg text-[#111827]">Daftar Transaksi & Statistik Produk</h2>
+                <h2 id="trx-modal-title" className="font-bold text-lg text-[#111827]">Daftar Transaksi & Statistik Produk</h2>
                 <p className="text-xs text-[#78716C] mt-0.5">Data otomatis dari <code className="bg-[#F5F5F4] px-1 rounded">data/transactions.json</code> · {ALL_TRX.length} total transaksi</p>
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={exportCSV}
-                  className="px-3 py-1.5 rounded-xl bg-white border border-[#E7E5E4] text-xs font-semibold text-[#111827] hover:border-violet-400 hover:text-violet-700 hover:bg-violet-50 transition inline-flex items-center gap-1.5"
+                  aria-label="Ekspor data transaksi ke file CSV"
+                  className="px-3 py-1.5 rounded-xl bg-white border border-[#E7E5E4] text-xs font-semibold text-[#111827] hover:border-violet-400 hover:text-violet-700 hover:bg-violet-50 transition inline-flex items-center gap-1.5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
                 >
                   <Download className="w-3.5 h-3.5" /> Ekspor CSV
                 </button>
                 <button
                   onClick={() => { setModalOpen(false); setReceipt(null); }}
-                  className="p-2 rounded-xl text-[#78716C] hover:bg-[#F5F5F4] hover:text-[#111827] transition"
+                  aria-label="Tutup dialog transaksi"
+                  className="p-2 rounded-xl text-[#78716C] hover:bg-[#F5F5F4] hover:text-[#111827] transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -575,21 +592,27 @@ export function RecentTransactionsSection() {
                 {/* Row 1: search + status pills */}
                 <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
                   <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A8A29E]" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A8A29E] pointer-events-none" />
                     <input
                       type="text"
+                      aria-label="Cari transaksi berdasarkan ID, produk, pembeli, atau kategori"
                       placeholder="Cari ID, produk, pembeli, atau kategori…"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       className="w-full pl-9 pr-8 py-2 rounded-xl border border-[#E7E5E4] bg-[#FAFAF9] text-xs text-[#111827] placeholder-[#A8A29E] focus:outline-none focus:border-violet-400 transition"
                     />
                     {query && (
-                      <button onClick={() => setQuery("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#A8A29E] hover:text-[#111827]">
+                      <button
+                        type="button"
+                        aria-label="Hapus kata kunci pencarian"
+                        onClick={() => setQuery("")}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#A8A29E] hover:text-[#111827] cursor-pointer"
+                      >
                         <X className="w-3.5 h-3.5" />
                       </button>
                     )}
                   </div>
-                  <div className="flex items-center gap-1 overflow-x-auto pb-0.5 sm:pb-0">
+                  <div className="flex items-center gap-1 overflow-x-auto pb-0.5 sm:pb-0" role="tablist" aria-label="Filter status pesanan">
                     {[
                       { id: "ALL", label: "Semua" },
                       { id: "COMPLETED", label: "Selesai" },
@@ -599,9 +622,13 @@ export function RecentTransactionsSection() {
                     ].map((s) => (
                       <button
                         key={s.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={statusFilter === s.id}
+                        aria-label={`Filter status ${s.label}`}
                         onClick={() => setStatusFilter(s.id)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
-                          statusFilter === s.id ? "bg-violet-600 text-white" : "bg-[#F5F5F4] text-[#78716C] hover:bg-[#E7E5E4]"
+                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                          statusFilter === s.id ? "bg-violet-600 text-white shadow-xs" : "bg-[#F5F5F4] text-[#78716C] hover:bg-[#E7E5E4]"
                         }`}
                       >
                         {s.label}
@@ -729,9 +756,11 @@ export function RecentTransactionsSection() {
                     </span>
                     <div className="flex items-center gap-1">
                       <button
+                        type="button"
+                        aria-label="Halaman sebelumnya"
                         onClick={() => setPage((p) => Math.max(1, p - 1))}
                         disabled={page === 1}
-                        className="p-1.5 rounded-lg border border-[#E7E5E4] bg-white hover:bg-[#F5F5F4] disabled:opacity-40 transition"
+                        className="p-1.5 rounded-lg border border-[#E7E5E4] bg-white hover:bg-[#F5F5F4] disabled:opacity-40 transition cursor-pointer disabled:cursor-not-allowed"
                       >
                         <ChevronLeft className="w-3.5 h-3.5" />
                       </button>
@@ -741,9 +770,11 @@ export function RecentTransactionsSection() {
                         return (
                           <button
                             key={n}
+                            type="button"
+                            aria-label={`Buka halaman ${n}`}
                             onClick={() => setPage(n)}
-                            className={`w-7 h-7 rounded-lg text-xs font-semibold transition ${
-                              page === n ? "bg-violet-600 text-white" : "border border-[#E7E5E4] bg-white text-[#111827] hover:bg-[#F5F5F4]"
+                            className={`w-7 h-7 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                              page === n ? "bg-violet-600 text-white shadow-xs" : "border border-[#E7E5E4] bg-white text-[#111827] hover:bg-[#F5F5F4]"
                             }`}
                           >
                             {n}
@@ -751,9 +782,11 @@ export function RecentTransactionsSection() {
                         );
                       })}
                       <button
+                        type="button"
+                        aria-label="Halaman berikutnya"
                         onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                         disabled={page === totalPages}
-                        className="p-1.5 rounded-lg border border-[#E7E5E4] bg-white hover:bg-[#F5F5F4] disabled:opacity-40 transition"
+                        className="p-1.5 rounded-lg border border-[#E7E5E4] bg-white hover:bg-[#F5F5F4] disabled:opacity-40 transition cursor-pointer disabled:cursor-not-allowed"
                       >
                         <ChevronRight className="w-3.5 h-3.5" />
                       </button>
