@@ -1,4 +1,5 @@
 import { AuthLayout } from "@/features/auth/components/AuthLayout";
+import { VerifyEmailActions } from "@/features/auth/components/VerifyEmailActions";
 import { MailCheck, ArrowRight, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
@@ -50,6 +51,7 @@ export default async function VerifyEmailPage({
               </p>
             </div>
 
+            {/* Error state: static links are sufficient — no JS needed */}
             <div className="pt-4 border-t border-neutral-800 w-full flex flex-col gap-2.5">
               <Link
                 href="/register"
@@ -85,15 +87,8 @@ export default async function VerifyEmailPage({
               </p>
             </div>
 
-            <div className="pt-4 border-t border-neutral-800 w-full flex flex-col gap-2.5">
-              <Link
-                href="/login"
-                className="w-full py-2.5 px-4 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-medium text-xs flex items-center justify-center gap-2 transition"
-              >
-                <span>Kembali ke Halaman Masuk</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+            {/* Success state: Client Component with real resend logic */}
+            <VerifyEmailActions email={email || ""} />
           </>
         )}
       </div>

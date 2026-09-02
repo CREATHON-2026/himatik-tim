@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { Leaf, Sparkles, Sprout, Trees } from "lucide-react";
+import { ShieldCheck, Heart, Sparkles, Package, Award } from "lucide-react";
 import { AdaptogenIngredient } from "./types";
 
 interface InsideIngredientDetailsProps {
@@ -15,7 +15,7 @@ export const InsideIngredientDetails: React.FC<InsideIngredientDetailsProps> = (
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // GSAP Kinetic Masked Blur & Slide Entrance on ingredient change
+  // GSAP Kinetic Masked Blur & Slide Entrance on step change
   useGSAP(
     () => {
       if (!containerRef.current) return;
@@ -25,7 +25,7 @@ export const InsideIngredientDetails: React.FC<InsideIngredientDetailsProps> = (
       tl.fromTo(
         containerRef.current.querySelectorAll("[data-anim='true']"),
         {
-          y: 24,
+          y: 20,
           opacity: 0,
           filter: "blur(6px)",
         },
@@ -43,39 +43,47 @@ export const InsideIngredientDetails: React.FC<InsideIngredientDetailsProps> = (
   );
 
   const renderGlyph = () => {
-    switch (ingredient.glyph) {
-      case "leaf":
-        return <Leaf className="h-3.5 w-3.5 text-[#BCD3D8]" />;
-      case "mushroom":
-        return <Trees className="h-3.5 w-3.5 text-[#E8C9A0]" />;
-      case "root":
-        return <Sprout className="h-3.5 w-3.5 text-[#E8C9A0]" />;
-      case "herb":
-        return <Sparkles className="h-3.5 w-3.5 text-[#C9B5C8]" />;
+    switch (ingredient.id) {
+      case "kurasi":
+        return <Award className="h-4 w-4 text-[#E76F61]" />;
+      case "personalisasi":
+        return <Heart className="h-4 w-4 text-[#8B7CF6]" />;
+      case "escrow":
+        return <ShieldCheck className="h-4 w-4 text-emerald-400" />;
+      case "pengiriman":
+        return <Package className="h-4 w-4 text-amber-400" />;
       default:
-        return <Leaf className="h-3.5 w-3.5 text-[#BCD3D8]" />;
+        return <Sparkles className="h-4 w-4 text-[#8B7CF6]" />;
     }
   };
 
   return (
     <div ref={containerRef} className="flex flex-col justify-center">
-      {/* Big Bold Ingredient Title in Masked Container */}
+      {/* Step Number Tag */}
+      <div
+        data-anim="true"
+        className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.24em] text-white/50 mb-2 will-change-[transform,opacity,filter]"
+      >
+        <span>STANDAR {ingredient.number} / 04</span>
+      </div>
+
+      {/* Big Bold Title in Masked Container */}
       <div className="overflow-hidden py-1">
         <h3
           data-anim="true"
-          className="font-sans text-3xl font-black uppercase tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl leading-[0.95] will-change-[transform,opacity,filter]"
+          className="font-serif text-3xl font-light uppercase tracking-tight text-white sm:text-4xl md:text-5xl leading-[1.05] will-change-[transform,opacity,filter]"
         >
           {ingredient.name}
         </h3>
       </div>
 
-      {/* Botanical Latin Binomial Subtitle */}
+      {/* Subtitle / Value Category */}
       <div
         data-anim="true"
-        className="mt-2.5 flex items-center gap-2 text-white/60 will-change-[transform,opacity,filter]"
+        className="mt-3 flex items-center gap-2 text-white/70 will-change-[transform,opacity,filter]"
       >
         {renderGlyph()}
-        <span className="font-serif text-sm sm:text-base italic tracking-wide text-white/80">
+        <span className="font-sans text-xs sm:text-sm font-medium tracking-wide text-white/90">
           {ingredient.botanicalName}
         </span>
       </div>

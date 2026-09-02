@@ -1,6 +1,6 @@
-export interface FlavorIngredient {
-  name: string;
-  dose: string;
+export interface CraftSpecItem {
+  label: string;
+  value: string;
   isLead?: boolean;
 }
 
@@ -8,68 +8,84 @@ export interface FlavorItem {
   id: string;
   number: string;
   tag: string;
+  categorySlug: string;
   name: string;
   subtitle: string;
   description: string;
   accentColor: string;
   glowColor: string;
-  ingredients: FlavorIngredient[];
+  startingPrice: string;
+  leadTime: string;
+  ingredients: { name: string; dose: string; isLead?: boolean }[];
   totalActiveBlend: string;
+  previewBadge: string;
 }
 
 export const FLAVORS_DATA: FlavorItem[] = [
   {
-    id: "clear",
+    id: "floral",
     number: "01",
-    tag: "signature",
-    name: "Clear",
-    subtitle: "Cucumber & Yuzu",
+    tag: "Artisan Floral",
+    categorySlug: "floral",
+    name: "Buket Bunga",
+    subtitle: "Bunga Segar yang Merangkai Cerita",
     description:
-      "The signature blend, paired with cucumber and yuzu. Clean, dry, faintly green. Built for the kind of work that asks you to stay present without raising the volume.",
-    accentColor: "#BCD3D8",
-    glowColor: "rgba(188, 211, 216, 0.4)",
+      "Rangkaian bunga segar pilihan dan preserved flowers yang dirangkai manual oleh florist independen untuk mengabadikan momen kelulusan, anniversary, dan ungkapan kasih.",
+    accentColor: "#E76F61",
+    glowColor: "rgba(231, 111, 97, 0.35)",
+    startingPrice: "Rp125.000",
+    leadTime: "Same Day / 1 Hari",
     ingredients: [
-      { name: "L-Theanine", dose: "200mg", isLead: true },
-      { name: "Lion's Mane", dose: "500mg" },
-      { name: "Rhodiola Rosea", dose: "150mg" },
-      { name: "Bacopa Monnieri", dose: "300mg" },
+      { name: "Fresh & Preserved Flora", dose: "100% Organik", isLead: true },
+      { name: "Kemasan Kraft Artisan", dose: "Double Wrap" },
+      { name: "Pita Satin & Greeting Card", dose: "Termasuk" },
+      { name: "Proteksi Pengiriman", dose: "Water Tube" },
     ],
-    totalActiveBlend: "1,150",
+    totalActiveBlend: "100% Handcrafted",
+    previewBadge: "Siap Kirim & Pre-Order",
   },
   {
-    id: "dawn",
+    id: "hampers",
     number: "02",
-    tag: "citrus",
-    name: "Dawn",
-    subtitle: "Ginger & Bergamot",
+    tag: "Luxury Hampers",
+    categorySlug: "hampers",
+    name: "Hampers Tematik",
+    subtitle: "Bingkisan Elegan Segala Perayaan",
     description:
-      "Ginger and bergamot, lifted by the same blend. The first one of the day. For the start of something, when you want the rise without the descent.",
-    accentColor: "#E8C9A0",
-    glowColor: "rgba(232, 201, 160, 0.45)",
+      "Kurasi kado tematik dalam luxury hardbox eksklusif, memadukan wewangian aromaterapi, camilan artisan, dan cenderamata istimewa untuk korporat maupun perayaan keluarga.",
+    accentColor: "#6355D9",
+    glowColor: "rgba(99, 85, 217, 0.35)",
+    startingPrice: "Rp250.000",
+    leadTime: "1 - 2 Hari Kerja",
     ingredients: [
-      { name: "Rhodiola Rosea", dose: "150mg", isLead: true },
-      { name: "L-Theanine", dose: "200mg" },
-      { name: "Lion's Mane", dose: "500mg" },
-      { name: "Bacopa Monnieri", dose: "300mg" },
+      { name: "Luxury Magnetic Hardbox", dose: "Tebal & Kokoh", isLead: true },
+      { name: "Isi Kado Terkurasi", dose: "3 - 5 Item" },
+      { name: "Gold Foil Greeting Card", dose: "Personal" },
+      { name: "Proteksi Pengiriman", dose: "Double Dus" },
     ],
-    totalActiveBlend: "1,150",
+    totalActiveBlend: "Best Seller Kado",
+    previewBadge: "Eksklusif & Tematik",
   },
   {
-    id: "dusk",
+    id: "custom",
     number: "03",
-    tag: "berry",
-    name: "Dusk",
-    subtitle: "Blackcurrant & Manuka",
+    tag: "Bespoke Keepsakes",
+    categorySlug: "custom",
+    name: "Kriya Kustom",
+    subtitle: "Sentuhan Personal yang Abadi",
     description:
-      "Blackcurrant and manuka, with the same four adaptogens. A late drink that won't keep you up. For the hours that should still end in sleep.",
-    accentColor: "#C9B5C8",
-    glowColor: "rgba(201, 181, 200, 0.45)",
+      "Karya keramik, ukiran kayu solid, dan ilustrasi seni dengan ukiran nama atau pesan personal yang dikerjakan satu per satu oleh pengrajin sanggar kriya terpercaya.",
+    accentColor: "#D97706",
+    glowColor: "rgba(217, 119, 6, 0.35)",
+    startingPrice: "Rp150.000",
+    leadTime: "2 - 3 Hari Kerja",
     ingredients: [
-      { name: "Bacopa Monnieri", dose: "300mg", isLead: true },
-      { name: "L-Theanine", dose: "200mg" },
-      { name: "Lion's Mane", dose: "500mg" },
-      { name: "Rhodiola Rosea", dose: "150mg" },
+      { name: "Kayu Solid & Keramik", dose: "Autentik", isLead: true },
+      { name: "Ukiran Nama / Tanggal", dose: "Presisi" },
+      { name: "Sertifikat Karya Sanggar", dose: "Verified" },
+      { name: "Garansi Kerusakan", dose: "100% Ganti" },
     ],
-    totalActiveBlend: "1,150",
+    totalActiveBlend: "Kustomisasi Bebas",
+    previewBadge: "Karya Personal",
   },
 ];

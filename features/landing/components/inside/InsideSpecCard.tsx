@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useRef } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { AdaptogenIngredient } from "./types";
@@ -16,7 +18,7 @@ export const InsideSpecCard: React.FC<InsideSpecCardProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // GSAP Kinetic Masked Blur & Slide Entrance on ingredient change
+  // GSAP Kinetic Masked Blur & Slide Entrance on step change
   useGSAP(
     () => {
       if (!containerRef.current) return;
@@ -57,7 +59,7 @@ export const InsideSpecCard: React.FC<InsideSpecCardProps> = ({
         </div>
       </div>
 
-      {/* Clinical Benefit Description */}
+      {/* Description */}
       <div className="overflow-hidden mt-2.5">
         <p
           data-anim="true"
@@ -67,7 +69,7 @@ export const InsideSpecCard: React.FC<InsideSpecCardProps> = ({
         </p>
       </div>
 
-      {/* Clinical Specification Table */}
+      {/* Craft Specification Table */}
       <div
         data-anim="true"
         className="mt-4 flex flex-col divide-y divide-white/10 border-y border-white/10 will-change-[transform,opacity,filter]"
@@ -75,9 +77,9 @@ export const InsideSpecCard: React.FC<InsideSpecCardProps> = ({
         {/* Source Row */}
         <div className="flex items-center justify-between py-2.5 text-xs">
           <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/50">
-            Source
+            Alur Proses
           </span>
-          <span className="font-mono text-xs text-white/90 lowercase">
+          <span className="font-mono text-xs text-white/90">
             {ingredient.source}
           </span>
         </div>
@@ -85,22 +87,33 @@ export const InsideSpecCard: React.FC<InsideSpecCardProps> = ({
         {/* Role Row */}
         <div className="flex items-center justify-between py-2.5 text-xs">
           <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/50">
-            Role
+            Nilai Unggulan
           </span>
           <span className="font-mono text-xs text-white/90">
             {ingredient.role}
           </span>
         </div>
 
-        {/* Dose Row */}
+        {/* Guarantee Row */}
         <div className="flex items-center justify-between py-2.5 text-xs">
           <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/50">
-            Dose
+            Garansi
           </span>
-          <span className="font-mono text-xs font-semibold text-white">
+          <span className="font-mono text-xs font-semibold text-emerald-400">
             {ingredient.dose}
           </span>
         </div>
+      </div>
+
+      {/* Action CTA */}
+      <div data-anim="true" className="mt-5">
+        <Link
+          href="/katalog"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-[#111827] hover:bg-white/90 text-xs font-semibold transition active:scale-98 shadow-sm"
+        >
+          <span>Buktikan Sendiri di Katalog</span>
+          <ArrowRight className="size-3.5" />
+        </Link>
       </div>
     </div>
   );
