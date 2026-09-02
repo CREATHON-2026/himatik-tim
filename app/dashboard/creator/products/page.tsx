@@ -23,6 +23,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Product } from "@/features/products/types";
+import {
+  VALID_CATEGORIES,
+  normalizeProductCategory,
+} from "@/features/products/constants";
 
 export default function CreatorProductsPage() {
   const router = useRouter();
@@ -68,7 +72,8 @@ export default function CreatorProductsPage() {
     const productName = p.name || (p as unknown as { title?: string }).title || "";
     const matchQuery = productName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchCategory =
-      selectedCategory === "ALL" || p.category === selectedCategory;
+      selectedCategory === "ALL" ||
+      normalizeProductCategory(p.category) === selectedCategory;
     return matchQuery && matchCategory;
   });
 
@@ -118,11 +123,11 @@ export default function CreatorProductsPage() {
             className="h-10 px-3.5 rounded-xl border border-[#E7E5E4] bg-white text-xs font-medium text-[#292524] focus:outline-none focus:ring-2 focus:ring-[#6355D9]"
           >
             <option value="ALL">Semua Kategori</option>
-            <option value="FLORAL">Buket Bunga & Floral</option>
-            <option value="HAMPERS">Hampers & Parcel</option>
-            <option value="CUSTOM_ART">Custom Artwork</option>
-            <option value="SOUVENIR">Souvenir & Kriya</option>
-            <option value="ACCESSORIES">Aksesoris & Kado</option>
+            {VALID_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
           </select>
         </div>
       </div>
