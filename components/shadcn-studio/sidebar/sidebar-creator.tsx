@@ -12,6 +12,7 @@ import {
   Wallet,
   Store,
   MessageSquare,
+  Bot,
   PanelLeftClose,
   PanelLeftOpen,
   ArrowUpRight,
@@ -97,10 +98,19 @@ export function SidebarCreator({
           { title: "Profil Toko & Etalase", href: "/dashboard/creator/profile", icon: Store },
           {
             title: "Pesan / Chat",
-            href: "#",
+            href: "/dashboard/messages",
             icon: MessageSquare,
-            disabled: true,
-            badgeText: "SOON",
+            badgeText: "BETA",
+          },
+        ],
+      },
+      {
+        label: "BANTUAN",
+        items: [
+          {
+            title: "Tanya Gifteria",
+            href: "/dashboard/creator/ask-gifteria",
+            icon: Bot,
           },
         ],
       },
