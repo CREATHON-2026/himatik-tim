@@ -55,7 +55,7 @@ export function ReviewSection({
   // Auto-detected logged in user name
   const rawUserName = user?.email
     ? user.email.split("@")[0].replace(/[._-]/g, " ")
-    : "Pengguna Bicket";
+    : "Pengguna Gifteria";
   const userName = rawUserName
     .split(" ")
     .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))

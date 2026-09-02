@@ -1,5 +1,5 @@
 /**
- * Bicket · Layer 4 & 5 — Narasi bahasa manusia + pagar anti-halusinasi (TypeScript)
+ * Gifteria · Layer 4 & 5 — Narasi bahasa manusia + pagar anti-halusinasi (TypeScript)
  *
  * AI di sini hanya penulis ulang. Guard v2: AI tidak boleh menulis angka
  * sama sekali — ia hanya merangkai prosa di sekitar placeholder, dan kode

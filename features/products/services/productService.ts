@@ -142,7 +142,7 @@ export async function getProductDetailById(id: string) {
     reviewCount: 12,
     creator: {
       id: creator.id,
-      shopName: creator.storeName || "Creathon Studio",
+      shopName: creator.storeName || "Gifteria Studio",
       photoUrl: creator.user?.avatarUrl || null,
       bannerUrl: creator.bannerUrl || null,
       bio: creator.description || "Pengrajin & Kreator Kado Nusantara",

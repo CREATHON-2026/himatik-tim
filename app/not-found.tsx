@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Halaman Tidak Ditemukan — Gifterya",
+  title: "Halaman Tidak Ditemukan — Gifteria",
   description:
-    "Halaman yang kamu cari tidak ditemukan. Kembali menjelajah karya gift, hampers, dan kriya terbaik di Gifterya.",
+    "Halaman yang kamu cari tidak ditemukan. Kembali menjelajah karya gift, hampers, dan kriya terbaik di Gifteria.",
 };
 
 export default function NotFound() {
@@ -22,7 +22,7 @@ export default function NotFound() {
       {/* Badge */}
       <span className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#E7E5E4] bg-white px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-[#78716C]">
         <span className="h-1.5 w-1.5 rounded-full bg-[#E76F61]" />
-        Gifterya
+        Gifteria
       </span>
 
       {/* Big 404 */}
@@ -45,7 +45,7 @@ export default function NotFound() {
       <p className="mt-4 max-w-md text-base leading-relaxed text-[#78716C]">
         Sepertinya karya yang kamu cari sudah berpindah tempat atau tautannya
         keliru. Yuk kembali menjelajah gift, hampers, dan kriya terbaik di
-        Gifterya.
+        Gifteria.
       </p>
 
       {/* Actions */}

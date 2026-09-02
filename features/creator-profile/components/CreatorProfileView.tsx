@@ -45,7 +45,7 @@ interface CreatorProfileViewProps {
 }
 
 export function CreatorProfileView({ data, onEdit }: CreatorProfileViewProps) {
-  const storeName = data?.shopName || data?.storeName || "Gifterya";
+  const storeName = data?.shopName || data?.storeName || "Gifteria";
   const ownerName = data?.name || "Samsung";
   const email = data?.email || "lastnameadiansyah@gmail.com";
   const phone = data?.phone || "089526293221";

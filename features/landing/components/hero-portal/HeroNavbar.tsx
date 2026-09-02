@@ -29,7 +29,7 @@ export const HeroNavbar: React.FC<HeroNavbarProps> = ({
   return (
     <header className="fixed top-0 right-0 left-0 z-50 h-16 border-b border-[#3E5237]/10 bg-[#FAF4EC]/60 backdrop-blur-md transition-all duration-300">
       <div className="mx-auto flex h-full max-w-360 items-center justify-between px-6 md:px-14">
-        {/* Brand Logo & Wordmark (Emblem + BICKET Text) */}
+        {/* Brand Logo & Wordmark (Emblem + GIFTERIA Text) */}
         <a
           href="#hero"
           onClick={(e) => handleLinkClick(e, "#hero")}
@@ -39,16 +39,15 @@ export const HeroNavbar: React.FC<HeroNavbarProps> = ({
           <div className="relative h-9 w-9 sm:h-10 sm:w-10 shrink-0">
             <Image
               src="/logo/brand-logo.webp"
-              alt="Bicket Emblem"
+              alt="Gifteria Emblem"
               fill
-              priority
               className="object-contain"
+              priority
             />
           </div>
 
-          {/* Luxury Serif Brand Wordmark */}
-          <span className="font-serif text-lg sm:text-xl font-normal tracking-[0.24em] uppercase text-[#3E5237]">
-            BICKET
+          <span className="font-editorial text-2xl md:text-3xl font-bold tracking-tight text-[#E8DCC4] transition-transform duration-300 group-hover:scale-[1.02] drop-shadow-sm">
+            GIFTERIA
           </span>
         </a>
 

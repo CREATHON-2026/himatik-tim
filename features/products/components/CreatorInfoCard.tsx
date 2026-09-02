@@ -26,7 +26,7 @@ interface CreatorInfoCardProps {
 export function CreatorInfoCard({ creator, className = "" }: CreatorInfoCardProps) {
   const router = useRouter();
 
-  const storeName = creator.shopName || "Gifterya";
+  const storeName = creator.shopName || "Gifteria";
   const storeBio =
     creator.bio ||
     "Pengrajin buket bunga segar, kado personal, dan hampers premium berkualitas tinggi.";

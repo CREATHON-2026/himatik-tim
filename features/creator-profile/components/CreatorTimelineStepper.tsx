@@ -134,7 +134,7 @@ export function CreatorTimelineStepper({
             Perjalanan Kreator — {shopName}
           </h3>
           <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400">
-            Jejak aktivitas faktual dan pencapaian bisnis Anda di Bicket
+            Jejak aktivitas faktual dan pencapaian bisnis Anda di Gifteria
           </p>
         </div>
 

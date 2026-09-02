@@ -120,7 +120,7 @@ export function ProductFormCard({
     if (!isEdit) {
       const timer = setTimeout(() => {
         localStorage.setItem(
-          "bicket_product_form_draft",
+          "gifteria_product_form_draft",
           JSON.stringify(formValues)
         );
       }, 1000); // Debounce saves by 1s
@@ -131,7 +131,7 @@ export function ProductFormCard({
   // Load draft on mount (only in Create mode)
   React.useEffect(() => {
     if (!isEdit) {
-      const saved = localStorage.getItem("bicket_product_form_draft");
+      const saved = localStorage.getItem("gifteria_product_form_draft");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -158,7 +158,7 @@ export function ProductFormCard({
   // Warn user before leaving if form is dirty
   React.useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      const saved = localStorage.getItem("bicket_product_form_draft");
+      const saved = localStorage.getItem("gifteria_product_form_draft");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -176,7 +176,7 @@ export function ProductFormCard({
   }, []);
 
   const clearDraft = () => {
-    localStorage.removeItem("bicket_product_form_draft");
+    localStorage.removeItem("gifteria_product_form_draft");
   };
 
   const handleCancel = () => {

@@ -83,23 +83,34 @@ export const HeroBoneLayer = forwardRef<HTMLDivElement, HeroBoneLayerProps>(
         });
       }
 
-      // 4. Typewriter Storytelling Sequence: BOUQUET -> B -> BICKET. -> Dual-Tone Magnetic Reveal
-      const tl = gsap.timeline({ delay: 0.2 });
+      // 4. Typewriter Storytelling Sequence: BOUQUET -> G -> GIFTERIA. -> Dual-Tone Magnetic Reveal
+      const masterTypewriterTimeline = gsap.timeline({
+        repeat: -1,
+        repeatDelay: 2.8,
+        defaults: { ease: "none" },
+      });
+
+      const brandTargetText = {
+        main: {
+          scrambleTarget: "GIFTERIA",
+          text: "GIFTERIA.",
+        },
+      };
 
       if (typewriterTextRef.current && finalWordmarkRef.current && cursorRef.current) {
-        tl.to(typewriterTextRef.current, {
+        masterTypewriterTimeline.to(typewriterTextRef.current, {
           text: "BOUQUET",
           duration: 0.75,
           ease: "none",
         })
           .to(typewriterTextRef.current, {
-            text: "B",
+            text: "G",
             duration: 0.45,
             ease: "none",
             delay: 0.35,
           })
           .to(typewriterTextRef.current, {
-            text: "BICKET.",
+            text: "GIFTERIA.",
             duration: 0.85,
             ease: "none",
           })
@@ -187,7 +198,7 @@ export const HeroBoneLayer = forwardRef<HTMLDivElement, HeroBoneLayerProps>(
           >
             <Image
               src="/asset-landing/hero-diorama-frame1.webp"
-              alt="Bicket Curated Gifts & Floral Showcase"
+              alt="Gifteria Curated Gifts & Floral Showcase"
               fill
               priority
               sizes="(max-width: 768px) 450px, (max-width: 1200px) 620px, 740px"

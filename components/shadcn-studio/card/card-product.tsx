@@ -30,7 +30,7 @@ export interface CardProductProps {
 
 const CardProductDemo = ({
   name = "Peach Romance Bouquet",
-  creator = "Bicket",
+  creator = "Gifteria",
   creatorAvatar,
   price = 89000,
   image = "https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=600&q=80",

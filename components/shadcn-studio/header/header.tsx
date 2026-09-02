@@ -97,13 +97,16 @@ export function Header() {
           <div className="flex flex-col text-left">
             <div className="relative h-11 w-36 sm:h-13 sm:w-44 md:h-14 md:w-48 transition-all">
               <Image
-                src="/logo/brand-logo-text.webp"
-                alt="Bicket - Every bouquet, carries a story"
-                fill
-                sizes="(max-width: 640px) 150px, (max-width: 1024px) 180px, 208px"
-                className="object-contain object-left scale-120 sm:scale-130 md:scale-135 origin-left"
+                src="/logo/brand-logo.webp"
+                alt="Gifteria - Every bouquet, carries a story"
+                width={36}
+                height={36}
                 priority
+                className="h-8 w-8 sm:h-9 sm:w-9 object-contain group-hover:scale-105 transition-transform"
               />
+              <span className="font-serif text-lg sm:text-xl font-normal tracking-[0.2em] uppercase text-[#3E5237]">
+                Gifteria
+              </span>
             </div>
           </div>
         </Link>
