@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -110,6 +110,18 @@ export function useAuth() {
       }
 
       if (authData.user) {
+        // Supabase silent-duplicate: user sudah ada tapi belum verify
+        // ditandai dengan identities array kosong
+        if (
+          authData.user.identities &&
+          authData.user.identities.length === 0
+        ) {
+          setError(
+            "Email ini sudah terdaftar. Silakan cek kotak masuk Anda untuk tautan verifikasi, atau gunakan 'Kirim Ulang' di halaman berikut."
+          );
+          router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
+          return;
+        }
         router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
       }
     } catch (err: unknown) {
@@ -117,6 +129,33 @@ export function useAuth() {
         setError(err.message);
       } else {
         setError("Gagal mendaftar akun. Silakan coba lagi.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resendVerification = async (email: string) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { error: resendError } = await supabase.auth.resend({
+        type: "signup",
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (resendError) {
+        throw new Error(resendError.message);
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Gagal mengirim ulang email verifikasi. Silakan coba lagi.");
       }
     } finally {
       setIsLoading(false);
@@ -176,6 +215,7 @@ export function useAuth() {
     setError,
     signInWithEmail,
     signUp,
+    resendVerification,
     signInWithGoogle,
     signOut,
   };
