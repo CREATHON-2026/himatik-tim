@@ -14,7 +14,6 @@ import { SectionInside } from "@/features/landing/components/inside/SectionInsid
 import { SectionStory } from "@/features/landing/components/story/SectionStory";
 import { SectionPress } from "@/features/landing/components/press/SectionPress";
 import { SectionWhereAvailable } from "@/features/landing/components/where-available/SectionWhereAvailable";
-import { DirectProduct } from "@/features/landing/components/where-available/types";
 import { useSpherePortal } from "@/features/landing/hooks/useSpherePortal";
 
 if (typeof window !== "undefined") {
@@ -37,15 +36,7 @@ export default function StillLandingPage() {
   const lenisRef = useRef<Lenis | null>(null);
 
   // Dynamic cart state for e-commerce interaction
-  const [cartCount, setCartCount] = useState(0);
-
-  const handleAddToCart = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (_product: DirectProduct, _packSize: string) => {
-      setCartCount((prev) => prev + 1);
-    },
-    []
-  );
+  const [cartCount] = useState(0);
 
   // Initialize Ultra-Luxury Lenis Momentum Smooth Scroll synchronized with GSAP Ticker
   useEffect(() => {
@@ -156,10 +147,9 @@ export default function StillLandingPage() {
       {/* 6. Section 5: Press & Infinite Marquee Ticker */}
       <SectionPress ref={pressSectionRef} />
 
-      {/* 7. Section 6: Where Available / Stockists, Direct Shop & Editorial Footer */}
+      {/* 7. Section 6: Where Available / Stockists & Editorial Master Footer */}
       <SectionWhereAvailable
         ref={whereAvailableRef}
-        onAddToCart={handleAddToCart}
         onNavigate={handleNavigate}
       />
     </div>
