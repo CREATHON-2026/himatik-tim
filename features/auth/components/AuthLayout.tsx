@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import Link from "next/link";
 import { Sparkles, ShieldCheck, Heart } from "lucide-react";
 
@@ -38,7 +38,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
               <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30">
                 <Sparkles className="w-4 h-4" />
               </span>
-              <span className="tracking-tight font-serif text-2xl">Creatons<span className="text-indigo-600">.</span></span>
+              <span className="tracking-tight font-serif text-2xl">Gifteria<span className="text-indigo-600">.</span></span>
             </Link>
 
             {/* Editorial Serif Heading */}
@@ -97,7 +97,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
                 <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-600 text-white">
                   <Sparkles className="w-3.5 h-3.5" />
                 </span>
-                <span>Creatons.</span>
+                <span>Gifteria.</span>
               </Link>
               <span className="text-[11px] font-medium text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
                 Sewa Busana
@@ -120,7 +120,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
 
           {/* Bottom Security Note */}
           <div className="w-full max-w-md mx-auto pt-6 text-center text-[11px] text-neutral-400 border-t border-neutral-100 mt-6">
-            &copy; {new Date().getFullYear()} Creatons Platform • Dilindungi Sistem Escrow Transaksi
+            &copy; {new Date().getFullYear()} Gifteria Platform • Dilindungi Sistem Escrow Transaksi
           </div>
         </div>
 

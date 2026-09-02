@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Products Feature — API Client Functions
  *
  * Typed fetch wrappers for product CRUD and image upload endpoints.
@@ -156,7 +156,7 @@ export async function deleteProduct(id: string): Promise<void> {
 /**
  * Upload a product image (direct form upload)
  *
- * Note: Creathon has a single generic upload endpoint at /api/upload
+ * Note: Gifteria has a single generic upload endpoint at /api/upload
  * (Supabase Storage bucket "products"), unlike Bicket which has a
  * per-product endpoint at /api/products/[id]/upload-image. The
  * generic endpoint returns { url, success }, not the { id, imageUrl }

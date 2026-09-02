@@ -1,10 +1,10 @@
-# 🧪 Manual Testing Checklist: Halaman Beranda Interaktif (`/`)
+﻿# 🧪 Manual Testing Checklist: Halaman Beranda Interaktif (`/`)
 ## QA Test Plan — Story CREAT-22: Halaman Beranda (Still Landing Page)
 
 **Task ID**: `CREAT-22`\
 **Target URL**: `http://localhost:3000/`\
 **Tipe Pengujian**: Manual Functional, Responsive, Interaction & Animation QA\
-**Standar SOP**: [`docs/sop/06-sop-qa-manual-testing-checklist.md`](file:///d:/2-Project/creathon/docs/sop/06-sop-qa-manual-testing-checklist.md)
+**Standar SOP**: [`docs/sop/06-sop-qa-manual-testing-checklist.md`](file:///d:/2-Project/Gifteria/docs/sop/06-sop-qa-manual-testing-checklist.md)
 
 ---
 

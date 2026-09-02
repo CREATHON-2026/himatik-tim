@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { TransactionStatus } from "@prisma/client";
 
 export async function GET(
   _request: NextRequest,
@@ -27,12 +28,51 @@ export async function GET(
       },
     });
 
+    // Resolve buyer info if available
+    let buyerData = {
+      name: "Pelanggan Gifteria",
+      phone: "081234567890",
+      email: "buyer@Gifteria.id",
+      city: "Makassar",
+      address: "Jl. Boulevard No. 12, Panakkukang, Makassar, Sulawesi Selatan",
+      courier: "Kurir Instant (1 - 3 Jam)",
+    };
+
+    if (transaction.buyerId) {
+      if (transaction.buyerId.startsWith("guest-")) {
+        const cleanPhone = transaction.buyerId.replace("guest-", "");
+        buyerData.phone = cleanPhone;
+        buyerData.name = `Tamu (${cleanPhone.slice(-4)})`;
+      } else {
+        const buyerUser = await prisma.user.findUnique({
+          where: { id: transaction.buyerId },
+          include: { creatorProfile: true },
+        });
+
+        if (buyerUser) {
+          buyerData = {
+            name: buyerUser.name || "Pelanggan Terdaftar",
+            phone: buyerUser.phone || "081234567890",
+            email: buyerUser.email || "buyer@Gifteria.id",
+            city: buyerUser.creatorProfile?.city || "Makassar",
+            address: buyerUser.creatorProfile?.address || "Jl. Boulevard No. 12, Makassar, Sulawesi Selatan",
+            courier: "Kurir Instant (1 - 3 Jam)",
+          };
+        }
+      }
+    }
+
+    const itemPrice = product?.price || transaction.grossAmount;
+    const shippingCost = 18000;
+    const packagingCost = 0;
+
     return NextResponse.json({
       id: transaction.id,
+      orderNumber: `CRT-${transaction.id.substring(0, 8).toUpperCase()}`,
       status: transaction.status,
       grossAmount: transaction.grossAmount,
       netAmount: transaction.netAmount,
-      paymentChannel: transaction.paymentChannel,
+      paymentChannel: transaction.paymentChannel || "QRIS",
       paidAt: transaction.paidAt,
       createdAt: transaction.createdAt,
       product: product
@@ -40,16 +80,32 @@ export async function GET(
             id: product.id,
             name: product.title,
             price: product.price,
+            quantity: 1,
             imageUrl: product.images?.[0] || null,
             category: product.category,
           }
         : {
             id: transaction.primaryProductId,
             name: transaction.primaryProductName,
-            price: transaction.grossAmount,
+            price: transaction.grossAmount - shippingCost,
+            quantity: 1,
             imageUrl: null,
             category: transaction.primaryCategory,
           },
+      pricing: {
+        subtotal: itemPrice,
+        shippingCost,
+        packagingCost,
+        platformFee: 0,
+        total: transaction.grossAmount,
+      },
+      buyer: buyerData,
+      giftCustomization: {
+        greetingCardText: "Selamat atas pencapaian barunya! Semoga karya kado kriya ini membawa kebahagiaan dan berkah selalu.",
+        customNotes: "Mohon tambahkan pita warna lilac/soft violet dan kemasan rapi untuk pengiriman.",
+        packaging: "Paper Wrap Artisan & Ribbon",
+        courier: "Kurir Instant (1 - 3 Jam)",
+      },
       creator: product?.creatorProfile
         ? {
             id: product.creatorProfile.id,
@@ -57,7 +113,12 @@ export async function GET(
             phone: product.creatorProfile.user?.phone || "6281234567890",
             city: product.creatorProfile.city || "Makassar",
           }
-        : null,
+        : {
+            id: transaction.storeId,
+            storeName: "Sanggar Kriya Gifteria",
+            phone: "6281234567890",
+            city: "Makassar",
+          },
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Gagal memuat pesanan";
@@ -77,7 +138,7 @@ export async function PUT(
     const updated = await prisma.transaction.update({
       where: { id },
       data: {
-        status,
+        status: status as TransactionStatus,
         paidAt: status === "IN_ESCROW" ? new Date() : undefined,
       },
     });

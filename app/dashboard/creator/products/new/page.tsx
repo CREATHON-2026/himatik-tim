@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -55,7 +55,7 @@ export default function NewProductPage() {
               Tambah Produk Gift & Kriya Baru
             </h1>
             <p className="text-xs text-[#78716C]">
-              Publikasikan karya kerajinan tangan, hampers, atau buket Anda ke marketplace Creathon.
+              Publikasikan karya kerajinan tangan, hampers, atau buket Anda ke marketplace Gifteria.
             </p>
           </div>
         </div>

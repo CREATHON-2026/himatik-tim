@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import Link from "next/link";
@@ -123,6 +123,26 @@ function CheckoutFormContent() {
         throw new Error(data.error || "Gagal membuat pesanan");
       }
 
+      // Persist full buyer input for the invoice page
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          `Gifteria_order_${data.order.id}`,
+          JSON.stringify({
+            buyerName,
+            buyerPhone,
+            shippingCity,
+            shippingAddress,
+            courier: COURIER_OPTIONS.find((c) => c.id === selectedCourier)?.name || selectedCourier,
+            packaging: PACKAGING_OPTIONS.find((p) => p.id === selectedPackaging)?.name || selectedPackaging,
+            greetingCardText: greetingCardText || "Semoga karya kado kriya ini membawa kebahagiaan dan berkah selalu.",
+            customNotes,
+            shippingCost: courierPrice,
+            packagingCost: packagingPrice,
+            quantity,
+          })
+        );
+      }
+
       toast.success("Pesanan berhasil dibuat!");
       router.push(`/orders/${data.order.id}`);
     } catch (err) {
@@ -176,7 +196,7 @@ function CheckoutFormContent() {
                 <Sparkles className="w-4 h-4" />
               </span>
               <span className="font-serif tracking-tight text-xl">
-                Creathon<span className="text-[#6355D9]">.</span>
+                Gifteria<span className="text-[#6355D9]">.</span>
               </span>
             </Link>
           </div>
@@ -534,7 +554,7 @@ function CheckoutFormContent() {
 
               <div className="pt-2 text-center text-[10px] text-[#A8A29E] flex items-center justify-center gap-1.5">
                 <ShieldCheck className="size-3.5 text-emerald-600" />
-                <span>Dana disimpan di Escrow Creathon hingga pesanan Anda terima dengan puas</span>
+                <span>Dana disimpan di Escrow Gifteria hingga pesanan Anda terima dengan puas</span>
               </div>
             </div>
           </div>

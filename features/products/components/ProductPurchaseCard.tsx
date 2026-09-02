@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Minus, ShieldCheck, Truck, Package, ShoppingCart, ShoppingBag } from "lucide-react";
+import { Plus, Minus, ShieldCheck, Truck, Package, ShoppingBag, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ProductPurchaseCardProps {
   price: number;
   stock?: number;
-  onAddToCart: (qty: number) => void;
+  onAddToCart?: (qty: number) => void;
   onBuyNow: (qty: number) => void;
   className?: string;
 }
@@ -75,7 +75,7 @@ export function ProductPurchaseCard({
 
       {/* Action CTA Buttons */}
       <div className="flex flex-col gap-3 w-full select-none">
-        {/* Beli Sekarang: Solid Violet */}
+        {/* Beli Sekarang: Solid Violet (Primary Direct Gift Checkout) */}
         <Button
           size="lg"
           onClick={() => onBuyNow(qty)}
@@ -85,11 +85,11 @@ export function ProductPurchaseCard({
           <span>Beli Sekarang</span>
         </Button>
 
-        {/* Tambah ke Keranjang: Outline Violet */}
+        {/* Tambah ke Keranjang: Outline / Segera Hadir */}
         <Button
           variant="outline"
           size="lg"
-          onClick={() => onAddToCart(qty)}
+          onClick={() => onAddToCart && onAddToCart(qty)}
           className="w-full h-12 rounded-xl border-[#DDD6FE] bg-white text-[#6355D9] hover:bg-[#FAF8FF] font-semibold text-sm shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
         >
           <ShoppingCart className="size-4 text-[#6355D9]" />
@@ -109,7 +109,7 @@ export function ProductPurchaseCard({
         </div>
         <div className="flex items-center justify-center gap-1.5">
           <Package className="size-4 text-[#6355D9] shrink-0" />
-          <span className="font-medium text-[#44403C]">Dikemas dengan Rapi</span>
+          <span className="font-medium text-[#44403C]">Dikemas Rapi</span>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import {
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
       creator = await prisma.creatorProfile.create({
         data: {
           userId: user.id,
-          storeName: user.user_metadata?.studio_name || "Creathon Studio",
+          storeName: user.user_metadata?.studio_name || "Gifteria Studio",
           city: user.user_metadata?.city || "Makassar",
         },
       });
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       creator = await prisma.creatorProfile.create({
         data: {
           userId: user.id,
-          storeName: user.user_metadata?.studio_name || "Creathon Studio",
+          storeName: user.user_metadata?.studio_name || "Gifteria Studio",
           city: user.user_metadata?.city || "Makassar",
         },
       });

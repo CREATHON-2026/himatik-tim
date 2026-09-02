@@ -1,4 +1,4 @@
-# 🚀 Pull Request: `design/login-form` ➔ `develop`
+﻿# 🚀 Pull Request: `design/login-form` ➔ `develop`
 
 ## 📌 Metadata PR
 - **Task Reference**: `DESIGN-AUTH` / `CREAT-21`
@@ -12,7 +12,7 @@
 
 ## 📝 Ringkasan Perubahan (Summary of Changes)
 
-Pembaruan menyeluruh antarmuka **Login** dan **Register Form** mengadopsi estetika **Modern Editorial Creative** berbasis referensi desain resmi ([`docs/designs/login-form.png`](file:///d:/Creathon/himatik-tim/docs/designs/login-form.png), [`docs/designs/register-from.png`](file:///d:/Creathon/himatik-tim/docs/designs/register-from.png), [`docs/designs/fixed.png`](file:///d:/Creathon/himatik-tim/docs/designs/fixed.png), dan [`docs/designs/design-system.md`](file:///d:/Creathon/himatik-tim/docs/designs/design-system.md)), serta penerapan **Fluid Responsive Engine (`clamp()`)** sesuai [`docs/designs/clamp.md`](file:///d:/Creathon/himatik-tim/docs/designs/clamp.md):
+Pembaruan menyeluruh antarmuka **Login** dan **Register Form** mengadopsi estetika **Modern Editorial Creative** berbasis referensi desain resmi ([`docs/designs/login-form.png`](file:///d:/Gifteria/himatik-tim/docs/designs/login-form.png), [`docs/designs/register-from.png`](file:///d:/Gifteria/himatik-tim/docs/designs/register-from.png), [`docs/designs/fixed.png`](file:///d:/Gifteria/himatik-tim/docs/designs/fixed.png), dan [`docs/designs/design-system.md`](file:///d:/Gifteria/himatik-tim/docs/designs/design-system.md)), serta penerapan **Fluid Responsive Engine (`clamp()`)** sesuai [`docs/designs/clamp.md`](file:///d:/Gifteria/himatik-tim/docs/designs/clamp.md):
 
 ### 1. 🎨 Identitas Brand & Tipografi Editorial
 - Pembaruan nama brand resmi menjadi **`Gifteria✦`** pada header login dan registrasi.
@@ -50,16 +50,16 @@ Pembaruan menyeluruh antarmuka **Login** dan **Register Form** mengadopsi esteti
 
 | File | Deskripsi Perubahan |
 | :--- | :--- |
-| [`features/auth/components/AuthLayout.tsx`](file:///d:/Creathon/himatik-tim/features/auth/components/AuthLayout.tsx) | Layout split-panel editorial, inter-panel notch, fluid responsive clamp, GSAP card entrance |
-| [`features/auth/components/LoginForm.tsx`](file:///d:/Creathon/himatik-tim/features/auth/components/LoginForm.tsx) | Redesign form login, logo Gifteria✦, icon Mail/Lock/Eye, divider fixed layout |
-| [`features/auth/components/RegisterForm.tsx`](file:///d:/Creathon/himatik-tim/features/auth/components/RegisterForm.tsx) | Redesign form register 4-input, logo Gifteria✦, compact vertical rhythm, divider fixed layout |
-| [`features/auth/components/GoogleAuthButton.tsx`](file:///d:/Creathon/himatik-tim/features/auth/components/GoogleAuthButton.tsx) | Penyesuaian ukuran button compact fluid & style Google OAuth |
-| [`features/auth/schema.ts`](file:///d:/Creathon/himatik-tim/features/auth/schema.ts) | Penyesuaian Zod schema register untuk 4-input esensial |
-| [`app/(auth)/login/page.tsx`](file:///d:/Creathon/himatik-tim/app/%28auth%29/login/page.tsx) | Metadata & konfigurasi AuthLayout login |
-| [`app/(auth)/register/page.tsx`](file:///d:/Creathon/himatik-tim/app/%28auth%29/register/page.tsx) | Metadata, konfigurasi imagePosition="left", hero headline & subtitle |
-| [`app/layout.tsx`](file:///d:/Creathon/himatik-tim/app/layout.tsx) | Head preconnect & stylesheet Google Font Playfair Display |
-| [`app/globals.css`](file:///d:/Creathon/himatik-tim/app/globals.css) | Token variabel `--font-serif` dan utilitas `.font-serif` |
-| [`docs/designs/clamp.md`](file:///d:/Creathon/himatik-tim/docs/designs/clamp.md) | Panduan teknis implementasi formula Fluid Responsive Sizing |
+| [`features/auth/components/AuthLayout.tsx`](file:///d:/Gifteria/himatik-tim/features/auth/components/AuthLayout.tsx) | Layout split-panel editorial, inter-panel notch, fluid responsive clamp, GSAP card entrance |
+| [`features/auth/components/LoginForm.tsx`](file:///d:/Gifteria/himatik-tim/features/auth/components/LoginForm.tsx) | Redesign form login, logo Gifteria✦, icon Mail/Lock/Eye, divider fixed layout |
+| [`features/auth/components/RegisterForm.tsx`](file:///d:/Gifteria/himatik-tim/features/auth/components/RegisterForm.tsx) | Redesign form register 4-input, logo Gifteria✦, compact vertical rhythm, divider fixed layout |
+| [`features/auth/components/GoogleAuthButton.tsx`](file:///d:/Gifteria/himatik-tim/features/auth/components/GoogleAuthButton.tsx) | Penyesuaian ukuran button compact fluid & style Google OAuth |
+| [`features/auth/schema.ts`](file:///d:/Gifteria/himatik-tim/features/auth/schema.ts) | Penyesuaian Zod schema register untuk 4-input esensial |
+| [`app/(auth)/login/page.tsx`](file:///d:/Gifteria/himatik-tim/app/%28auth%29/login/page.tsx) | Metadata & konfigurasi AuthLayout login |
+| [`app/(auth)/register/page.tsx`](file:///d:/Gifteria/himatik-tim/app/%28auth%29/register/page.tsx) | Metadata, konfigurasi imagePosition="left", hero headline & subtitle |
+| [`app/layout.tsx`](file:///d:/Gifteria/himatik-tim/app/layout.tsx) | Head preconnect & stylesheet Google Font Playfair Display |
+| [`app/globals.css`](file:///d:/Gifteria/himatik-tim/app/globals.css) | Token variabel `--font-serif` dan utilitas `.font-serif` |
+| [`docs/designs/clamp.md`](file:///d:/Gifteria/himatik-tim/docs/designs/clamp.md) | Panduan teknis implementasi formula Fluid Responsive Sizing |
 
 ---
 

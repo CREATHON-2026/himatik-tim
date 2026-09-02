@@ -1,4 +1,4 @@
-# 🚀 Pull Request: `feat/CREAT-22-halaman-beranda` ➔ `develop`
+﻿# 🚀 Pull Request: `feat/CREAT-22-halaman-beranda` ➔ `develop`
 
 ## 📌 Metadata PR
 - **Task ID**: `CREAT-22`
@@ -11,7 +11,7 @@
 
 ## 📝 Ringkasan Perubahan (Summary of Changes)
 
-1. **Implementasi Halaman Beranda Interaktif Sinematik ([`app/page.tsx`](file:///d:/2-Project/creathon/app/page.tsx))**:
+1. **Implementasi Halaman Beranda Interaktif Sinematik ([`app/page.tsx`](file:///d:/2-Project/Gifteria/app/page.tsx))**:
    - Menerapkan arsitektur halaman beranda editorial *Ultra-Luxury Still Landing Page*.
    - **Hero 3D Sphere Portal**: Interaktivitas mouse tracking dengan layer *Dark Iris Reveal*, efek 3D Sphere Lens, dan wordmark animasi dinamis.
    - **Momentum Smooth Scroll**: Integrasi library **Lenis** yang disinkronkan dengan `gsap.ticker` (*exponential deceleration ease*).
@@ -22,13 +22,13 @@
      - *Section Press* (Infinite marquee ticker & quote cards)
      - *Section Where Available & Footer* (Interactive product purchase & dynamic cart count)
 
-2. **Pembersihan Modul & Refaktor Arsitektur ([`features/landing/`](file:///d:/2-Project/creathon/features/landing/))**:
+2. **Pembersihan Modul & Refaktor Arsitektur ([`features/landing/`](file:///d:/2-Project/Gifteria/features/landing/))**:
    - Menghapus komponen legacy yang tidak digunakan (`SectionHero`, `SectionAgitation`, `SectionSolution`, `SectionEarlyBird`, `SectionShowcase`, `SectionFooter`).
    - Menghapus folder duplikat `reference-still/` dan `app/landing-page/`.
-   - Merapikan barrel export di [`features/landing/index.ts`](file:///d:/2-Project/creathon/features/landing/index.ts).
+   - Merapikan barrel export di [`features/landing/index.ts`](file:///d:/2-Project/Gifteria/features/landing/index.ts).
 
 3. **Dokumentasi & QA Testing**:
-   - Membuat Checklist Pengujian Manual di [`docs/test/CREAT-22-halaman-beranda.md`](file:///d:/2-Project/creathon/docs/test/CREAT-22-halaman-beranda.md) (7 Must-Have Test Cases & 3 Should-Have Test Cases).
+   - Membuat Checklist Pengujian Manual di [`docs/test/CREAT-22-halaman-beranda.md`](file:///d:/2-Project/Gifteria/docs/test/CREAT-22-halaman-beranda.md) (7 Must-Have Test Cases & 3 Should-Have Test Cases).
 
 ---
 
@@ -43,4 +43,4 @@
 ---
 
 ## 🔗 Link Pembuatan PR di GitHub:
-👉 **[Buka Pull Request `feat/CREAT-22-halaman-beranda` ke `develop`](https://github.com/CREATHON-2026/himatik-tim/compare/develop...feat/CREAT-22-halaman-beranda?expand=1)**
+👉 **[Buka Pull Request `feat/CREAT-22-halaman-beranda` ke `develop`](https://github.com/Gifteria-2026/himatik-tim/compare/develop...feat/CREAT-22-halaman-beranda?expand=1)**

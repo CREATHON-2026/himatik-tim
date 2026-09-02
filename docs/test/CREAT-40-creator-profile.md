@@ -1,6 +1,6 @@
-# 🧪 Manual Testing Checklist: CREAT-40 Profil Sanggar & Etalase Kreator
+﻿# 🧪 Manual Testing Checklist: CREAT-40 Profil Sanggar & Etalase Kreator
 
-Dokumen checklist pengujian manual (*QA Manual Test*) untuk memverifikasi fungsionalitas, keamanan data, dan responsivitas fitur **Profil Sanggar & Etalase Kreator** pada marketplace Creathon.
+Dokumen checklist pengujian manual (*QA Manual Test*) untuk memverifikasi fungsionalitas, keamanan data, dan responsivitas fitur **Profil Sanggar & Etalase Kreator** pada marketplace Gifteria.
 
 ---
 

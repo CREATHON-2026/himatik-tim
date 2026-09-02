@@ -1,4 +1,4 @@
-# 🚀 Pull Request: `design/creator-dashboard` ➔ `develop`
+﻿# 🚀 Pull Request: `design/creator-dashboard` ➔ `develop`
 
 ## 📌 Metadata PR
 - **Task Reference**: `DESIGN-DASHBOARD` / `CREAT-40`
@@ -12,7 +12,7 @@
 
 ## 📝 Ringkasan Perubahan (Summary of Changes)
 
-Pembaruan menyeluruh antarmuka **Ringkasan (*Creator Dashboard / Seller Studio*)** mengadopsi estetika **Modern Editorial Creative** berbasis referensi desain resmi ([`docs/designs/ringkasan-page.png`](file:///d:/Creathon/himatik-tim/docs/designs/ringkasan-page.png) dan [`docs/designs/design-system.md`](file:///d:/Creathon/himatik-tim/docs/designs/design-system.md)):
+Pembaruan menyeluruh antarmuka **Ringkasan (*Creator Dashboard / Seller Studio*)** mengadopsi estetika **Modern Editorial Creative** berbasis referensi desain resmi ([`docs/designs/ringkasan-page.png`](file:///d:/Gifteria/himatik-tim/docs/designs/ringkasan-page.png) dan [`docs/designs/design-system.md`](file:///d:/Gifteria/himatik-tim/docs/designs/design-system.md)):
 
 ### 1. 🧭 Sidebar Navigasi (*Gifteria Seller Studio*)
 - **Brand Header**: Ikon gift box pada container lavender (`#F5F3FF`), teks **Gifteria** (Playfair Display Serif) + subtitle **Seller Studio** (`#6355D9`), dilengkapi tombol *collapse/expand* mengambang.
@@ -72,14 +72,14 @@ Grid 4 kartu interaktif:
 
 | File | Deskripsi Perubahan |
 | :--- | :--- |
-| [`app/dashboard/creator/page.tsx`](file:///d:/Creathon/himatik-tim/app/dashboard/creator/page.tsx) | Perakitan halaman Ringkasan Seller Studio, integrasi data aman, dan metadata |
-| [`components/shadcn-studio/sidebar/sidebar-creator.tsx`](file:///d:/Creathon/himatik-tim/components/shadcn-studio/sidebar/sidebar-creator.tsx) | Sidebar Gifteria Seller Studio, Toko Aktif status, menu grup, dan Studio Flora profile |
-| [`features/dashboard-creator/components/DashboardHeader.tsx`](file:///d:/Creathon/himatik-tim/features/dashboard-creator/components/DashboardHeader.tsx) | Komponen Header SELLER STUDIO, serif title Ringkasan, dan CTA button |
-| [`features/dashboard-creator/components/MetricSummaryCards.tsx`](file:///d:/Creathon/himatik-tim/features/dashboard-creator/components/MetricSummaryCards.tsx) | 4 Kartu metrik ringkasan (Produk, Transaksi, Omzet, Pembeli Unik) |
-| [`features/dashboard-creator/components/PerformanceAnalyticsSection.tsx`](file:///d:/Creathon/himatik-tim/features/dashboard-creator/components/PerformanceAnalyticsSection.tsx) | Visualisasi Bar chart horizontal performa & Donut chart distribusi |
-| [`features/dashboard-creator/components/AiBusinessInsightCard.tsx`](file:///d:/Creathon/himatik-tim/features/dashboard-creator/components/AiBusinessInsightCard.tsx) | Banner AI Business Insight dengan rekomendasi etalase & 3D chart graphic |
-| [`features/dashboard-creator/components/RecentOrdersTable.tsx`](file:///d:/Creathon/himatik-tim/features/dashboard-creator/components/RecentOrdersTable.tsx) | Tabel pesanan terbaru dengan thumbnail, customer name, date, dan status badges |
-| [`features/dashboard-creator/components/QuickActionsGrid.tsx`](file:///d:/Creathon/himatik-tim/features/dashboard-creator/components/QuickActionsGrid.tsx) | Grid 4 kartu navigasi aksi cepat kreator |
+| [`app/dashboard/creator/page.tsx`](file:///d:/Gifteria/himatik-tim/app/dashboard/creator/page.tsx) | Perakitan halaman Ringkasan Seller Studio, integrasi data aman, dan metadata |
+| [`components/shadcn-studio/sidebar/sidebar-creator.tsx`](file:///d:/Gifteria/himatik-tim/components/shadcn-studio/sidebar/sidebar-creator.tsx) | Sidebar Gifteria Seller Studio, Toko Aktif status, menu grup, dan Studio Flora profile |
+| [`features/dashboard-creator/components/DashboardHeader.tsx`](file:///d:/Gifteria/himatik-tim/features/dashboard-creator/components/DashboardHeader.tsx) | Komponen Header SELLER STUDIO, serif title Ringkasan, dan CTA button |
+| [`features/dashboard-creator/components/MetricSummaryCards.tsx`](file:///d:/Gifteria/himatik-tim/features/dashboard-creator/components/MetricSummaryCards.tsx) | 4 Kartu metrik ringkasan (Produk, Transaksi, Omzet, Pembeli Unik) |
+| [`features/dashboard-creator/components/PerformanceAnalyticsSection.tsx`](file:///d:/Gifteria/himatik-tim/features/dashboard-creator/components/PerformanceAnalyticsSection.tsx) | Visualisasi Bar chart horizontal performa & Donut chart distribusi |
+| [`features/dashboard-creator/components/AiBusinessInsightCard.tsx`](file:///d:/Gifteria/himatik-tim/features/dashboard-creator/components/AiBusinessInsightCard.tsx) | Banner AI Business Insight dengan rekomendasi etalase & 3D chart graphic |
+| [`features/dashboard-creator/components/RecentOrdersTable.tsx`](file:///d:/Gifteria/himatik-tim/features/dashboard-creator/components/RecentOrdersTable.tsx) | Tabel pesanan terbaru dengan thumbnail, customer name, date, dan status badges |
+| [`features/dashboard-creator/components/QuickActionsGrid.tsx`](file:///d:/Gifteria/himatik-tim/features/dashboard-creator/components/QuickActionsGrid.tsx) | Grid 4 kartu navigasi aksi cepat kreator |
 
 ---
 
