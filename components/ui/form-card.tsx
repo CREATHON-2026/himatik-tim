@@ -15,7 +15,7 @@ interface FormCardProps {
 }
 
 /**
- * FormCard — Base Art Nouveau Card Wrapper untuk Form di Bicket.
+ * FormCard — Base Art Nouveau Card Wrapper untuk Form di Gifteria.
  * Fitur Visual:
  *  - Default: bg-card (Ivory), border-border/50, shadow-soft, rounded-3xl
  *  - Hover: subtle elevation shadow-md & border transition

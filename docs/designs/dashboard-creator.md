@@ -1,4 +1,4 @@
-# Dashboard Creator — UI Content & Structure Documentation
+﻿# Dashboard Creator — UI Content & Structure Documentation
 
 **Halaman:** `/dashboard/creator`
 **Source files:**
@@ -58,7 +58,7 @@ Halaman ini **tidak konsisten** dengan design system resmi project (`docs/design
 ```
 Brand Header
   → Icon "spark" (Sparkles) dalam box violet-50, border violet-200
-  → Judul "CREATHON" (serif, bold) + subjudul "Creator Studio" (violet, uppercase, tracking wide)
+  → Judul "Gifteria" (serif, bold) + subjudul "Creator Studio" (violet, uppercase, tracking wide)
 
 Creator Profile Capsule (soft box)
   → Avatar toko (foto atau fallback icon Store)
@@ -79,7 +79,7 @@ Nav Section: TOKO & PENGATURAN
 
 Footer
   - Link "Lihat Marketplace" → /katalog
-  - Copyright "© 2026 Creathon Creative"
+  - Copyright "© 2026 Gifteria Creative"
 ```
 
 ### Styling kunci (sidebar — SUDAH sesuai design system)
@@ -88,7 +88,7 @@ Footer
 - Nav item aktif: `bg-[#F5F3FF]` (violet-50), `text-[#6355D9]`, `border-[#DDD6FE]` (violet-200)
 - Nav item hover: `bg-[#F5F5F4]` (neutral-100)
 - Badge count: `bg-[#6355D9]` (violet-500), teks putih, rounded-full
-- Font brand: serif untuk "CREATHON", sans untuk sisanya
+- Font brand: serif untuk "Gifteria", sans untuk sisanya
 - Animasi: Framer Motion, collapse/expand pakai spring (`stiffness: 350, damping: 30`), durasi teks reveal ~200ms — sudah sejalan dengan motion principle design system (200-350ms, no bounce berlebihan)
 - Menghormati `prefers-reduced-motion` via `useReducedMotion()`
 

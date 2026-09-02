@@ -1,56 +1,42 @@
 ## Error Type
-Runtime TypeError
+Console Error
 
 ## Error Message
-Cannot read properties of undefined (reading 'toLowerCase')
+React has detected a change in the order of Hooks called by OrderDetailPage. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+1. useContext                 useContext
+2. useState                   useState
+3. useState                   useState
+4. useContext                 useContext
+5. useContext                 useContext
+6. useContext                 useContext
+7. useEffect                  useEffect
+8. useState                   useState
+9. useCallback                useCallback
+10. useSyncExternalStore      useSyncExternalStore
+11. useEffect                 useEffect
+12. useContext                useContext
+13. useState                  useState
+14. useEffect                 useEffect
+15. useCallback               useCallback
+16. useSyncExternalStore      useSyncExternalStore
+17. useCallback               useCallback
+18. undefined                 useState
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-    at <unknown> (app/dashboard/creator/products/page.tsx:78:32)
-    at Array.filter (<anonymous>:null:null)
-    at CreatorProductsPage (app/dashboard/creator/products/page.tsx:77:37)
+
+    at OrderDetailPage (app/orders/[id]/page.tsx:133:51)
 
 ## Code Frame
-  76 |
-  77 |   const filteredProducts = products.filter((p) => {
-> 78 |     const matchQuery = p.title.toLowerCase().includes(searchQuery.toLowerCase());
-     |                                ^
-  79 |     const matchCategory =
-  80 |       selectedCategory === "ALL" || p.category === selectedCategory;
-  81 |     return matchQuery && matchCategory;
+  131 |
+  132 |   // Hydrate local client data if available from recent checkout session
+> 133 |   const [localMeta, setLocalMeta] = React.useState<{
+      |                                                   ^
+  134 |     buyerName?: string;
+  135 |     buyerPhone?: string;
+  136 |     shippingAddress?: string;
 
 Next.js version: 16.3.3 (Turbopack)
-
-
-GET /dashboard/creator/profile 200 in 921ms (next.js: 92ms, proxy.ts: 486ms, application-code: 344ms)
- GET /api/creator-profile 200 in 2.5s (next.js: 12ms, proxy.ts: 213ms, application-code: 2.3s)
-[browser] You have Reduced Motion enabled on your device. Animations may not appear as expected.. For more information and steps for solving, visit https://motion.dev/troubleshooting/reduced-motion-disabled (components/shadcn-studio/sidebar/sidebar-creator.tsx:68:46)
- GET /dashboard/creator/products 200 in 799ms (next.js: 219ms, proxy.ts: 487ms, application-code: 92ms)
- GET /api/products 200 in 3.3s (next.js: 420ms, proxy.ts: 222ms, application-code: 2.7s)
-[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'toLowerCase')
-    at <unknown> (app/dashboard/creator/products/page.tsx:78:32)
-    at Array.filter (<anonymous>)
-    at CreatorProductsPage (app/dashboard/creator/products/page.tsx:77:37)
-  76 |
-  77 |   const filteredProducts = products.filter((p) => {
-> 78 |     const matchQuery = p.title.toLowerCase().includes(searchQuery.toLowerCase());
-     |                                ^
-  79 |     const matchCategory =
-  80 |       selectedCategory === "ALL" || p.category === selectedCategory;
-  81 |     return matchQuery && matchCategory;
- GET /api/products 200 in 2.3s (next.js: 9ms, proxy.ts: 182ms, application-code: 2.1s)
- GET /dashboard/creator/products 200 in 1007ms (next.js: 70ms, proxy.ts: 468ms, application-code: 468ms)
-[browser] You have Reduced Motion enabled on your device. Animations may not appear as expected.. For more information and steps for solving, visit https://motion.dev/troubleshooting/reduced-motion-disabled (components/shadcn-studio/sidebar/sidebar-creator.tsx:68:46)
- GET /api/creator-profile 200 in 2.8s (next.js: 39ms, proxy.ts: 252ms, application-code: 2.5s)
- GET /api/products 200 in 4.9s (next.js: 36ms, proxy.ts: 589ms, application-code: 4.3s)
-[browser] Uncaught TypeError: Cannot read properties of undefined (reading 'toLowerCase')
-    at <unknown> (app/dashboard/creator/products/page.tsx:78:32)
-    at Array.filter (<anonymous>)
-    at CreatorProductsPage (app/dashboard/creator/products/page.tsx:77:37)
-  76 |
-  77 |   const filteredProducts = products.filter((p) => {
-> 78 |     const matchQuery = p.title.toLowerCase().includes(searchQuery.toLowerCase());
-     |                                ^
-  79 |     const matchCategory =
-  80 |       selectedCategory === "ALL" || p.category === selectedCategory;
-  81 |     return matchQuery && matchCategory;
- GET /api/products 200 in 2.9s (next.js: 42ms, proxy.ts: 637ms, application-code: 2.2s)

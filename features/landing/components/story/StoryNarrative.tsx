@@ -45,10 +45,10 @@ export const StoryNarrative: React.FC<StoryNarrativeProps> = ({ chapter }) => {
       <div className="overflow-hidden">
         <div
           data-anim="true"
-          className="text-[10px] sm:text-xs font-mono font-semibold tracking-[0.28em] uppercase text-[#737578] will-change-[transform,opacity,filter]"
+          className="text-[10px] sm:text-xs font-mono font-semibold tracking-[0.28em] uppercase text-[#6355D9] will-change-[transform,opacity,filter]"
         >
-          <span>Chapter {chapter.chapterNumber}</span>
-          <span className="mx-2 text-[#737578]/40">·</span>
+          <span>Babak {chapter.chapterNumber}</span>
+          <span className="mx-2 text-[#78716C]/40">·</span>
           <span>{chapter.year}</span>
         </div>
       </div>
@@ -57,7 +57,7 @@ export const StoryNarrative: React.FC<StoryNarrativeProps> = ({ chapter }) => {
       <div className="overflow-hidden mt-2.5">
         <h3
           data-anim="true"
-          className="font-serif text-3xl font-light tracking-tight text-[#1A1B1D] sm:text-4xl md:text-5xl leading-[1.1] will-change-[transform,opacity,filter]"
+          className="font-serif text-3xl font-normal tracking-tight text-[#111827] sm:text-4xl md:text-5xl leading-[1.1] will-change-[transform,opacity,filter]"
         >
           {chapter.title}
         </h3>
@@ -67,7 +67,7 @@ export const StoryNarrative: React.FC<StoryNarrativeProps> = ({ chapter }) => {
       <div className="overflow-hidden mt-4">
         <p
           data-anim="true"
-          className="text-xs sm:text-sm leading-relaxed text-[#1A1B1D]/80 font-light will-change-[transform,opacity,filter]"
+          className="text-xs sm:text-sm leading-relaxed text-[#44403C] font-normal will-change-[transform,opacity,filter]"
         >
           {chapter.description}
         </p>

@@ -1,4 +1,4 @@
-# 🔍 Analisis Mendalam & Troubleshooting: Error `Unsupported provider: provider is not enabled`
+﻿# 🔍 Analisis Mendalam & Troubleshooting: Error `Unsupported provider: provider is not enabled`
 
 > **Mode:** Deep Research & Troubleshooting Analysis (Tanpa perubahan kode).
 
@@ -40,10 +40,10 @@ Untuk mengaktifkan Google Auth, Anda hanya perlu melakukan konfigurasi di **Goog
 2. Buat / Pilih Project Google Cloud Anda.
 3. Di tab **OAuth consent screen**:
    - Pilih **External** ➜ Klik *Create*.
-   - Isi *App name* (misal: `Creathon App`) dan *User support email*.
+   - Isi *App name* (misal: `Gifteria App`) dan *User support email*.
 4. Di tab **Credentials** ➜ Klik **+ CREATE CREDENTIALS** ➜ **OAuth client ID**:
    - Application type: **Web application**.
-   - Name: `Creathon Supabase Auth`.
+   - Name: `Gifteria Supabase Auth`.
    - **Authorized JavaScript origins**:
      - `http://localhost:3000`
      - `https://nkawrfgkahsjxvbvmjix.supabase.co`

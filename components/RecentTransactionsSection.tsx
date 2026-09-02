@@ -87,26 +87,26 @@ function channelLabel(ch: string) {
 function statusBadge(status: string) {
   if (status === "COMPLETED")
     return {
-      cls: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      cls: "bg-[#DCFCE7] text-[#15803D] border-[#BBF7D0]",
       icon: <CheckCircle2 className="w-3 h-3" />,
       label: "Selesai",
     };
-  if (status === "PAID_ESCROW" || status === "IN_ESCROW")
+  if (status === "PAID_ESCROW" || status === "IN_ESCROW" || status === "PROCESSING")
     return {
-      cls: "bg-blue-50 text-blue-700 border-blue-200",
+      cls: "bg-[#FEF3C7] text-[#D97706] border-[#FDE68A]",
       icon: <ShieldCheck className="w-3 h-3" />,
-      label: "Escrow",
+      label: "Diproses",
     };
   if (status === "CANCELLED" || status === "REFUNDED")
     return {
-      cls: "bg-rose-50 text-rose-700 border-rose-200",
+      cls: "bg-[#FEE2E2] text-[#DC2626] border-[#FECACA]",
       icon: <XCircle className="w-3 h-3" />,
       label: status === "REFUNDED" ? "Refund" : "Dibatalkan",
     };
   return {
-    cls: "bg-amber-50 text-amber-700 border-amber-200",
+    cls: "bg-[#DBEAFE] text-[#1D4ED8] border-[#BFDBFE]",
     icon: <Clock className="w-3 h-3" />,
-    label: "Pending",
+    label: "Menunggu Pembayaran",
   };
 }
 
@@ -252,9 +252,14 @@ export function RecentTransactionsSection() {
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  // reset page on filter change
-  React.useEffect(() => setPage(1), [query, statusFilter, productFilter, sort]);
+  
+  // reset page on filter change during render
+  const filterKey = `${query}-${statusFilter}-${productFilter}-${sort}`;
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (prevFilterKey !== filterKey) {
+    setPrevFilterKey(filterKey);
+    setPage(1);
+  }
 
   // ── Handlers ─────────────────────────────────────────────────────────────
 
@@ -300,61 +305,89 @@ export function RecentTransactionsSection() {
 
   return (
     <>
-      {/* ── 5 Transaksi Terakhir Card ─────────────────────────────────── */}
-      <div className="p-6 rounded-2xl border border-neutral-800/80 bg-neutral-900/30 space-y-4">
+      {/* ── Pesanan Terbaru Card (Aliged with ringkasan-page.png) ─────────── */}
+      <div className="p-6 rounded-2xl border border-[#E7E5E4] bg-white shadow-2xs space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-semibold text-white">5 Transaksi Terakhir</h2>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
-              {ALL_TRX.length} total
+            <h3 className="font-semibold text-base text-[#111827]">Pesanan Terbaru</h3>
+            <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#EDE9FE] text-[#6355D9] border border-[#DDD6FE] font-medium">
+              {ALL_TRX.length} Total
             </span>
           </div>
           <button
+            type="button"
             onClick={() => setModalOpen(true)}
-            className="text-xs text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1 font-medium transition-colors"
+            className="text-xs text-[#6355D9] hover:text-[#5145C6] inline-flex items-center gap-1 font-medium hover:underline transition-colors cursor-pointer"
           >
-            Lihat Semua Data
+            Lihat Semua
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="text-neutral-400 border-b border-neutral-800 text-[11px] uppercase">
+            <thead className="text-[#78716C] border-b border-[#F5F5F4] text-[11px] font-medium">
               <tr>
-                <th className="py-3 px-4">ID / Tanggal</th>
-                <th className="py-3 px-4">Produk</th>
-                <th className="py-3 px-4">Kanal</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4 text-right">Nilai</th>
+                <th className="py-2.5 px-3 font-medium">Produk</th>
+                <th className="py-2.5 px-3 font-medium">Pembeli</th>
+                <th className="py-2.5 px-3 font-medium">Tanggal</th>
+                <th className="py-2.5 px-3 font-medium">Total</th>
+                <th className="py-2.5 px-3 font-medium">Status</th>
+                <th className="py-2.5 px-2 text-right"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-800/60 text-neutral-200">
+            <tbody className="divide-y divide-[#F5F5F4] text-[#111827]">
               {recentFive.map((trx) => {
                 const badge = statusBadge(trx.status);
                 return (
                   <tr
                     key={trx.id}
                     onClick={() => { setReceipt(trx); setModalOpen(true); }}
-                    className="hover:bg-neutral-800/40 transition cursor-pointer group"
+                    className="hover:bg-[#FAFAF9] transition cursor-pointer group"
                   >
-                    <td className="py-3.5 px-4">
-                      <div className="text-[10px] text-neutral-500 font-mono group-hover:text-emerald-400 transition">{trx.id}</div>
-                      <div className="text-neutral-300 mt-0.5">
-                        {new Date(trx.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                    <td className="py-3 px-3">
+                      <div className="flex items-center gap-3 min-w-[200px]">
+                        <div className="size-9 rounded-lg bg-[#F5F5F4] border border-[#E7E5E4] overflow-hidden shrink-0 relative">
+                          <img
+                            src="/aset/bglogin.png"
+                            alt={trx.productName}
+                            className="size-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="font-medium text-xs text-[#111827] block truncate max-w-xs group-hover:text-[#6355D9] transition-colors">
+                            {trx.productName}
+                          </span>
+                          <span className="text-[10px] text-[#A8A29E] font-mono block">
+                            #{trx.id}
+                          </span>
+                        </div>
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 font-medium text-white group-hover:text-emerald-400 transition">
-                      {trx.productName}
-                      <span className="block text-[10px] text-neutral-500 font-normal">{trx.category} · {trx.quantity} pcs</span>
+                    <td className="py-3 px-3 text-xs text-[#44403C] whitespace-nowrap">
+                      {trx.buyerId.startsWith("usr_") ? (trx.buyerId === "usr_101" ? "Dewi Lestari" : trx.buyerId === "usr_102" ? "Budi Santoso" : "Rina Putri") : trx.buyerId}
                     </td>
-                    <td className="py-3.5 px-4 text-neutral-400">{channelLabel(trx.channel)}</td>
-                    <td className="py-3.5 px-4">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${badge.cls}`}>
+                    <td className="py-3 px-3 text-xs text-[#78716C] whitespace-nowrap">
+                      {new Date(trx.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                    </td>
+                    <td className="py-3 px-3 font-medium text-xs text-[#111827] tabular-nums whitespace-nowrap">
+                      {fmt(trx.grossAmount)}
+                    </td>
+                    <td className="py-3 px-3 whitespace-nowrap">
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium border ${badge.cls}`}>
                         {badge.icon}{badge.label}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 font-semibold text-emerald-400 text-right">{fmt(trx.grossAmount)}</td>
+                    <td className="py-3 px-2 text-right whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setReceipt(trx); setModalOpen(true); }}
+                        className="p-1 rounded-lg text-[#A8A29E] hover:text-[#111827] hover:bg-[#F5F5F4] transition cursor-pointer"
+                        title="Detail Transaksi"
+                      >
+                        <Eye className="size-4" />
+                      </button>
+                    </td>
                   </tr>
                 );
               })}

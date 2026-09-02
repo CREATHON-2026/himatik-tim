@@ -81,23 +81,37 @@ export function ProductQuickActions({
             <Copy className="text-muted-foreground size-4" /> Duplikasi Produk
           </button>
 
-          {/* Manage Stock Action Button */}
-          <div className="relative">
+          {/* Manage Stock Action Button & Inline Panel */}
+          <div className="space-y-2">
             <button
               type="button"
               onClick={() => {
                 setNewStockVal(stock);
                 setIsManagingStock(!isManagingStock);
               }}
-              className="border-border/30 bg-card hover:bg-muted text-foreground/80 hover:text-foreground flex w-full cursor-pointer items-center gap-2.5 rounded-full border px-4 py-2.5 text-xs font-semibold transition-all active:scale-98"
+              className="border-border/30 bg-card hover:bg-muted text-foreground/80 hover:text-foreground flex w-full cursor-pointer items-center justify-between rounded-full border px-4 py-2.5 text-xs font-semibold transition-all active:scale-98"
             >
-              <Package className="text-muted-foreground size-4" /> Kelola Stok
+              <span className="flex items-center gap-2.5">
+                <Package className="text-muted-foreground size-4" /> Kelola Stok
+              </span>
+              <span className="text-[10px] font-bold text-[#6355D9] bg-[#F5F3FF] border border-[#DDD6FE] px-2 py-0.5 rounded-full">
+                {stock} unit
+              </span>
             </button>
 
-            {/* Popover overlay for updating stock */}
+            {/* Inline expandable box for updating stock (No absolute collision) */}
             {isManagingStock && (
-              <div className="bg-popover text-popover-foreground border-border/40 absolute top-12 right-0 z-30 w-56 space-y-3 rounded-xl border p-4 shadow-md">
-                <h4 className="text-[11px] font-bold">Ubah Jumlah Stok</h4>
+              <div className="bg-[#FAFAF9] border border-[#DDD6FE] space-y-3 rounded-2xl p-4 shadow-xs animate-fade-in">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-[#111827]">Ubah Jumlah Stok</h4>
+                  <button
+                    type="button"
+                    onClick={() => setIsManagingStock(false)}
+                    className="text-[10px] text-[#78716C] hover:text-[#111827]"
+                  >
+                    Tutup
+                  </button>
+                </div>
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
@@ -106,12 +120,13 @@ export function ProductQuickActions({
                     onChange={(e) =>
                       setNewStockVal(Math.max(0, parseInt(e.target.value) || 0))
                     }
-                    className="border-border/30 bg-card focus:border-primary h-8 w-full rounded-lg border px-2 text-xs outline-none"
+                    className="border border-[#E7E5E4] bg-white focus:border-[#6355D9] focus:ring-2 focus:ring-[#6355D9]/20 h-9 w-full rounded-xl px-3 text-xs font-medium outline-none text-[#111827]"
+                    placeholder="Masukkan jumlah stok"
                   />
                   <Button
                     onClick={handleStockSubmit}
                     size="sm"
-                    className="h-8 rounded-lg text-[10px]"
+                    className="h-9 px-4 rounded-xl bg-[#6355D9] hover:bg-[#5145C6] text-white text-xs font-semibold shrink-0"
                   >
                     Simpan
                   </Button>

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import type { Product as PrismaProduct } from "@prisma/client";
 import { CreateProductInput, UpdateProductInput } from "../types";
 import type { Product as ApiProduct } from "../types";
@@ -14,7 +14,7 @@ function generateSlug(title: string): string {
 /**
  * Maps a raw Prisma Product row to the normalized API shape.
  *
- * Root cause fix: Creathon's Prisma schema uses different field names
+ * Root cause fix: Gifteria's Prisma schema uses different field names
  * (title/images/isPublished/weightGrams) than the shared API contract
  * (name/imageUrl+gallery/isActive/weight) used by hooks and components.
  * This mapping happens once here instead of being duplicated ad-hoc in
@@ -56,11 +56,107 @@ export async function getProductsByCreator(creatorId: string) {
   return products.map(toApiProduct);
 }
 
+export async function getPublicProducts(options?: {
+  category?: string;
+  search?: string;
+  sort?: string;
+  page?: number;
+  limit?: number;
+}) {
+  const where: {
+    isPublished: boolean;
+    category?: string;
+    OR?: Array<{
+      title?: { contains: string; mode: "insensitive" };
+      description?: { contains: string; mode: "insensitive" };
+    }>;
+  } = {
+    isPublished: true,
+  };
+
+  if (options?.category && options.category !== "ALL") {
+    where.category = options.category;
+  }
+
+  if (options?.search && options.search.trim()) {
+    const q = options.search.trim();
+    where.OR = [
+      { title: { contains: q, mode: "insensitive" } },
+      { description: { contains: q, mode: "insensitive" } },
+    ];
+  }
+
+  let orderBy: Record<string, "asc" | "desc"> = { createdAt: "desc" };
+  if (options?.sort === "price_asc") orderBy = { price: "asc" };
+  else if (options?.sort === "price_desc") orderBy = { price: "desc" };
+  else if (options?.sort === "newest") orderBy = { createdAt: "desc" };
+
+  const take = options?.limit || 50;
+  const skip = options?.page ? (options.page - 1) * take : 0;
+
+  const products = await prisma.product.findMany({
+    where,
+    orderBy,
+    take,
+    skip,
+    include: {
+      creatorProfile: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  });
+
+  return products.map(toApiProduct);
+}
+
 export async function getProductById(id: string) {
   const product = await prisma.product.findUnique({
     where: { id },
   });
   return product ? toApiProduct(product) : null;
+}
+
+export async function getProductDetailById(id: string) {
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: {
+      creatorProfile: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  });
+
+  if (!product) return null;
+
+  const base = toApiProduct(product);
+  const creator = product.creatorProfile;
+
+  return {
+    ...base,
+    price: Number(base.price),
+    averageRating: 4.9,
+    reviewCount: 12,
+    creator: {
+      id: creator.id,
+      shopName: creator.storeName || "Gifteria Studio",
+      photoUrl: creator.user?.avatarUrl || null,
+      bannerUrl: creator.bannerUrl || null,
+      bio: creator.description || "Pengrajin & Kreator Kado Nusantara",
+      whatsapp: creator.user?.phone || "6281234567890",
+      district: creator.city || "Makassar",
+      subdistrict: creator.address || "Sulawesi Selatan",
+      openingHours: "08:00 - 20:00 WITA",
+      createdAt: creator.createdAt,
+      activeProductCount: 8,
+      averageRating: 4.9,
+      totalReviewCount: 24,
+    },
+    reviews: [],
+  };
 }
 
 export async function createProduct(

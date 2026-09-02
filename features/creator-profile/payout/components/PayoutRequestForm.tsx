@@ -256,7 +256,7 @@ export function PayoutRequestForm({
         {/* Security Footer Guarantee */}
         <div className="flex items-center justify-center gap-1.5 text-xs text-[#6B7280] pt-1">
           <Shield className="w-3.5 h-3.5 text-[#78865C]" />
-          <span>Dana akan ditransfer ke rekening Anda setelah diverifikasi oleh tim Bicket.</span>
+          <span>Dana akan ditransfer ke rekening Anda setelah diverifikasi oleh tim Gifteria.</span>
         </div>
       </form>
     </div>

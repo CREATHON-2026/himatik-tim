@@ -1,5 +1,5 @@
 /**
- * Bicket · LLM Provider — OpenRouter (Low-Latency)
+ * Gifteria · LLM Provider — OpenRouter (Low-Latency)
  * Quick wins: max_tokens, reasoning off, provider routing, timeout + retry, streaming
  */
 
@@ -25,9 +25,9 @@ function buildHeaders() {
     Authorization: `Bearer ${key}`,
     "Content-Type": "application/json",
     "HTTP-Referer": process.env.NEXT_PUBLIC_SUPABASE_URL
-      ? "https://bicket.app"
+      ? "https://gifteria.id"
       : "http://localhost:3000",
-    "X-Title": "Bicket Creator Insight",
+    "X-Title": "Gifteria Creator Insight",
   };
 }
 

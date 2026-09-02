@@ -1,11 +1,11 @@
-import { Suspense } from "react";
+﻿import { Suspense } from "react";
 import { AuthLayout } from "@/features/auth/components/AuthLayout";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Daftar Akun • Creathon",
-  description: "Buat akun baru Creathon sebagai Customer (Penyewa) atau Creator (Mitra Rental).",
+  title: "Daftar Akun • Gifteria",
+  description: "Buat akun baru Gifteria sebagai Customer (Penyewa) atau Creator (Mitra Rental).",
 };
 
 export default function RegisterPage() {

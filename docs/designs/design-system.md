@@ -1,4 +1,4 @@
-# Creatons UI/UX Design System Direction: Modern Editorial Creative
+﻿# Gifteria UI/UX Design System Direction: Modern Editorial Creative
 
 **Tanggal:** 01 September 2026\
 **Versi:** 1.0\
@@ -7,10 +7,10 @@
 ## 1. Pendahuluan
 
 Dokumen ini menjadi panduan strategis dan operasional untuk membangun
-UI/UX Creatons yang konsisten, elegan, mudah digunakan, dan realistis
+UI/UX Gifteria yang konsisten, elegan, mudah digunakan, dan realistis
 untuk diimplementasikan sebagai web application.
 
-Creatons adalah platform yang mempertemukan **creator, client, ide, dan
+Gifteria adalah platform yang mempertemukan **creator, client, ide, dan
 percakapan**. Karena itu, desain tidak diarahkan menjadi marketplace
 yang terlalu dekoratif maupun SaaS yang terlalu generik. Arah visualnya
 adalah **Modern Editorial Creative**: perpaduan tipografi editorial,
@@ -33,14 +33,14 @@ Trustworthy - Calm - Modern - Approachable
 
 ## 3. Art Direction: Modern Editorial Creative
 
-Karakter visual Creatons dibangun terutama melalui **typography,
+Karakter visual Gifteria dibangun terutama melalui **typography,
 spacing, composition, image treatment, dan violet brand accents**.
 
 Prinsip: 1. **Editorial Typography** --- serif untuk headline/branding,
 sans-serif untuk UI dan informasi. 2. **Generous Whitespace** --- ruang
 kosong untuk kesan tenang dan premium. 3. **Soft Framing** --- border
 tipis, radius moderat, dan elevation ringan. 4. **Subtle Ornament** ---
-spark/star Creatons, garis editorial, atau pola abstrak sebagai aksen.
+spark/star Gifteria, garis editorial, atau pola abstrak sebagai aksen.
 5. **Human Imagery** --- creator, studio, portfolio, dan proses
 berkarya. 6. **Functional Decoration** --- dekorasi tidak boleh
 mengganggu interaksi.
@@ -168,7 +168,7 @@ bila diperlukan.
 
 ### Chat
 
-Chat adalah bagian penting dari identitas Creatons. User/creator message
+Chat adalah bagian penting dari identitas Gifteria. User/creator message
 harus jelas; AI assistance menggunakan lavender surface dan spark motif;
 metadata dibuat muted.
 
@@ -217,7 +217,7 @@ stroke, low contrast.
 
 Dekorasi adalah supporting layer.
 
-Elemen: - Creatons spark/star - Thin editorial lines - Minimal abstract
+Elemen: - Gifteria spark/star - Thin editorial lines - Minimal abstract
 botanical curves - Small dot grids - Fine corner ornaments - Soft
 lavender patterns
 
@@ -255,7 +255,7 @@ berikutnya.
 
 ### 2. Human Connection
 
-Creatons adalah tentang manusia dan karya, bukan sekadar transaksi.
+Gifteria adalah tentang manusia dan karya, bukan sekadar transaksi.
 
 ### 3. Clarity Over Decoration
 
@@ -294,7 +294,7 @@ mode.
 
 ## 18. Summary
 
-Creatons menggunakan **Modern Editorial Creative** sebagai arah visual.
+Gifteria menggunakan **Modern Editorial Creative** sebagai arah visual.
 
 Identitas dibangun dari: - Editorial serif + modern sans-serif - Violet
 sebagai primary brand color - Lavender sebagai AI language - Coral

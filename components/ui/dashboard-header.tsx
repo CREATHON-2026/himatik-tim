@@ -30,7 +30,7 @@ export function DashboardHeader({
     <header className="animate-fade-up border-border/50 bg-background/80 sticky top-0 z-40 border-b backdrop-blur-sm">
       <div className="flex items-center justify-between px-4 py-3 sm:px-6">
         {/* Logo */}
-        <span className="font-heading text-h4 text-foreground">Bicket</span>
+        <span className="font-heading text-h4 text-foreground">Gifteria</span>
 
         {/* Right side */}
         <div className="flex items-center gap-2">

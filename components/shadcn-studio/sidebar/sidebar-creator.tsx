@@ -16,7 +16,6 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   ArrowUpRight,
-  ChevronDown,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -377,46 +376,6 @@ export function SidebarCreator({
             {!isCollapsed && <ArrowUpRight className="size-3 text-[#A8A29E]" />}
           </Link>
 
-          {/* User Profile Soft-Pill (Studio Flora) */}
-          <div
-            className={cn(
-              "bg-[#FAFAF9] border border-[#E7E5E4] rounded-xl p-2 flex items-center justify-between shadow-2xs cursor-pointer hover:bg-[#F5F5F4] transition",
-              isCollapsed ? "justify-center p-1.5" : "px-2.5 py-2"
-            )}
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="size-7 rounded-full bg-gradient-to-br from-amber-200 to-rose-200 border border-white flex items-center justify-center shrink-0 shadow-2xs overflow-hidden relative">
-                <Image
-                  src="/aset/bglogin.png"
-                  alt={storeName}
-                  fill
-                  sizes="28px"
-                  className="object-cover"
-                />
-              </div>
-
-              <AnimatePresence>
-                {!isCollapsed && (
-                  <motion.div
-                    variants={textRevealVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="min-w-0 flex-1 overflow-hidden text-left"
-                  >
-                    <span className="font-semibold text-xs text-[#111827] truncate block leading-tight">
-                      {storeName}
-                    </span>
-                    <span className="text-[10px] text-[#78716C] leading-none block mt-0.5">
-                      Lihat Profil
-                    </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {!isCollapsed && <ChevronDown className="size-3.5 text-[#A8A29E] shrink-0 ml-1" />}
-          </div>
 
           {/* Copyright Watermark */}
           <AnimatePresence>

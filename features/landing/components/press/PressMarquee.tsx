@@ -34,23 +34,31 @@ export const PressMarquee: React.FC = () => {
     }
   });
 
-  const duplicatedItems = [...PRESS_MARQUEE_ITEMS, ...PRESS_MARQUEE_ITEMS, ...PRESS_MARQUEE_ITEMS, ...PRESS_MARQUEE_ITEMS];
+  const duplicatedItems = [
+    ...PRESS_MARQUEE_ITEMS,
+    ...PRESS_MARQUEE_ITEMS,
+    ...PRESS_MARQUEE_ITEMS,
+    ...PRESS_MARQUEE_ITEMS,
+  ];
 
   return (
     <div className="relative w-full overflow-hidden border-t border-white/10 py-6 select-none">
       {/* Side Fade Gradients for Luxury Fade Effect */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#111214] to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#18181B] to-transparent"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#111214] to-transparent"
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#18181B] to-transparent"
       />
 
       {/* Row 1: Serif Italic Luxury Typography */}
       <div className="flex w-max items-center">
-        <div ref={row1Ref} className="flex items-center gap-10 whitespace-nowrap will-change-transform">
+        <div
+          ref={row1Ref}
+          className="flex items-center gap-10 whitespace-nowrap will-change-transform"
+        >
           {duplicatedItems.map((item, idx) => (
             <div key={idx} className="flex items-center gap-10">
               <span className="font-serif text-2xl sm:text-3xl md:text-4xl font-light italic tracking-tight text-white/70 hover:text-white transition-colors duration-300">
@@ -64,13 +72,16 @@ export const PressMarquee: React.FC = () => {
 
       {/* Row 2: Secondary Offset Typography */}
       <div className="flex w-max items-center mt-3">
-        <div ref={row2Ref} className="flex items-center gap-10 whitespace-nowrap will-change-transform">
+        <div
+          ref={row2Ref}
+          className="flex items-center gap-10 whitespace-nowrap will-change-transform"
+        >
           {duplicatedItems.map((item, idx) => (
             <div key={idx} className="flex items-center gap-10">
-              <span className="font-serif text-lg sm:text-xl md:text-2xl font-normal tracking-wide text-white/30 hover:text-white/60 transition-colors duration-300">
+              <span className="font-sans text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-white/30 hover:text-white/60 transition-colors duration-300">
                 {item}
               </span>
-              <span className="text-white/15 text-sm">·</span>
+              <span className="text-white/15 text-xs">·</span>
             </div>
           ))}
         </div>

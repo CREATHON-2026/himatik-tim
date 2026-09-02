@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import {
   ShieldAlert,
   ShieldCheck,
@@ -21,7 +21,7 @@ export default function AdminDashboardPage() {
               <span className="p-1.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400">
                 <ShieldCheck className="w-4 h-4" />
               </span>
-              <span>Creathon Admin Center</span>
+              <span>Gifteria Admin Center</span>
             </Link>
             <span className="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[11px] font-semibold">
               Super Admin

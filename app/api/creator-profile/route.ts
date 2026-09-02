@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 
@@ -35,7 +35,7 @@ export async function GET() {
           storeName:
             user.user_metadata?.studio_name ||
             user.user_metadata?.name ||
-            "Creathon Studio",
+            "Gifteria Studio",
           city: user.user_metadata?.city || "Makassar",
         },
         include: {
@@ -64,7 +64,7 @@ export async function GET() {
       photoUrl: creator.user?.avatarUrl || null,
       avatarUrl: creator.user?.avatarUrl || null,
       email: creator.user?.email || user.email,
-      name: creator.user?.name || user.user_metadata?.name || "Kreator Creathon",
+      name: creator.user?.name || user.user_metadata?.name || "Kreator Gifteria",
       phone: creator.user?.phone || "",
       createdAt: creator.createdAt,
       updatedAt: creator.updatedAt,
@@ -101,7 +101,7 @@ export async function PUT(request: NextRequest) {
       },
       create: {
         userId: user.id,
-        storeName: body.shopName || body.storeName || "Creathon Studio",
+        storeName: body.shopName || body.storeName || "Gifteria Studio",
         description: body.description,
         city: body.city || "Makassar",
         address: body.address,

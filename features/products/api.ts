@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Products Feature — API Client Functions
  *
  * Typed fetch wrappers for product CRUD and image upload endpoints.
@@ -28,6 +28,47 @@ export async function listCreatorProducts(): Promise<Product[]> {
 
   if (!res.ok || json.error) {
     throw new Error(json.error || "Failed to fetch products");
+  }
+
+  return (json.data ?? json) as Product[];
+}
+
+/**
+ * Fetch public products for buyer catalog with filtering & search
+ */
+export async function getPublicProducts(params?: {
+  category?: string;
+  search?: string;
+  sort?: string;
+  page?: number;
+  limit?: number;
+}): Promise<Product[]> {
+  const query = new URLSearchParams();
+  query.set("public", "true");
+  if (params?.category && params.category !== "ALL") {
+    query.set("category", params.category);
+  }
+  if (params?.search && params.search.trim()) {
+    query.set("search", params.search.trim());
+  }
+  if (params?.sort) {
+    query.set("sort", params.sort);
+  }
+  if (params?.page) {
+    query.set("page", String(params.page));
+  }
+  if (params?.limit) {
+    query.set("limit", String(params.limit));
+  }
+
+  const res = await fetch(`${BASE_URL}?${query.toString()}`, {
+    method: "GET",
+  });
+
+  const json: ApiResponse<Product[]> = await res.json();
+
+  if (!res.ok || json.error) {
+    throw new Error(json.error || "Failed to fetch public products");
   }
 
   return (json.data ?? json) as Product[];
@@ -115,7 +156,7 @@ export async function deleteProduct(id: string): Promise<void> {
 /**
  * Upload a product image (direct form upload)
  *
- * Note: Creathon has a single generic upload endpoint at /api/upload
+ * Note: Gifteria has a single generic upload endpoint at /api/upload
  * (Supabase Storage bucket "products"), unlike Bicket which has a
  * per-product endpoint at /api/products/[id]/upload-image. The
  * generic endpoint returns { url, success }, not the { id, imageUrl }

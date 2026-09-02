@@ -1,6 +1,6 @@
 /**
  * Product Taxonomy & Validation Constants
- * Aligned with BICKET Product Taxonomy & Category Requirements v1.0
+ * Aligned with GIFTERIA Product Taxonomy & Category Requirements v1.0
  * Shared across API routes, database mapping, and frontend forms
  */
 

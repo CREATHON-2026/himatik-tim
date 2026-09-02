@@ -1,4 +1,4 @@
-# 🧪 Manual Test Checklist: CREAT-21 - Registrasi & Login Multi-Role (Supabase + Prisma)
+﻿# 🧪 Manual Test Checklist: CREAT-21 - Registrasi & Login Multi-Role (Supabase + Prisma)
 ## Modul: `features/auth` | Target: Staging / Local Dev Environment
 
 ---
@@ -29,7 +29,7 @@
   - **Langkah**:
     1. Buka `/register`.
     2. Pastikan tab terpilih adalah **"Customer (Penyewa)"**.
-    3. Isi Nama: `Budi Buyer`, Email: `budi.test@example.com`, No HP: `081234567890`, Kata Sandi: `Creathon2026!`, Konfirmasi: `Creathon2026!`.
+    3. Isi Nama: `Budi Buyer`, Email: `budi.test@example.com`, No HP: `081234567890`, Kata Sandi: `Gifteria2026!`, Konfirmasi: `Gifteria2026!`.
     4. Klik tombol **"Daftar Sebagai Customer"**.
   - **Expected**:
     - Aplikasi me-redirect ke halaman `/verify-email?email=budi.test%40example.com`.
@@ -41,7 +41,7 @@
     1. Buka `/register`.
     2. Klik tab **"Creator (Mitra Rental)"**.
     3. Periksa apakah field khusus (*Nama Toko / Brand* & *Kota Domisili*) muncul otomatis.
-    4. Isi Nama: `Siti Creator`, Email: `siti.rental@example.com`, No HP: `081298765432`, Nama Toko: `Nusantara Bodo Studio`, Kota: `Makassar`, Password & Konfirmasi: `Creathon2026!`.
+    4. Isi Nama: `Siti Creator`, Email: `siti.rental@example.com`, No HP: `081298765432`, Nama Toko: `Nusantara Bodo Studio`, Kota: `Makassar`, Password & Konfirmasi: `Gifteria2026!`.
     5. Klik tombol **"Daftar Sebagai Creator"**.
   - **Expected**:
     - Berhasil submit dan diarahkan ke `/verify-email`.
@@ -126,7 +126,7 @@
   - **Langkah**:
     - Klik link *"Daftar Sekarang"* di `/login` ➔ Pindah ke `/register`.
     - Klik link *"Masuk di Sini"* di `/register` ➔ Pindah ke `/login`.
-    - Klik logo *"Creathon"* di header ➔ Pindah ke beranda `/`.
+    - Klik logo *"Gifteria"* di header ➔ Pindah ke beranda `/`.
   - **Expected**: Navigasi instan via Next.js Link tanpa full page reload.
   - **Hasil QA**: `[ PASSED / FAILED ]` — *Catatan:*
 

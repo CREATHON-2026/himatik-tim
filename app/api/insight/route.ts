@@ -28,7 +28,7 @@ export async function GET(req: Request) {
       send("metrics", payload);
 
       // 2) Teks deterministik (baseline fallback)
-      const baseline = renderTemplate(payload);
+      const baseline = renderTemplate(payload as Parameters<typeof renderTemplate>[0]);
       send("baseline", { text: baseline });
 
       // Jika data tidak cukup, berhenti di sini (jangan panggil LLM)
@@ -112,9 +112,10 @@ export async function GET(req: Request) {
           send("guard_reject", { reason: guard.reason });
         }
 
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
         console.error("Streaming error:", err);
-        send("error", { message: err.message });
+        send("error", { message: msg });
       }
 
       send("done", { source: "llm" });
