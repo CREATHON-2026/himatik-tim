@@ -65,7 +65,32 @@ export default function BuyerProductDetailPage({ params }: ProductDetailPageProp
   };
 
   const handleAddToCart = (qty: number) => {
-    toast.success(`${qty}x "${product?.name || "Produk"}" berhasil ditambahkan ke keranjang!`);
+    if (!product) return;
+    try {
+      const stored = localStorage.getItem("gifteria_cart");
+      const currentCart = stored ? JSON.parse(stored) : [];
+      const existingIdx = currentCart.findIndex((i: any) => i.productId === product.id);
+
+      if (existingIdx > -1) {
+        currentCart[existingIdx].quantity += qty;
+      } else {
+        currentCart.push({
+          id: `cart-${Date.now()}`,
+          productId: product.id,
+          name: product.name,
+          price: Number(product.price),
+          imageUrl: product.imageUrl || "/aset/produk-soft-lilac.jpg",
+          shopName: product.creator?.shopName || "Gifteria Studio",
+          category: product.category,
+          quantity: qty,
+        });
+      }
+
+      localStorage.setItem("gifteria_cart", JSON.stringify(currentCart));
+      toast.success(`${qty}x "${product.name}" berhasil ditambahkan ke keranjang belanja!`);
+    } catch {
+      toast.success(`${qty}x "${product.name}" ditambahkan ke keranjang!`);
+    }
   };
 
   const handleBuyNow = (qty: number) => {
@@ -159,23 +184,23 @@ export default function BuyerProductDetailPage({ params }: ProductDetailPageProp
               <Heart className={`size-4.5 ${isWishlisted ? "fill-rose-500" : ""}`} />
             </button>
 
-            {/* Cart Button with Count Badge */}
+            {/* Orders / Pesanan Saya Button */}
             <Link
-              href="/checkout"
-              className="relative p-2 rounded-full border border-[#E7E5E4] bg-white text-[#78716C] hover:text-[#111827] transition cursor-pointer"
-              title="Keranjang Belanja"
+              href="/orders"
+              className="relative p-2 rounded-full border border-[#E7E5E4] bg-white text-[#78716C] hover:text-[#6355D9] hover:border-[#DDD6FE] hover:bg-[#FAF8FF] transition cursor-pointer"
+              title="Pesanan Saya"
             >
               <ShoppingBag className="size-4.5" />
               <span className="absolute -top-1 -right-1 size-4 rounded-full bg-[#6355D9] text-white text-[10px] font-bold flex items-center justify-center">
-                2
+                1
               </span>
             </Link>
 
-            {/* Profile Avatar */}
+            {/* Orders / Profile Link */}
             <Link
-              href="/dashboard/creator/profile"
-              className="p-2 rounded-full border border-[#E7E5E4] bg-[#FAFAF9] text-[#78716C] hover:text-[#111827] transition"
-              title="Profil Pengguna"
+              href="/orders"
+              className="p-2 rounded-full border border-[#E7E5E4] bg-[#FAFAF9] text-[#78716C] hover:text-[#6355D9] hover:border-[#DDD6FE] hover:bg-[#FAF8FF] transition"
+              title="Pesanan Saya"
             >
               <User className="size-4.5" />
             </Link>

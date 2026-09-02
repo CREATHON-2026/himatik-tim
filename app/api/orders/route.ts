@@ -113,3 +113,35 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+
+export async function GET(request: NextRequest) {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const transactions = await prisma.transaction.findMany({
+      where: user ? { buyerId: user.id } : {},
+      orderBy: { createdAt: "desc" },
+      take: 20,
+    });
+
+    return NextResponse.json({
+      success: true,
+      orders: transactions.map((t) => ({
+        id: t.id,
+        status: t.status,
+        grossAmount: t.grossAmount,
+        paymentChannel: t.paymentChannel,
+        productName: t.primaryProductName || "Paket Souvenir Kriya",
+        category: t.primaryCategory || "Gift Box & Hampers",
+        createdAt: t.createdAt,
+      })),
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Gagal memuat pesanan";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
