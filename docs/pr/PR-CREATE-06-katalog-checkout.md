@@ -1,4 +1,4 @@
-# Pull Request: Public Catalog, Direct Gift Checkout, & Interactive Invoice Tracking
+﻿# Pull Request: Public Catalog, Direct Gift Checkout, & Interactive Invoice Tracking
 
 ## 📌 Ringkasan Singkat
 Pull Request ini menghadirkan alur transaksi belanja kado & kriya personal secara menyeluruh (**End-to-End Buyer Flow**), mulai dari pencarian karya di **Katalog Publik (`/katalog`)**, eksplorasi **Detail Produk Kriya (`/katalog/[id]`)**, personalisasi kartu ucapan dan alamat pada **Checkout Kado (`/checkout`)**, hingga **Invoice Digital & Pelacakan Progres Kado 5-Tahap (`/orders/[id]`)**.
@@ -14,19 +14,19 @@ Pull Request ini menghadirkan alur transaksi belanja kado & kriya personal secar
 ## 🚀 Cakupan Fitur (Must-Have & Should-Have)
 
 ### 🔴 Must-Have (Kritis & Wajib)
-1. **Katalog Publik Kriya ([`app/katalog/page.tsx`](file:///d:/2-Project/creathon/app/katalog/page.tsx))**:
+1. **Katalog Publik Kriya ([`app/katalog/page.tsx`](file:///d:/2-Project/Gifteria/app/katalog/page.tsx))**:
    - Integrasi TanStack React Query mengambil data produk riil dari Prisma & PostgreSQL.
    - Filter kategori kriya (*Buket Bunga, Hampers Box, Custom Art, Souvenir, Aksesoris*).
    - Pencarian judul produk dan sorting harga (Terbaru, Termurah, Termahal).
-2. **Detail Produk Kriya ([`app/katalog/[id]/page.tsx`](file:///d:/2-Project/creathon/app/katalog/[id]/page.tsx))**:
+2. **Detail Produk Kriya ([`app/katalog/[id]/page.tsx`](file:///d:/2-Project/Gifteria/app/katalog/[id]/page.tsx))**:
    - Galeri foto produk kado, badge status siap kirim / pre-order.
    - Tombol utama **"Beli Sekarang"** terhubung langsung ke `/checkout?productId=...&qty=...`.
    - Tombol *"Tambah ke Keranjang"* di-disable dengan keterangan jelas *(Segera Hadir)* untuk memfokuskan alur ke pemesanan langsung kado personal.
-3. **Formulir Checkout Kado ([`app/checkout/page.tsx`](file:///d:/2-Project/creathon/app/checkout/page.tsx))**:
+3. **Formulir Checkout Kado ([`app/checkout/page.tsx`](file:///d:/2-Project/Gifteria/app/checkout/page.tsx))**:
    - Pengisian detail penerima (Nama, No. WhatsApp, Alamat Pengiriman Lengkap, Kota).
    - Input khusus **Pesan Kartu Ucapan Kado (*Greeting Card*)** & instruksi khusus.
    - Pilihan kurir pengiriman (*Instant / Same Day*) dan opsi kemasan kado (*Luxury Hardbox / Artisan Wrap*).
-4. **Invoice Digital & Pelacakan 5-Tahap ([`app/orders/[id]/page.tsx`](file:///d:/2-Project/creathon/app/orders/[id]/page.tsx))**:
+4. **Invoice Digital & Pelacakan 5-Tahap ([`app/orders/[id]/page.tsx`](file:///d:/2-Project/Gifteria/app/orders/[id]/page.tsx))**:
    - Menampilkan seluruh data formulir checkout yang diisi pelanggan secara **100% presisi**.
    - Stepper visual 5 tahap: *Pesanan Dibuat ➔ Pembayaran Escrow ➔ Dirangkai Sanggar ➔ Pengiriman Kurir ➔ Selesai*.
    - Box pratinjau pesan kartu ucapan kado + tombol *"Salin Pesan"*.
@@ -45,7 +45,7 @@ Pull Request ini menghadirkan alur transaksi belanja kado & kriya personal secar
    - Tombol satu-klik mengirimkan konfirmasi pesanan dengan nomor invoice `#CRT-XXXXXXXX` ke WhatsApp sanggar.
 3. **Cetak Invoice / Bukti Pembelian**:
    - Tombol cetak langsung (*Print/PDF layout*) tanpa menyertakan elemen navigasi navbar.
-4. **Proteksi & Garansi 100% Escrow Creathon**:
+4. **Proteksi & Garansi 100% Escrow Gifteria**:
    - Indikator keamanan dana pembeli hingga kado diterima dengan memuaskan.
 
 ---

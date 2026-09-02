@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import Link from "next/link";
@@ -85,7 +85,7 @@ export function CreatorOrderCard({ order }: CreatorOrderCardProps) {
       : "6281234567890";
     const cleanPhone = phone.replace(/[^0-9]/g, "");
     const message = encodeURIComponent(
-      `Halo Kak, terima kasih telah memesan karya kriya "${order.product.name}" di Creathon (Invoice: #${order.orderNumber}). Pesanan Kakak sedang kami siapkan ya!`
+      `Halo Kak, terima kasih telah memesan karya kriya "${order.product.name}" di Gifteria (Invoice: #${order.orderNumber}). Pesanan Kakak sedang kami siapkan ya!`
     );
     window.open(`https://wa.me/${cleanPhone}?text=${message}`, "_blank");
   };

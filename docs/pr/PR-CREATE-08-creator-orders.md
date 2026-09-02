@@ -1,7 +1,7 @@
-# Pull Request: Manajemen Pesanan Masuk Kreator (Creator Order Management)
+﻿# Pull Request: Manajemen Pesanan Masuk Kreator (Creator Order Management)
 
 ## 📌 Ringkasan Singkat
-Pull Request ini menghadirkan fitur **Manajemen Pesanan Masuk (`/dashboard/creator/orders`)** bagi kreator sanggar di Creathon untuk memantau, memproses alur perangkaian kado, menghubungi pembeli via WhatsApp, dan memperbarui status pesanan hingga selesai.
+Pull Request ini menghadirkan fitur **Manajemen Pesanan Masuk (`/dashboard/creator/orders`)** bagi kreator sanggar di Gifteria untuk memantau, memproses alur perangkaian kado, menghubungi pembeli via WhatsApp, dan memperbarui status pesanan hingga selesai.
 
 ---
 
@@ -14,14 +14,14 @@ Pull Request ini menghadirkan fitur **Manajemen Pesanan Masuk (`/dashboard/creat
 ## 🚀 Cakupan Fitur (Must-Have & Should-Have)
 
 ### 🔴 Must-Have (Kritis & Wajib)
-1. **Daftar Pesanan Masuk Real-Time ([`app/dashboard/creator/orders/page.tsx`](file:///d:/2-Project/creathon/app/dashboard/creator/orders/page.tsx))**:
+1. **Daftar Pesanan Masuk Real-Time ([`app/dashboard/creator/orders/page.tsx`](file:///d:/2-Project/Gifteria/app/dashboard/creator/orders/page.tsx))**:
    - Menampilkan seluruh pesanan kriya yang masuk ke sanggar kreator dari database.
    - Mengambil data foto produk, nama produk, status transaksi, tanggal, dan nominal pendapatan bersih.
 2. **Filter Status Alur Kado**:
    - Tab filter status: `Semua`, `Perlu Dirangkai` (`IN_ESCROW`), `Menunggu Bayar` (`PENDING`), `Selesai` (`COMPLETED`), dan `Dibatalkan` (`CANCELLED`).
 3. **Pencarian Cepat (*Search Bar*)**:
    - Mencari pesanan secara instan berdasarkan No. Invoice (`#CRT-...`) atau nama produk kado.
-4. **Lembar Kerja Pesanan & Detail ([`app/dashboard/creator/orders/[id]/page.tsx`](file:///d:/2-Project/creathon/app/dashboard/creator/orders/[id]/page.tsx))**:
+4. **Lembar Kerja Pesanan & Detail ([`app/dashboard/creator/orders/[id]/page.tsx`](file:///d:/2-Project/Gifteria/app/dashboard/creator/orders/[id]/page.tsx))**:
    - Menampilkan detail produk, harga satuan, dan kalkulasi pendapatan bersih sanggar.
    - Aksi pembaruan status pengerjaan: *"Mulai Rangkai"*, *"Tandai Selesai & Diserahkan ke Kurir"*, *"Batalkan"*.
 5. **Backend Endpoints**:

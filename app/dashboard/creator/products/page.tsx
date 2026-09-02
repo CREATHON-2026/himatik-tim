@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -156,7 +156,7 @@ export default function CreatorProductsPage() {
           </h3>
           <p className="mt-1 max-w-sm text-xs text-[#78716C]">
             Mulai unggah foto kerajinan tangan atau kado pertama Anda agar
-            pembeli dapat menemukan karya Anda di katalog Creathon.
+            pembeli dapat menemukan karya Anda di katalog Gifteria.
           </p>
           <Button
             render={<Link href="/dashboard/creator/products/new" />}

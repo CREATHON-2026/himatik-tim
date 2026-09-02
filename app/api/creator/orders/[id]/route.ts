@@ -43,9 +43,9 @@ export async function GET(
 
     // Fetch buyer user details if available
     let buyerData = {
-      name: "Pelanggan Creathon",
+      name: "Pelanggan Gifteria",
       phone: "081234567890",
-      email: "buyer@creathon.id",
+      email: "buyer@Gifteria.id",
       avatarUrl: null as string | null,
       address: "Makassar, Sulawesi Selatan",
       city: "Makassar",
@@ -66,7 +66,7 @@ export async function GET(
           buyerData = {
             name: buyerUser.name || "Pelanggan Terdaftar",
             phone: buyerUser.phone || "081234567890",
-            email: buyerUser.email || "buyer@creathon.id",
+            email: buyerUser.email || "buyer@Gifteria.id",
             avatarUrl: buyerUser.avatarUrl || null,
             address: buyerUser.creatorProfile?.address || "Makassar, Sulawesi Selatan",
             city: buyerUser.creatorProfile?.city || "Makassar",

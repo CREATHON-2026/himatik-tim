@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { PayoutTransaction, BankAccount } from "@/features/payout/types";
@@ -66,7 +66,7 @@ export async function GET() {
     const bankAccount = bankStore.get(profile.id) || {
       bankName: "Bank Central Asia (BCA)",
       accountNumber: "8735-0912-34",
-      accountHolder: profile.storeName || "Sanggar Kriya Creathon",
+      accountHolder: profile.storeName || "Sanggar Kriya Gifteria",
     };
 
     return NextResponse.json({

@@ -1,15 +1,15 @@
-# 🎨 Dokumen Spesifikasi Redesign: Halaman Katalog Produk (`/katalog`)
-## Creatons UI/UX Design System Handover Specification
+﻿# 🎨 Dokumen Spesifikasi Redesign: Halaman Katalog Produk (`/katalog`)
+## Gifteria UI/UX Design System Handover Specification
 **Target Halaman:** `/katalog` (Katalog Busana Adat, Kostum Kreatif & Gift Kriya)\
 **Tema Visual:** *Modern Editorial Creative*\
-**Dokumen Referensi:** [`Creatons_UI_UX_Design_System.md`](file:///d:/2-Project/creathon/docs/designs/Creatons_UI_UX_Design_System.md) & Poster Panduan [`nilai.jpeg`](file:///d:/2-Project/creathon/docs/designs/nilai.jpeg)\
+**Dokumen Referensi:** [`Gifteria_UI_UX_Design_System.md`](file:///d:/2-Project/Gifteria/docs/designs/Gifteria_UI_UX_Design_System.md) & Poster Panduan [`nilai.jpeg`](file:///d:/2-Project/Gifteria/docs/designs/nilai.jpeg)\
 **Target Audiens Dokumen:** UI/UX Designer, Frontend Developer, Product Owner
 
 ---
 
 ## 1. 🎯 Latar Belakang & Tujuan Redesign
 
-Halaman `/katalog` saat ini masih menggunakan tema gelap (*dark neon*) yang tidak mencerminkan brand identity Creatons. 
+Halaman `/katalog` saat ini masih menggunakan tema gelap (*dark neon*) yang tidak mencerminkan brand identity Gifteria. 
 
 Tujuan dari dokumen ini adalah memberikan panduan teknis dan visual kepada **Tim UI/UX Design** untuk merombak antarmuka katalog menjadi **Modern Editorial Creative**: perpaduan tipografi editorial premium, kanvas terang yang hangat (*warm neutral surface*), *generous whitespace*, dan aksen ungu (*refined violet*) yang mencerminkan karya seni bernilai tinggi, manusiawi, dan terpercaya.
 
@@ -73,7 +73,7 @@ Karakter editorial dibangun dengan memadukan **Serif (Editorial)** dan **Sans-se
 ### Section 1: Navigation Header (Sticky Top)
 - **Karakter**: Background putih / Neutral 50 transparan (`backdrop-blur-md`), tinggi 64px, border-b 1px `Neutral 200`.
 - **Elemen**:
-  - Logo: `Creatons✦` (dengan spark icon violet).
+  - Logo: `Gifteria✦` (dengan spark icon violet).
   - Search Input: Lebar max 480px, rounded-full atau radius 12px, border `Neutral 200`, icon pencarian di sisi kiri.
   - User Action: Link *"Masuk"* (Ghost text) + Tombol *"Buka Studio Rental"* (`Violet 500`, radius 12px).
 

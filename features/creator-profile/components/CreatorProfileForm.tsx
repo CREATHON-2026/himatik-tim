@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
@@ -357,7 +357,7 @@ export function CreatorProfileForm({
                 <Badge variant="success">Terverifikasi</Badge>
               </div>
               <p className="text-xs text-[#78716C] leading-relaxed">
-                Sanggar Anda terdaftar aktif dan produk kado Anda dapat ditemukan di pasar katalog Creathon.
+                Sanggar Anda terdaftar aktif dan produk kado Anda dapat ditemukan di pasar katalog Gifteria.
               </p>
             </div>
           </div>

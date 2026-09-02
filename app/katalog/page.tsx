@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import Link from "next/link";
@@ -88,7 +88,7 @@ export default function KatalogPage() {
               <Sparkles className="w-4 h-4" />
             </span>
             <span className="font-serif tracking-tight text-xl">
-              Creathon<span className="text-[#6355D9]">.</span>
+              Gifteria<span className="text-[#6355D9]">.</span>
             </span>
           </Link>
 

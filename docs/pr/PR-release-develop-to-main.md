@@ -1,7 +1,7 @@
-# 🚀 Pull Request: Release `develop` ➔ `main` (Creathon v1.0.0-beta)
+﻿# 🚀 Pull Request: Release `develop` ➔ `main` (Gifteria v1.0.0-beta)
 
 ## 📌 Ringkasan Rilis (Executive Summary)
-Pull Request ini menggabungkan seluruh fitur inti, perbaikan performa, dan pembaruan visual dari branch `develop` ke branch `main` untuk rilis production marketplace **Creathon (Marketplace Gift, Hampers & Creative Kriya)**.
+Pull Request ini menggabungkan seluruh fitur inti, perbaikan performa, dan pembaruan visual dari branch `develop` ke branch `main` untuk rilis production marketplace **Gifteria (Marketplace Gift, Hampers & Creative Kriya)**.
 
 ---
 

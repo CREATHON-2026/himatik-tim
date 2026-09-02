@@ -1,10 +1,10 @@
-# 🧪 Manual Testing Checklist: Manajemen Pesanan Masuk Kreator (`/dashboard/creator/orders`)
+﻿# 🧪 Manual Testing Checklist: Manajemen Pesanan Masuk Kreator (`/dashboard/creator/orders`)
 ## QA Test Plan — Story CREAT-08: Manajemen Pesanan Masuk, Lembar Kerja Kado & Update Status Sanggar
 
 **Task ID**: `CREAT-08`\
 **Target URL**: `http://localhost:3000/dashboard/creator/orders` & `http://localhost:3000/dashboard/creator/orders/[id]`\
 **Tipe Pengujian**: Functional, Order State Machine, Buyer Profile Verification, WhatsApp Integration, UI/UX Interaction QA\
-**Standar SOP**: [`docs/sop/06-sop-qa-manual-testing-checklist.md`](file:///d:/2-Project/creathon/docs/sop/06-sop-qa-manual-testing-checklist.md)
+**Standar SOP**: [`docs/sop/06-sop-qa-manual-testing-checklist.md`](file:///d:/2-Project/Gifteria/docs/sop/06-sop-qa-manual-testing-checklist.md)
 
 ---
 
@@ -42,7 +42,7 @@
     3. Buka tab filter **"Selesai"** (`COMPLETED`).
     4. Buka tab filter **"Menunggu Bayar"** (`PENDING`).
   - **Expected**:
-    - Tab "Perlu Dirangkai" hanya menampilkan pesanan yang dananya sudah aman di Escrow Creathon dan siap dibuatkan kado.
+    - Tab "Perlu Dirangkai" hanya menampilkan pesanan yang dananya sudah aman di Escrow Gifteria dan siap dibuatkan kado.
     - Tab "Selesai" hanya menampilkan transaksi yang sudah selesai dikerjakan.
     - Transisi antar tab berjalan instan tanpa reload halaman.
   - **Hasil QA**: `[ PASSED / FAILED ]` — *Catatan:*

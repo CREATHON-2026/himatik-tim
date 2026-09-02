@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import type { Product as PrismaProduct } from "@prisma/client";
 import { CreateProductInput, UpdateProductInput } from "../types";
 import type { Product as ApiProduct } from "../types";
@@ -14,7 +14,7 @@ function generateSlug(title: string): string {
 /**
  * Maps a raw Prisma Product row to the normalized API shape.
  *
- * Root cause fix: Creathon's Prisma schema uses different field names
+ * Root cause fix: Gifteria's Prisma schema uses different field names
  * (title/images/isPublished/weightGrams) than the shared API contract
  * (name/imageUrl+gallery/isActive/weight) used by hooks and components.
  * This mapping happens once here instead of being duplicated ad-hoc in
@@ -142,7 +142,7 @@ export async function getProductDetailById(id: string) {
     reviewCount: 12,
     creator: {
       id: creator.id,
-      shopName: creator.storeName || "Creathon Studio",
+      shopName: creator.storeName || "Gifteria Studio",
       photoUrl: creator.user?.avatarUrl || null,
       bannerUrl: creator.bannerUrl || null,
       bio: creator.description || "Pengrajin & Kreator Kado Nusantara",

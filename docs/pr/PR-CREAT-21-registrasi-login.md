@@ -1,4 +1,4 @@
-# 🚀 Pull Request: `feat/CREAT-21-registrasi-login` ➔ `develop`
+﻿# 🚀 Pull Request: `feat/CREAT-21-registrasi-login` ➔ `develop`
 
 ## 📌 Metadata PR
 - **Task ID**: `CREAT-21`
@@ -12,7 +12,7 @@
 ## 📝 Ringkasan Perubahan (Summary of Changes)
 Implementasi sistem Autentikasi Multi-Role menggunakan **Supabase SSR + Prisma ORM (PostgreSQL)**, lengkap dengan Zod validation, Next.js 16 Proxy Session Interceptor, dan First Entry Pages untuk masing-masing peran:
 
-1. **Database & Schema ([`prisma/schema.prisma`](file:///d:/2-Project/creathon/prisma/schema.prisma))**:
+1. **Database & Schema ([`prisma/schema.prisma`](file:///d:/2-Project/Gifteria/prisma/schema.prisma))**:
    - Enum `Role`: `CUSTOMER`, `CREATOR`, `ADMIN`.
    - Model `User` (terkoneksi dengan UUID Supabase Auth) & Model `CreatorProfile`.
    - Sinkronisasi PostgreSQL via Prisma Client.
@@ -39,7 +39,7 @@ Implementasi sistem Autentikasi Multi-Role menggunakan **Supabase SSR + Prisma O
 ---
 
 ## 🧪 Panduan Pengujian (Test Checklist Reference)
-- Manual Test Checklist: [`docs/test/CREAT-21-registrasi-login.md`](file:///d:/2-Project/creathon/docs/test/CREAT-21-registrasi-login.md)
+- Manual Test Checklist: [`docs/test/CREAT-21-registrasi-login.md`](file:///d:/2-Project/Gifteria/docs/test/CREAT-21-registrasi-login.md)
 
 ---
 

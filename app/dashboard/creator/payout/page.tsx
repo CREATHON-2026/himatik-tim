@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -38,7 +38,7 @@ export default function CreatorPayoutPage() {
   const bankAccount = data?.bankAccount || {
     bankName: "Bank Central Asia (BCA)",
     accountNumber: "8735-0912-34",
-    accountHolder: "Sanggar Kriya Creathon",
+    accountHolder: "Sanggar Kriya Gifteria",
   };
 
   const history = data?.history || [];
@@ -101,7 +101,7 @@ export default function CreatorPayoutPage() {
             <li className="flex items-start gap-2">
               <span className="size-1.5 rounded-full bg-[#6355D9] mt-1.5 shrink-0" />
               <span>
-                Biaya transfer antarbank <strong>Rp0 (Gratis Promo Creathon)</strong>.
+                Biaya transfer antarbank <strong>Rp0 (Gratis Promo Gifteria)</strong>.
               </span>
             </li>
             <li className="flex items-start gap-2">
@@ -114,7 +114,7 @@ export default function CreatorPayoutPage() {
 
           <div className="p-3 rounded-2xl bg-[#FAFAF9] border border-[#E7E5E4] text-[11px] text-[#78716C] flex items-center gap-2">
             <Info className="size-4 text-[#6355D9] shrink-0" />
-            <span>Butuh bantuan pencairan? Hubungi tim Helpdesk Creathon.</span>
+            <span>Butuh bantuan pencairan? Hubungi tim Helpdesk Gifteria.</span>
           </div>
         </div>
       </div>

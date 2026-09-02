@@ -1,10 +1,10 @@
-import { AuthLayout } from "@/features/auth/components/AuthLayout";
+﻿import { AuthLayout } from "@/features/auth/components/AuthLayout";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Masuk • Creathon",
-  description: "Masuk ke akun Creathon untuk mulai sewa busana adat & karya kreatif.",
+  title: "Masuk • Gifteria",
+  description: "Masuk ke akun Gifteria untuk mulai sewa busana adat & karya kreatif.",
 };
 
 export default function LoginPage() {

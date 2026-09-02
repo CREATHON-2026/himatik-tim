@@ -1,10 +1,10 @@
-# 🧪 Manual Testing Checklist: Kelola Produk & Profil Creator (`/dashboard/creator/products`)
+﻿# 🧪 Manual Testing Checklist: Kelola Produk & Profil Creator (`/dashboard/creator/products`)
 ## QA Test Plan — Story CREAT-39: Kelola Produk (Gift, Buket, Hampers & Kriya) & Profil Creator
 
 **Task ID**: `CREAT-39`\
 **Target URL**: `http://localhost:3000/dashboard/creator/products` & `http://localhost:3000/dashboard/creator`\
 **Tipe Pengujian**: Functional CRUD, Input Validation, UI/UX Interaction, Responsive & Error State QA\
-**Standar SOP**: [`docs/sop/06-sop-qa-manual-testing-checklist.md`](file:///d:/2-Project/creathon/docs/sop/06-sop-qa-manual-testing-checklist.md)
+**Standar SOP**: [`docs/sop/06-sop-qa-manual-testing-checklist.md`](file:///d:/2-Project/Gifteria/docs/sop/06-sop-qa-manual-testing-checklist.md)
 
 ---
 

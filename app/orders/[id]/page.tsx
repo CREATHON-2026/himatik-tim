@@ -63,7 +63,7 @@ export default function OrderDetailPage({ params }: OrderPageProps) {
   } | null>(() => {
     if (typeof window !== "undefined") {
       try {
-        const raw = localStorage.getItem(`creathon_order_${orderId}`);
+        const raw = localStorage.getItem(`Gifteria_order_${orderId}`);
         if (raw) return JSON.parse(raw);
       } catch {
         // graceful ignore
@@ -120,7 +120,7 @@ export default function OrderDetailPage({ params }: OrderPageProps) {
     const phone = order.creator?.phone || "6281234567890";
     const cleanPhone = phone.replace(/[^0-9]/g, "");
     const message = encodeURIComponent(
-      `Halo ${order.creator?.storeName || "Sanggar"}, saya telah melakukan pemesanan "${order.product?.name}" dengan No. Invoice #${order.orderNumber || order.id.substring(0, 8).toUpperCase()} seharga ${formatRupiah(order.grossAmount)}. Mohon konfirmasi pesanannya via Creathon ya!`
+      `Halo ${order.creator?.storeName || "Sanggar"}, saya telah melakukan pemesanan "${order.product?.name}" dengan No. Invoice #${order.orderNumber || order.id.substring(0, 8).toUpperCase()} seharga ${formatRupiah(order.grossAmount)}. Mohon konfirmasi pesanannya via Gifteria ya!`
     );
     window.open(`https://wa.me/${cleanPhone}?text=${message}`, "_blank");
   };
@@ -154,7 +154,7 @@ export default function OrderDetailPage({ params }: OrderPageProps) {
   const isPaid = order.status === "IN_ESCROW" || order.status === "COMPLETED";
 
   const buyer = {
-    name: localMeta?.buyerName || order.buyer?.name || "Pelanggan Creathon",
+    name: localMeta?.buyerName || order.buyer?.name || "Pelanggan Gifteria",
     phone: localMeta?.buyerPhone || order.buyer?.phone || "081234567890",
     address: localMeta?.shippingAddress || order.buyer?.address || "Jl. Boulevard No. 12, Makassar",
     city: localMeta?.shippingCity || order.buyer?.city || "Makassar",
@@ -198,7 +198,7 @@ export default function OrderDetailPage({ params }: OrderPageProps) {
               <Sparkles className="w-4 h-4" />
             </span>
             <span className="font-serif tracking-tight text-xl">
-              Creathon<span className="text-[#6355D9]">.</span>
+              Gifteria<span className="text-[#6355D9]">.</span>
             </span>
           </Link>
 
@@ -251,7 +251,7 @@ export default function OrderDetailPage({ params }: OrderPageProps) {
             </h1>
             <p className="text-xs text-[#78716C] max-w-md mx-auto">
               {isPaid
-                ? "Dana Anda telah aman di Escrow Creathon. Sanggar sedang merangkai karya kado spesial Anda."
+                ? "Dana Anda telah aman di Escrow Gifteria. Sanggar sedang merangkai karya kado spesial Anda."
                 : "Silakan selesaikan pembayaran via QRIS atau transfer bank untuk memulai perangkaian karya kriya Anda."}
             </p>
           </div>
@@ -315,7 +315,7 @@ export default function OrderDetailPage({ params }: OrderPageProps) {
                     <>
                       <QrCode className="size-32 text-[#111827]" />
                       <span className="text-[10px] font-bold text-[#6355D9] mt-1">
-                        QRIS Escrow Creathon
+                        QRIS Escrow Gifteria
                       </span>
                     </>
                   )}
@@ -335,7 +335,7 @@ export default function OrderDetailPage({ params }: OrderPageProps) {
               {/* Escrow Badge */}
               <div className="pt-2 text-[11px] text-[#78716C] bg-[#F5F3FF] p-3 rounded-xl border border-[#DDD6FE] flex items-center justify-center gap-2">
                 <ShieldCheck className="size-4 text-[#6355D9] shrink-0" />
-                <span>Dana aman di Escrow Creathon hingga kado diterima dengan puas.</span>
+                <span>Dana aman di Escrow Gifteria hingga kado diterima dengan puas.</span>
               </div>
             </div>
 

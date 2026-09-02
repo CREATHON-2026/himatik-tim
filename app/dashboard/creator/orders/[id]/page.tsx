@@ -128,9 +128,9 @@ export default function CreatorOrderDetailPage({ params }: CreatorOrderDetailPag
   const StatusIcon = badge.icon;
 
   const buyer = order.buyer || {
-    name: "Pelanggan Creathon",
+    name: "Pelanggan Gifteria",
     phone: "081234567890",
-    email: "customer@creathon.id",
+    email: "customer@Gifteria.id",
     address: "Makassar, Sulawesi Selatan",
     city: "Makassar",
   };
@@ -145,7 +145,7 @@ export default function CreatorOrderDetailPage({ params }: CreatorOrderDetailPag
   const handleWhatsAppBuyer = () => {
     const cleanPhone = buyer.phone.replace(/[^0-9]/g, "");
     const message = encodeURIComponent(
-      `Halo Kak ${buyer.name}, kami dari sanggar Creathon ingin mengonfirmasi detail pesanan kriya "${order.product.name}" (#${order.orderNumber}). Pesanan Kakak sedang kami proses ya!`
+      `Halo Kak ${buyer.name}, kami dari sanggar Gifteria ingin mengonfirmasi detail pesanan kriya "${order.product.name}" (#${order.orderNumber}). Pesanan Kakak sedang kami proses ya!`
     );
     window.open(`https://wa.me/${cleanPhone}?text=${message}`, "_blank");
   };

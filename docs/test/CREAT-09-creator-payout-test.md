@@ -1,10 +1,10 @@
-# 🧪 Manual Testing Checklist: Saldo & Penarikan Dana Sanggar (`/dashboard/creator/payout`)
+﻿# 🧪 Manual Testing Checklist: Saldo & Penarikan Dana Sanggar (`/dashboard/creator/payout`)
 ## QA Test Plan — Story CREAT-09: Manajemen Saldo, Pengajuan Penarikan Dana & Rekening Bank
 
 **Task ID**: `CREAT-09`\
 **Target URL**: `http://localhost:3000/dashboard/creator/payout`\
 **Tipe Pengujian**: Functional Finance, Withdrawal Form Validation, Bank Account CRUD, Table Filter & UI/UX QA\
-**Standar SOP**: [`docs/sop/06-sop-qa-manual-testing-checklist.md`](file:///d:/2-Project/creathon/docs/sop/06-sop-qa-manual-testing-checklist.md)
+**Standar SOP**: [`docs/sop/06-sop-qa-manual-testing-checklist.md`](file:///d:/2-Project/Gifteria/docs/sop/06-sop-qa-manual-testing-checklist.md)
 
 ---
 

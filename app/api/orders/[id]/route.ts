@@ -30,9 +30,9 @@ export async function GET(
 
     // Resolve buyer info if available
     let buyerData = {
-      name: "Pelanggan Creathon",
+      name: "Pelanggan Gifteria",
       phone: "081234567890",
-      email: "buyer@creathon.id",
+      email: "buyer@Gifteria.id",
       city: "Makassar",
       address: "Jl. Boulevard No. 12, Panakkukang, Makassar, Sulawesi Selatan",
       courier: "Kurir Instant (1 - 3 Jam)",
@@ -53,7 +53,7 @@ export async function GET(
           buyerData = {
             name: buyerUser.name || "Pelanggan Terdaftar",
             phone: buyerUser.phone || "081234567890",
-            email: buyerUser.email || "buyer@creathon.id",
+            email: buyerUser.email || "buyer@Gifteria.id",
             city: buyerUser.creatorProfile?.city || "Makassar",
             address: buyerUser.creatorProfile?.address || "Jl. Boulevard No. 12, Makassar, Sulawesi Selatan",
             courier: "Kurir Instant (1 - 3 Jam)",
@@ -115,7 +115,7 @@ export async function GET(
           }
         : {
             id: transaction.storeId,
-            storeName: "Sanggar Kriya Creathon",
+            storeName: "Sanggar Kriya Gifteria",
             phone: "6281234567890",
             city: "Makassar",
           },

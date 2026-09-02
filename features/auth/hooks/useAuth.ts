@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -24,7 +24,7 @@ export function useAuth() {
           setUser({
             id: authUser.id,
             email: authUser.email || "",
-            name: authUser.user_metadata?.name || "Pengguna Creathon",
+            name: authUser.user_metadata?.name || "Pengguna Gifteria",
             phone: authUser.user_metadata?.phone || null,
             role: authUser.user_metadata?.role || "CUSTOMER",
             creatorStatus: null,

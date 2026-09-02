@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { QueryProvider } from "@/components/providers/query-provider";
 import "./globals.css";
@@ -20,7 +20,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Creathon — Marketplace Gift, Hampers & Creative Kriya",
+  title: "Gifteria — Marketplace Gift, Hampers & Creative Kriya",
   description: "Tempat bertemunya kreator, karya gift personal, buket bunga, dan kerajinan tangan terbaik Nusantara.",
 };
 
