@@ -63,8 +63,8 @@ export function OrderBriefPanel({
           <div className="space-y-2">
             <h3 className="font-semibold text-lg">Order Brief Belum Dibuat</h3>
             <p className="text-sm text-muted-foreground max-w-md">
-              AI akan merangkum percakapan Anda menjadi spesifikasi pesanan yang
-              terstruktur dengan evidence dari setiap field.
+              Mulai percakapan di sebelah kiri untuk membahas detail pesanan. 
+              AI akan otomatis merangkum diskusi Anda menjadi Order Brief yang terstruktur.
             </p>
           </div>
 
@@ -73,6 +73,7 @@ export function OrderBriefPanel({
               onClick={onCompile}
               disabled={isCompiling}
               className="mt-4"
+              variant="outline"
             >
               {isCompiling ? (
                 <>
@@ -82,7 +83,7 @@ export function OrderBriefPanel({
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Susun Brief dengan AI
+                  Susun Brief dari Chat
                 </>
               )}
             </Button>

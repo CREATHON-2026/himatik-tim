@@ -58,24 +58,36 @@ export async function GET(req: NextRequest) {
     // For now, we check if user has access to any brief for this conversation
 
     // Find Order Brief for conversation
-    const brief = await prisma.orderBrief.findFirst({
-      where: {
-        conversationId: validation.data.conversationId,
-      },
-      include: {
-        currentRevision: true,
-        createdBy: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
+    let brief;
+    try {
+      brief = await prisma.orderBrief.findFirst({
+        where: {
+          conversationId: validation.data.conversationId,
+        },
+        include: {
+          currentRevision: true,
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    } catch (dbError: any) {
+      // Handle case where table doesn't exist yet
+      if (dbError.code === 'P2021') {
+        return NextResponse.json(
+          { error: ERROR_MESSAGES.NOT_FOUND },
+          { status: 404 }
+        );
+      }
+      throw dbError;
+    }
 
     if (!brief) {
       return NextResponse.json(

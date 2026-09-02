@@ -340,7 +340,8 @@ export function mergeWithExistingSnapshot(
 
     if (!existingSection || !newSection) continue;
 
-    merged[section] = { ...(existingSection || {}) } as any;
+    // Create a shallow copy of the existing section
+    merged[section] = { ...(existingSection as Record<string, any>) } as any;
 
     const fields = Object.keys(newSection) as Array<keyof typeof newSection>;
 
